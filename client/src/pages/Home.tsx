@@ -72,10 +72,7 @@ export default function Home() {
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded bg-primary text-primary-foreground">
-              <span className="font-heading font-bold text-lg">L&M</span>
-            </div>
-            <span className="font-heading font-bold text-xl tracking-tight">WAREHOUSING</span>
+            <img src="/images/lm-logo.jpg" alt="L&M Distribution and Logistics" className="h-12 w-auto" />
           </div>
           <div className="flex items-center gap-4">
             <div className="hidden md:block text-sm text-muted-foreground">
@@ -535,10 +532,7 @@ export default function Home() {
           <div className="grid md:grid-cols-4 gap-8">
             <div className="col-span-2">
               <div className="flex items-center gap-2 mb-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded bg-primary text-primary-foreground">
-                  <span className="font-heading font-bold text-lg">L&M</span>
-                </div>
-                <span className="font-heading font-bold text-xl tracking-tight text-white">WAREHOUSING</span>
+                <img src="/images/lm-logo.jpg" alt="L&M Distribution and Logistics" className="h-12 w-auto bg-white rounded-md p-1" />
               </div>
               <p className="text-sm text-slate-400 max-w-xs">
                 Premier warehousing and logistics solutions for the beverage industry. Serving the Northeast corridor with pride.
