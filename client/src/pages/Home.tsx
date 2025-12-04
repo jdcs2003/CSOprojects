@@ -412,6 +412,40 @@ export default function Home() {
                       {selectedOption === "conservative" ? "Conservative Launch (20 Pallets)" : "Standard Growth (35 Pallets)"}
                     </div>
                   </div>
+                  
+                  <div className="mt-6 p-4 rounded-lg border bg-slate-50/50 text-sm">
+                    <span className="font-semibold block mb-2">Additional Services & Fees (As Needed)</span>
+                    <div className="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-muted-foreground">
+                      <div className="flex justify-between border-b border-dashed pb-1">
+                        <span>Administration Fee</span>
+                        <span className="font-medium text-foreground">$35.00 / hr</span>
+                      </div>
+                      <div className="text-xs col-span-2 sm:col-span-1 mb-2 italic">Applies to manual entry, photo requests, out of scope work</div>
+                      
+                      <div className="flex justify-between border-b border-dashed pb-1">
+                        <span>Bottle Mixing</span>
+                        <span className="font-medium text-foreground">$14.00 / case</span>
+                      </div>
+                      <div className="hidden sm:block"></div>
+
+                      <div className="flex justify-between border-b border-dashed pb-1">
+                        <span>Open & Inspect</span>
+                        <span className="font-medium text-foreground">$2.00 / case</span>
+                      </div>
+                      <div className="text-xs col-span-2 sm:col-span-1 mb-2 italic">$20.00 minimum charge applies</div>
+
+                      <div className="flex justify-between border-b border-dashed pb-1">
+                        <span>Labeling Fee</span>
+                        <span className="font-medium text-foreground">$0.80 / case</span>
+                      </div>
+                      <div className="hidden sm:block"></div>
+
+                      <div className="flex justify-between border-b border-dashed pb-1">
+                        <span>Order Processing</span>
+                        <span className="font-medium text-foreground">$2.00 / order</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <Separator />
