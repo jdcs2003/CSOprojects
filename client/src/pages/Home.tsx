@@ -54,15 +54,31 @@ export default function Home() {
         });
       }));
 
+      // Ensure signature image is loaded if present
+      const signatureImg = proposalRef.current.querySelector('img[alt="Client Signature"]') as HTMLImageElement;
+      if (signatureImg && !signatureImg.complete) {
+        await new Promise((resolve) => {
+          signatureImg.onload = resolve;
+          signatureImg.onerror = resolve; // Proceed even if error to avoid hanging
+        });
+      }
+
       const canvas = await html2canvas(proposalRef.current, {
         scale: 2,
         useCORS: true, // Important for loading images
-        allowTaint: false, // MUST be false to use toDataURL()
+        allowTaint: true, // Changed to true to allow local data URLs (signature)
         logging: false,
         scrollY: -window.scrollY,
         windowWidth: document.documentElement.offsetWidth,
         windowHeight: document.documentElement.offsetHeight,
-        ignoreElements: (element) => element.tagName === 'BUTTON' || element.classList.contains('no-print'), // Optional: hide buttons in PDF
+        ignoreElements: (element) => element.tagName === 'BUTTON' || element.classList.contains('no-print'),
+        onclone: (clonedDoc) => {
+           // Ensure cloned signature image has correct source
+           const clonedSig = clonedDoc.querySelector('img[alt="Client Signature"]') as HTMLImageElement;
+           if (clonedSig && signatureData) {
+             clonedSig.src = signatureData;
+           }
+        }
       });
       
       // Calculate PDF dimensions to fit A4 or maintain aspect ratio
@@ -537,7 +553,7 @@ export default function Home() {
                     </label>
                   </div>
 
-                  <Button size="lg" className="w-full sm:w-auto" disabled={!signatureData}>
+                  <Button size="lg" className="w-full sm:w-auto" disabled={!signatureData} onClick={downloadPDF}>
                     Complete & Submit Proposal
                     <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
