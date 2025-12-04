@@ -56,12 +56,13 @@ export default function Home() {
 
       const canvas = await html2canvas(proposalRef.current, {
         scale: 2,
-        useCORS: true,
-        logging: true,
-        allowTaint: true,
+        useCORS: true, // Important for loading images
+        allowTaint: false, // MUST be false to use toDataURL()
+        logging: false,
         scrollY: -window.scrollY,
         windowWidth: document.documentElement.offsetWidth,
         windowHeight: document.documentElement.offsetHeight,
+        ignoreElements: (element) => element.tagName === 'BUTTON' || element.classList.contains('no-print'), // Optional: hide buttons in PDF
       });
       
       // Calculate PDF dimensions to fit A4 or maintain aspect ratio
@@ -74,13 +75,15 @@ export default function Home() {
         format: [imgWidth, imgHeight],
       });
       
-      const imgData = canvas.toDataURL("image/jpeg", 1.0);
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
       pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
       pdf.save("Third_Deck_Brewing_Proposal.pdf");
       toast.success("PDF downloaded successfully!");
     } catch (error) {
       console.error("PDF generation failed:", error);
-      toast.error("Failed to generate PDF. Please try again.");
+      toast.error("PDF generation failed. Opening print dialog instead...");
+      // Fallback to native browser print
+      setTimeout(() => window.print(), 1000);
     }
   };
 
