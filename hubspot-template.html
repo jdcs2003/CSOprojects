@@ -1,0 +1,183 @@
+<!--
+  HubSpot Proposal Template for Third Deck Brewing
+  
+  INSTRUCTIONS FOR IMPORT:
+  1. Go to Marketing > Files and Templates > Design Tools in HubSpot
+  2. Create a new "HTML & HUBL" file
+  3. Paste this code entirely
+  4. This template uses Tailwind CSS via CDN for styling to ensure it looks identical to the preview
+-->
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehousing Proposal - Third Deck Brewing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Oswald', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#1e293b',
+                        secondary: '#d97706',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Oswald', sans-serif; }
+        .bg-grain {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur">
+        <div class="container mx-auto px-4 flex h-16 items-center justify-between">
+            <div class="flex items-center gap-2">
+                <!-- Replace src with your hosted logo URL in HubSpot -->
+                <img src="https://fs.hubspotusercontent00.net/hubfs/YOUR_PORTAL_ID/lm-logo.jpg" alt="L&M Logo" class="h-12 w-auto">
+            </div>
+            <div class="text-sm text-slate-500">
+                Prepared for <span class="font-semibold text-slate-900">Third Deck Brewing</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="relative overflow-hidden border-b bg-slate-50 py-20">
+        <div class="absolute inset-0 bg-grain opacity-20 pointer-events-none"></div>
+        <div class="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center relative">
+            <div class="space-y-6">
+                <div class="inline-flex items-center rounded-full border bg-white px-3 py-1 text-sm font-medium text-secondary shadow-sm">
+                    <span class="flex h-2 w-2 rounded-full bg-secondary mr-2 animate-pulse"></span>
+                    Launch Target: March 2025
+                </div>
+                <h1 class="text-5xl font-bold tracking-tight text-slate-900">
+                    Warehousing Proposal for <span class="text-primary">Third Deck Brewing</span>
+                </h1>
+                <p class="text-lg text-slate-600 max-w-lg">
+                    A comprehensive logistics solution designed to support your mission-driven launch. Climate-controlled storage, professional handling, and scalable infrastructure.
+                </p>
+            </div>
+            <div class="relative">
+                <div class="aspect-video overflow-hidden rounded-xl border bg-white shadow-2xl">
+                    <!-- Replace with your hosted image URL -->
+                    <img src="https://fs.hubspotusercontent00.net/hubfs/YOUR_PORTAL_ID/hero-warehouse.jpg" alt="Warehouse" class="h-full w-full object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Tables -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold mb-4">Investment Options</h2>
+                <p class="text-slate-600">Choose the package that best aligns with your launch strategy.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <!-- Option 1 -->
+                <div class="border rounded-xl p-8 shadow-lg bg-white">
+                    <h3 class="text-2xl font-bold mb-2">Conservative Launch</h3>
+                    <p class="text-slate-500 mb-6">Ideal for testing the market.</p>
+                    <div class="text-4xl font-bold mb-1">$700 <span class="text-lg font-normal text-slate-500">/ month</span></div>
+                    <p class="text-sm text-slate-500 mb-6">Fixed storage fee (20 Pallets)</p>
+                    <ul class="space-y-3 text-sm mb-8">
+                        <li class="flex gap-2"><span class="text-green-500">✓</span> Climate-controlled storage ($35/pallet)</li>
+                        <li class="flex gap-2"><span class="text-green-500">✓</span> WMS Access & API Integration</li>
+                        <li class="flex gap-2"><span class="text-green-500">✓</span> Handling: $15 In / $15 Out</li>
+                    </ul>
+                    <div class="bg-slate-50 p-4 rounded-lg">
+                        <div class="text-xs font-bold uppercase text-slate-500 mb-1">Est. Monthly Total</div>
+                        <div class="text-2xl font-bold text-primary">$1,300</div>
+                    </div>
+                </div>
+
+                <!-- Option 2 -->
+                <div class="border-2 border-primary rounded-xl p-8 shadow-xl bg-white relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-primary text-white text-xs font-bold px-3 py-1 rounded-bl-lg">RECOMMENDED</div>
+                    <h3 class="text-2xl font-bold mb-2">Standard Growth</h3>
+                    <p class="text-slate-500 mb-6">For multi-SKU & seasonal surge.</p>
+                    <div class="text-4xl font-bold mb-1">$1,225 <span class="text-lg font-normal text-slate-500">/ month</span></div>
+                    <p class="text-sm text-slate-500 mb-6">Fixed storage fee (35 Pallets)</p>
+                    <ul class="space-y-3 text-sm mb-8">
+                        <li class="flex gap-2"><span class="text-green-500">✓</span> Climate-controlled storage ($35/pallet)</li>
+                        <li class="flex gap-2"><span class="text-green-500">✓</span> Buffer stock for all 6 SKUs</li>
+                        <li class="flex gap-2"><span class="text-green-500">✓</span> MLB Season Surge Capacity</li>
+                    </ul>
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                        <div class="text-xs font-bold uppercase text-primary mb-1">Est. Monthly Total</div>
+                        <div class="text-2xl font-bold text-primary">$2,275</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fine Print / Fees -->
+    <section class="py-12 bg-slate-50">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <div class="bg-white rounded-xl border p-8">
+                <h3 class="text-lg font-bold mb-6">Additional Services & Fees (As Needed)</h3>
+                <div class="grid sm:grid-cols-2 gap-x-12 gap-y-4 text-sm text-slate-600">
+                    <div>
+                        <div class="flex justify-between border-b border-dashed pb-1 mb-1">
+                            <span>Administration Fee</span>
+                            <span class="font-bold text-slate-900">$35.00 / hr</span>
+                        </div>
+                        <div class="text-xs italic">Manual entry, photo requests, out of scope</div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between border-b border-dashed pb-1 mb-1">
+                            <span>Bottle Mixing</span>
+                            <span class="font-bold text-slate-900">$14.00 / case</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between border-b border-dashed pb-1 mb-1">
+                            <span>Open & Inspect</span>
+                            <span class="font-bold text-slate-900">$2.00 / case</span>
+                        </div>
+                        <div class="text-xs italic">$20.00 minimum charge applies</div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between border-b border-dashed pb-1 mb-1">
+                            <span>Labeling Fee</span>
+                            <span class="font-bold text-slate-900">$0.80 / case</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between border-b border-dashed pb-1 mb-1">
+                            <span>Order Processing</span>
+                            <span class="font-bold text-slate-900">$2.00 / order</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-300 py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center gap-2 mb-4">
+                <img src="https://fs.hubspotusercontent00.net/hubfs/YOUR_PORTAL_ID/lm-logo.jpg" alt="L&M Logo" class="h-12 w-auto bg-white rounded p-1">
+            </div>
+            <p class="text-sm text-slate-400">&copy; 2025 L&M Warehousing. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

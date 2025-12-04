@@ -44,20 +44,38 @@ export default function Home() {
     toast.info("Generating PDF...");
     
     try {
+      // Wait for images to load
+      const images = proposalRef.current.getElementsByTagName('img');
+      await Promise.all(Array.from(images).map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+        });
+      }));
+
       const canvas = await html2canvas(proposalRef.current, {
         scale: 2,
         useCORS: true,
-        logging: false,
+        logging: true,
+        allowTaint: true,
+        scrollY: -window.scrollY,
+        windowWidth: document.documentElement.offsetWidth,
+        windowHeight: document.documentElement.offsetHeight,
       });
       
-      const imgData = canvas.toDataURL("image/png");
+      // Calculate PDF dimensions to fit A4 or maintain aspect ratio
+      const imgWidth = 595.28; // A4 width in pt
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
       const pdf = new jsPDF({
         orientation: "portrait",
-        unit: "px",
-        format: [canvas.width, canvas.height],
+        unit: "pt",
+        format: [imgWidth, imgHeight],
       });
       
-      pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+      const imgData = canvas.toDataURL("image/jpeg", 1.0);
+      pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
       pdf.save("Third_Deck_Brewing_Proposal.pdf");
       toast.success("PDF downloaded successfully!");
     } catch (error) {
