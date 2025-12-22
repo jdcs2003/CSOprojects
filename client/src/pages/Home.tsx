@@ -205,7 +205,7 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Secure, dry warehouse environment designed for canned beverage storage. Our Bensalem Metro facility provides professional-grade protection for your craft products.
+                    Secure, dry warehouse environment designed for canned beverage storage. Our PA-1151 facility provides professional-grade protection for your craft products.
                   </p>
                 </CardContent>
               </Card>
@@ -323,7 +323,7 @@ export default function Home() {
                         </div>
                         <div>
                           <h4 className="font-semibold">Strategic Location</h4>
-                          <p className="text-sm text-muted-foreground">Bensalem Metro facility is ideally positioned for Yards Brewing receiving and distributor pickups.</p>
+                          <p className="text-sm text-muted-foreground">PA-1151 facility is ideally positioned for Yards Brewing receiving and distributor pickups.</p>
                         </div>
                       </div>
                       <div className="flex gap-4">
@@ -591,7 +591,7 @@ export default function Home() {
             <div>
               <h4 className="font-bold text-white mb-4">Locations</h4>
               <ul className="space-y-2 text-sm">
-                <li>Bensalem Metro (PA)</li>
+                <li>PA-1151 (Bristol, PA)</li>
                 <li>South Carolina Division</li>
                 <li>New Jersey Hub</li>
               </ul>

@@ -16,3 +16,6 @@
 - [x] Update Quote Option 2 calculations
 - [x] Update proposal page pricing display
 - [ ] Save checkpoint with ambient pricing
+- [x] Update facility location from Bensalem Metro to PA-1151
+- [x] Update all location references in proposal text
+- [ ] Save checkpoint with PA-1151 location update
