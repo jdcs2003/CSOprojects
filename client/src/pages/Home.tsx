@@ -1,3 +1,4 @@
+import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,6 +16,10 @@ import SignatureCanvas from "react-signature-canvas";
 import { toast } from "sonner";
 
 export default function Home() {
+  // The userAuth hooks provides authentication state
+  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
+  let { user, loading, error, isAuthenticated, logout } = useAuth();
+
   const [selectedOption, setSelectedOption] = useState<"conservative" | "standard">("standard");
   const [isSigning, setIsSigning] = useState(false);
   const [signatureData, setSignatureData] = useState<string | null>(null);
