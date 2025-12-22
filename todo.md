@@ -11,3 +11,8 @@
 - [x] Debug calculator page not loading on deployed site
 - [x] Fix any import or component errors
 - [x] Test calculator on live URL
+- [x] Update storage rate from $35/month to $12.50/month (ambient)
+- [x] Update Quote Option 1 calculations
+- [x] Update Quote Option 2 calculations
+- [x] Update proposal page pricing display
+- [ ] Save checkpoint with ambient pricing

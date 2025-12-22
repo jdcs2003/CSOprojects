@@ -143,7 +143,7 @@ export default function Home() {
                   Warehousing Proposal for <span className="text-primary">Third Deck Brewing</span>
                 </h1>
                 <p className="text-lg text-muted-foreground max-w-[600px]">
-                  A comprehensive logistics solution designed to support your mission-driven launch. Climate-controlled storage, professional handling, and scalable infrastructure for your growth.
+                  A comprehensive logistics solution designed to support your mission-driven launch. Ambient warehouse storage, professional handling, and scalable infrastructure for your growth.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button size="lg" className="font-semibold" onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}>
@@ -159,7 +159,7 @@ export default function Home() {
                 <div className="aspect-video overflow-hidden rounded-xl border bg-background shadow-2xl">
                   <img 
                     src="/images/hero-warehouse.jpg" 
-                    alt="Climate Controlled Warehouse" 
+                    alt="Modern Warehouse Facility" 
                     className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
                   />
                 </div>
@@ -200,12 +200,12 @@ export default function Home() {
                   <div className="h-12 w-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4">
                     <Thermometer className="h-6 w-6" />
                   </div>
-                  <CardTitle>Climate Control</CardTitle>
-                  <CardDescription>68-76°F Temperature Range</CardDescription>
+                  <CardTitle>Ambient Storage</CardTitle>
+                  <CardDescription>Dry, secure warehouse environment</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Your product is brewed cold and stays cold. Our Bensalem Metro facility maintains strict temperature controls to preserve the quality of your craft beverages.
+                    Secure, dry warehouse environment designed for canned beverage storage. Our Bensalem Metro facility provides professional-grade protection for your craft products.
                   </p>
                 </CardContent>
               </Card>
@@ -269,7 +269,7 @@ export default function Home() {
                       <CardTitle className="text-2xl">Conservative Launch</CardTitle>
                       <CardDescription>Ideal for testing the market with minimal commitment.</CardDescription>
                       <div className="mt-4">
-                        <span className="text-4xl font-bold">$700</span>
+                        <span className="text-4xl font-bold">$250</span>
                         <span className="text-muted-foreground"> / month</span>
                         <p className="text-sm text-muted-foreground mt-1">Fixed storage fee</p>
                       </div>
@@ -283,7 +283,7 @@ export default function Home() {
                       <ul className="space-y-2 text-sm">
                         <li className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                          <span>Climate-controlled storage ($35/pallet)</span>
+                          <span>Ambient storage ($12.50/pallet)</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
@@ -301,7 +301,7 @@ export default function Home() {
                       <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg mt-4">
                         <p className="text-xs font-semibold uppercase text-muted-foreground mb-2">Estimated Monthly Total</p>
                         <div className="flex justify-between items-end">
-                          <span className="text-2xl font-bold text-primary">$1,300</span>
+                          <span className="text-2xl font-bold text-primary">$850</span>
                           <span className="text-xs text-muted-foreground text-right">Includes est. handling<br/>(2 turns/month)</span>
                         </div>
                       </div>
@@ -348,7 +348,7 @@ export default function Home() {
                       <CardTitle className="text-2xl">Standard Growth</CardTitle>
                       <CardDescription>Designed for multi-SKU management and seasonal surges.</CardDescription>
                       <div className="mt-4">
-                        <span className="text-4xl font-bold">$1,225</span>
+                        <span className="text-4xl font-bold">$438</span>
                         <span className="text-muted-foreground"> / month</span>
                         <p className="text-sm text-muted-foreground mt-1">Fixed storage fee</p>
                       </div>
@@ -362,7 +362,7 @@ export default function Home() {
                       <ul className="space-y-2 text-sm">
                         <li className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                          <span>Climate-controlled storage ($35/pallet)</span>
+                          <span>Ambient storage ($12.50/pallet)</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
@@ -380,7 +380,7 @@ export default function Home() {
                       <div className="bg-primary/5 p-4 rounded-lg mt-4 border border-primary/10">
                         <p className="text-xs font-semibold uppercase text-primary mb-2">Estimated Monthly Total</p>
                         <div className="flex justify-between items-end">
-                          <span className="text-2xl font-bold text-primary">$2,275</span>
+                          <span className="text-2xl font-bold text-primary">$1,488</span>
                           <span className="text-xs text-muted-foreground text-right">Includes est. handling<br/>(2 turns/month)</span>
                         </div>
                       </div>
