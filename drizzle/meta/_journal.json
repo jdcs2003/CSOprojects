@@ -8,6 +8,13 @@
       "when": 1766007643530,
       "tag": "0000_orange_mojo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1768401104130,
+      "tag": "0001_light_snowbird",
+      "breakpoints": true
     }
   ]
 }

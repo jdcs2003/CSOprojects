@@ -25,4 +25,22 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * Facility capacity tracking table
+ * Stores monthly available square footage for each L&M facility
+ */
+export const facilityCapacity = mysqlTable("facilityCapacity", {
+  id: int("id").autoincrement().primaryKey(),
+  facilityCode: varchar("facilityCode", { length: 20 }).notNull(),
+  facilityName: varchar("facilityName", { length: 100 }).notNull(),
+  month: varchar("month", { length: 7 }).notNull(), // Format: YYYY-MM
+  totalSquareFeet: int("totalSquareFeet").notNull(),
+  availableSquareFeet: int("availableSquareFeet").notNull(),
+  notes: text("notes"),
+  updatedBy: varchar("updatedBy", { length: 100 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type FacilityCapacity = typeof facilityCapacity.$inferSelect;
+export type InsertFacilityCapacity = typeof facilityCapacity.$inferInsert;

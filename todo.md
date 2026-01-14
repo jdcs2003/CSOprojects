@@ -19,3 +19,10 @@
 - [x] Update facility location from Bensalem Metro to PA-1151
 - [x] Update all location references in proposal text
 - [ ] Save checkpoint with PA-1151 location update
+
+- [x] Create capacity tracking input page for team
+- [x] Add database schema for facility capacity tracking
+- [x] Build UI for monthly square footage input
+- [x] Add upcoming availability forecasting
+- [x] Test capacity tracking functionality
+- [ ] Save checkpoint with capacity tracking feature
