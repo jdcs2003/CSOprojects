@@ -7,17 +7,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, Calendar, Save, TrendingUp } from "lucide-react";
+import { Building2, Calendar, Save, TrendingUp, FileSpreadsheet } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 
 const facilities = [
-  { code: "PA-510", name: "Bristol (Climate + Bonded)", totalSqFt: 50000 },
-  { code: "PA-13200", name: "Pennsylvania", totalSqFt: 75000 },
+  { code: "PA-510", name: "Bristol (Climate + Bonded)", totalSqFt: 233000 },
+  { code: "PA-1151", name: "Metro", totalSqFt: 85718 },
   { code: "SC-577", name: "South Carolina", totalSqFt: 60000 },
   { code: "NJ-2279", name: "New Jersey", totalSqFt: 45000 },
-  { code: "SC-2690", name: "Rock Hill, SC", totalSqFt: 40000 },
-  { code: "PA-1151", name: "Bristol, PA", totalSqFt: 85718 },
 ];
 
 export default function CapacityTracking() {
@@ -90,6 +88,55 @@ export default function CapacityTracking() {
   const calculateUtilization = (total: number, available: number) => {
     const occupied = total - available;
     return ((occupied / total) * 100).toFixed(1);
+  };
+
+  const exportToGoogleSheets = () => {
+    if (!capacityData || capacityData.length === 0) {
+      toast.error("No data to export");
+      return;
+    }
+
+    // Create CSV content
+    const headers = ["Facility Code", "Facility Name", "Month", "Total Sq Ft", "Available Sq Ft", "Occupied Sq Ft", "Utilization %", "Updated By", "Notes", "Last Updated"];
+    
+    const rows = facilities.map(facility => {
+      const data = capacityData.find((d: any) => d.facilityCode === facility.code);
+      const available = data?.availableSquareFeet ?? 0;
+      const occupied = facility.totalSqFt - available;
+      const utilization = data ? calculateUtilization(facility.totalSqFt, available) : "0";
+      
+      return [
+        facility.code,
+        facility.name,
+        months.find(m => m.value === selectedMonth)?.label || selectedMonth,
+        facility.totalSqFt.toString(),
+        available.toString(),
+        occupied.toString(),
+        utilization,
+        data?.updatedBy || "",
+        data?.notes || "",
+        data?.updatedAt ? new Date(data.updatedAt).toLocaleString() : ""
+      ];
+    });
+
+    // Convert to CSV
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(","))
+    ].join("\n");
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `lm-capacity-${selectedMonth}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast.success("Exported to CSV! You can import this into Google Sheets.");
   };
 
   return (
@@ -247,20 +294,30 @@ export default function CapacityTracking() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="mb-4">
-                  <Label htmlFor="overview-month">Select Month</Label>
-                  <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                    <SelectTrigger id="overview-month" className="max-w-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {months.map((month) => (
-                        <SelectItem key={month.value} value={month.value}>
-                          {month.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="mb-4 flex items-end justify-between gap-4">
+                  <div className="flex-1">
+                    <Label htmlFor="overview-month">Select Month</Label>
+                    <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                      <SelectTrigger id="overview-month" className="max-w-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {months.map((month) => (
+                          <SelectItem key={month.value} value={month.value}>
+                            {month.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => exportToGoogleSheets()}
+                    disabled={!capacityData || capacityData.length === 0}
+                  >
+                    <FileSpreadsheet className="mr-2 h-4 w-4" />
+                    Export to Google Sheets
+                  </Button>
                 </div>
 
                 <div className="rounded-lg border">

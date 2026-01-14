@@ -19,23 +19,23 @@ interface Facility {
 const defaultFacilities: Facility[] = [
   {
     id: "pa-510",
-    name: "PA-510 (Bristol)",
+    name: "PA-510 (Bristol - 233,000 sq ft)",
     baseRent: 9.28,
     ticam: 1.20,
     totalCost: 10.48,
     notes: "Climate controlled + Bonded storage available"
   },
   {
-    id: "pa-13200",
-    name: "PA-13200",
-    baseRent: 7.16,
-    ticam: 2.00,
-    totalCost: 9.16,
-    notes: ""
+    id: "pa-1151",
+    name: "PA-1151 (Metro - 85,718 sq ft)",
+    baseRent: 5.00,
+    ticam: 0,
+    totalCost: 5.00,
+    notes: "NNN included"
   },
   {
     id: "sc-577",
-    name: "SC-577",
+    name: "SC-577 (60,000 sq ft)",
     baseRent: 7.50,
     ticam: 2.00,
     totalCost: 9.50,
@@ -43,27 +43,11 @@ const defaultFacilities: Facility[] = [
   },
   {
     id: "nj-2279",
-    name: "NJ-2279",
+    name: "NJ-2279 (45,000 sq ft)",
     baseRent: 9.28,
-    ticam: 0, // User to input
-    totalCost: 9.28,
-    notes: "Same base as Bristol, higher TICAM (TBD)"
-  },
-  {
-    id: "sc-2690",
-    name: "SC-2690 (Rock Hill, SC)",
-    baseRent: 10.00,
-    ticam: 1.34,
-    totalCost: 11.34,
-    notes: "40,000 sq ft facility - $33,333/month"
-  },
-  {
-    id: "pa-1151",
-    name: "PA-1151",
-    baseRent: 5.00,
     ticam: 0,
-    totalCost: 5.00,
-    notes: "NNN included"
+    totalCost: 9.28,
+    notes: "TICAM TBD"
   }
 ];
 

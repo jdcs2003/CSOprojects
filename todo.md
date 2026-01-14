@@ -25,4 +25,10 @@
 - [x] Build UI for monthly square footage input
 - [x] Add upcoming availability forecasting
 - [x] Test capacity tracking functionality
-- [ ] Save checkpoint with capacity tracking feature
+- [x] Save checkpoint with capacity tracking feature
+- [x] Create internal tools home page with calculator and capacity links
+- [x] Fix facility square footage (Bristol 233k, Metro 85k+)
+- [x] Remove PA-13200 and SC-2690 facilities
+- [x] Add Google Sheets export functionality to capacity tracking
+- [x] Test all changes
+- [ ] Save checkpoint with home page and export features

@@ -7,12 +7,14 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Calculator from "./pages/Calculator";
 import CapacityTracking from "./pages/CapacityTracking";
+import InternalHome from "./pages/InternalHome";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/internal"} component={InternalHome} />
       <Route path={"/calculator"} component={Calculator} />
       <Route path={"/capacity"} component={CapacityTracking} />
       <Route path={"/404"} component={NotFound} />
