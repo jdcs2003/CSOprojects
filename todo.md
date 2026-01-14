@@ -35,4 +35,12 @@
 - [x] Replace Third Deck proposal page with expiration message
 - [x] Keep internal tools (calculator, capacity) fully functional
 - [x] Test expiration page
-- [ ] Save checkpoint with expired proposal page
+- [x] Save checkpoint with expired proposal page
+- [x] Update PA-510 to Bensalem 85,602 sq ft (was Bristol 233k)
+- [x] Update PA-1151 to Bristol 226,000 sq ft (was Metro 85,718)
+- [x] Add PA-13200 Townsend 65,856 sq ft
+- [x] Update NJ-2279 to Logan Township 84,000 sq ft (was 45k)
+- [x] Update SC-577 to Rock Hill 275,963 sq ft (was 60k)
+- [x] Update internal home page with correct facility count and total SF
+- [x] Test all facility data changes
+- [ ] Save checkpoint with corrected facility data

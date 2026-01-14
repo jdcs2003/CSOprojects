@@ -12,10 +12,11 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 
 const facilities = [
-  { code: "PA-510", name: "Bristol (Climate + Bonded)", totalSqFt: 233000 },
-  { code: "PA-1151", name: "Metro", totalSqFt: 85718 },
-  { code: "SC-577", name: "South Carolina", totalSqFt: 60000 },
-  { code: "NJ-2279", name: "New Jersey", totalSqFt: 45000 },
+  { code: "PA-510", name: "Bensalem (Climate + Bonded)", totalSqFt: 85602 },
+  { code: "PA-1151", name: "Bristol", totalSqFt: 226000 },
+  { code: "PA-13200", name: "Townsend (Philadelphia)", totalSqFt: 65856 },
+  { code: "NJ-2279", name: "Logan Township (NJ)", totalSqFt: 84000 },
+  { code: "SC-577", name: "Rock Hill (SC)", totalSqFt: 275963 },
 ];
 
 export default function CapacityTracking() {

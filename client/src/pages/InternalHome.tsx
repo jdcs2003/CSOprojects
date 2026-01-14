@@ -56,7 +56,7 @@ export default function InternalHome() {
                 <div className="space-y-2">
                   <p className="text-sm font-semibold">Features:</p>
                   <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Facility cost comparison (4 locations)</li>
+                    <li>• Facility cost comparison (5 locations)</li>
                     <li>• Labor & occupancy cost analysis</li>
                     <li>• FTE requirement calculations</li>
                     <li>• Recommended billing rates with margin</li>
@@ -113,7 +113,7 @@ export default function InternalHome() {
                 <CardTitle className="text-sm font-medium text-muted-foreground">Total Facilities</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold">4</p>
+                <p className="text-2xl font-bold">5</p>
               </CardContent>
             </Card>
             <Card>
@@ -121,7 +121,7 @@ export default function InternalHome() {
                 <CardTitle className="text-sm font-medium text-muted-foreground">Total Capacity</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold">424K</p>
+                <p className="text-2xl font-bold">737K</p>
                 <p className="text-xs text-muted-foreground">square feet</p>
               </CardContent>
             </Card>

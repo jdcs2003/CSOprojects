@@ -19,7 +19,7 @@ interface Facility {
 const defaultFacilities: Facility[] = [
   {
     id: "pa-510",
-    name: "PA-510 (Bristol - 233,000 sq ft)",
+    name: "PA-510 (Bensalem - 85,602 sq ft)",
     baseRent: 9.28,
     ticam: 1.20,
     totalCost: 10.48,
@@ -27,27 +27,35 @@ const defaultFacilities: Facility[] = [
   },
   {
     id: "pa-1151",
-    name: "PA-1151 (Metro - 85,718 sq ft)",
+    name: "PA-1151 (Bristol - 226,000 sq ft)",
     baseRent: 5.00,
     ticam: 0,
     totalCost: 5.00,
     notes: "NNN included"
   },
   {
-    id: "sc-577",
-    name: "SC-577 (60,000 sq ft)",
-    baseRent: 7.50,
+    id: "pa-13200",
+    name: "PA-13200 (Townsend - 65,856 sq ft)",
+    baseRent: 7.16,
     ticam: 2.00,
-    totalCost: 9.50,
-    notes: ""
+    totalCost: 9.16,
+    notes: "Philadelphia location"
   },
   {
     id: "nj-2279",
-    name: "NJ-2279 (45,000 sq ft)",
+    name: "NJ-2279 (Logan Township - 84,000 sq ft)",
     baseRent: 9.28,
     ticam: 0,
     totalCost: 9.28,
     notes: "TICAM TBD"
+  },
+  {
+    id: "sc-577",
+    name: "SC-577 (Rock Hill - 275,963 sq ft)",
+    baseRent: 7.50,
+    ticam: 2.00,
+    totalCost: 9.50,
+    notes: ""
   }
 ];
 
