@@ -31,4 +31,8 @@
 - [x] Remove PA-13200 and SC-2690 facilities
 - [x] Add Google Sheets export functionality to capacity tracking
 - [x] Test all changes
-- [ ] Save checkpoint with home page and export features
+- [x] Save checkpoint with home page and export features
+- [x] Replace Third Deck proposal page with expiration message
+- [x] Keep internal tools (calculator, capacity) fully functional
+- [x] Test expiration page
+- [ ] Save checkpoint with expired proposal page
