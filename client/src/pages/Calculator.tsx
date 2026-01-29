@@ -89,26 +89,31 @@ export default function Calculator() {
   const selectedFacilityData = facilities.find(f => f.id === selectedFacility);
   const fullyLoadedLaborRate = laborRate * (1 + taxRate / 100);
   
-  // Storage cost per pallet per month
+  // STORAGE MINIMUM (Monthly Recurring)
   const storageCostPerPallet = selectedFacilityData 
     ? (selectedFacilityData.totalCost * sqFtPerPallet) / 12 
     : 0;
+  const monthlyStorageMinimum = storageCostPerPallet * monthlyPallets;
+  const recommendedStorageRate = storageCostPerPallet * (1 + targetMargin / 100);
+  const recommendedMonthlyStorage = recommendedStorageRate * monthlyPallets;
   
-  // Labor cost per pallet (inbound + outbound)
-  const totalMinutesPerPallet = inboundMinutes + outboundMinutes;
-  const laborCostPerPallet = (totalMinutesPerPallet / 60) * fullyLoadedLaborRate;
+  // HANDLING IN (Activity-Based per Pallet)
+  const handlingInCost = (inboundMinutes / 60) * fullyLoadedLaborRate;
+  const recommendedHandlingInRate = handlingInCost * (1 + targetMargin / 100);
+  const estimatedMonthlyHandlingIn = recommendedHandlingInRate * monthlyPallets * monthlyTurns;
   
-  // Total cost per pallet per month (storage + labor for turns)
-  const totalCostPerPallet = storageCostPerPallet + (laborCostPerPallet * monthlyTurns);
+  // HANDLING OUT (Activity-Based per Pallet)
+  const handlingOutCost = (outboundMinutes / 60) * fullyLoadedLaborRate;
+  const recommendedHandlingOutRate = handlingOutCost * (1 + targetMargin / 100);
+  const estimatedMonthlyHandlingOut = recommendedHandlingOutRate * monthlyPallets * monthlyTurns;
   
-  // Total monthly cost
-  const totalMonthlyCost = totalCostPerPallet * monthlyPallets;
-  
-  // Recommended billing price
-  const recommendedBilling = totalCostPerPallet * (1 + targetMargin / 100);
+  // TOTALS
+  const totalMonthlyCost = monthlyStorageMinimum + (handlingInCost * monthlyPallets * monthlyTurns) + (handlingOutCost * monthlyPallets * monthlyTurns);
+  const totalEstimatedMonthlyBilling = recommendedMonthlyStorage + estimatedMonthlyHandlingIn + estimatedMonthlyHandlingOut;
+  const estimatedMonthlyProfit = totalEstimatedMonthlyBilling - totalMonthlyCost;
   
   // FTE calculation (total labor hours per month / 160 hours)
-  const totalLaborHoursPerMonth = (totalMinutesPerPallet / 60) * monthlyPallets * monthlyTurns;
+  const totalLaborHoursPerMonth = ((inboundMinutes + outboundMinutes) / 60) * monthlyPallets * monthlyTurns;
   const estimatedFTE = totalLaborHoursPerMonth / 160;
 
   return (
@@ -248,44 +253,113 @@ export default function Calculator() {
 
                 {/* Results */}
                 {selectedFacility && (
-                  <div className="mt-8 grid gap-4 md:grid-cols-3">
-                    <Card className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                          True Cost per Pallet/Month
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-                          ${totalCostPerPallet.toFixed(2)}
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Storage: ${storageCostPerPallet.toFixed(2)} + Labor: ${(laborCostPerPallet * monthlyTurns).toFixed(2)}
-                        </p>
-                      </CardContent>
-                    </Card>
+                  <div className="mt-8 space-y-6">
+                    {/* Monthly Recurring Storage */}
+                    <div>
+                      <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                        <Building2 className="h-5 w-5 text-blue-600" />
+                        Monthly Storage Minimum (Recurring)
+                      </h3>
+                      <div className="grid gap-4 md:grid-cols-3">
+                        <Card className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                              Cost per Pallet/Month
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                              ${storageCostPerPallet.toFixed(2)}
+                            </div>
+                          </CardContent>
+                        </Card>
+                        <Card className="bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-sm font-medium text-green-900 dark:text-green-100">
+                              Recommended Rate
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                              ${recommendedStorageRate.toFixed(2)}
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              per pallet/month ({targetMargin}% margin)
+                            </p>
+                          </CardContent>
+                        </Card>
+                        <Card className="bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-sm font-medium text-purple-900 dark:text-purple-100">
+                              Monthly Minimum
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                              ${recommendedMonthlyStorage.toFixed(2)}
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {monthlyPallets} pallets
+                            </p>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
 
-                    <Card className="bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-sm font-medium text-green-900 dark:text-green-100">
-                          Recommended Billing Rate
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-3xl font-bold text-green-600 dark:text-green-400">
-                          ${recommendedBilling.toFixed(2)}
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Per pallet/month ({targetMargin}% margin)
-                        </p>
-                      </CardContent>
-                    </Card>
+                    {/* Activity-Based Handling */}
+                    <div>
+                      <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                        <DollarSign className="h-5 w-5 text-amber-600" />
+                        Activity-Based Handling (Per Pallet)
+                      </h3>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <Card className="border-2">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-sm font-medium">Handling In (Receiving)</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-2">
+                            <div>
+                              <p className="text-xs text-muted-foreground">Cost per Pallet</p>
+                              <p className="text-lg font-semibold">${handlingInCost.toFixed(2)}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground">Recommended Rate</p>
+                              <p className="text-2xl font-bold text-green-600">${recommendedHandlingInRate.toFixed(2)}</p>
+                            </div>
+                            <div className="pt-2 border-t">
+                              <p className="text-xs text-muted-foreground">Est. Monthly ({monthlyPallets} × {monthlyTurns} turns)</p>
+                              <p className="text-lg font-semibold">${estimatedMonthlyHandlingIn.toFixed(2)}</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        <Card className="border-2">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-sm font-medium">Handling Out (Shipping)</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-2">
+                            <div>
+                              <p className="text-xs text-muted-foreground">Cost per Pallet</p>
+                              <p className="text-lg font-semibold">${handlingOutCost.toFixed(2)}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground">Recommended Rate</p>
+                              <p className="text-2xl font-bold text-green-600">${recommendedHandlingOutRate.toFixed(2)}</p>
+                            </div>
+                            <div className="pt-2 border-t">
+                              <p className="text-xs text-muted-foreground">Est. Monthly ({monthlyPallets} × {monthlyTurns} turns)</p>
+                              <p className="text-lg font-semibold">${estimatedMonthlyHandlingOut.toFixed(2)}</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
 
+                    {/* FTE Card */}
                     <Card className="bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800">
                       <CardHeader className="pb-3">
                         <CardTitle className="text-sm font-medium text-amber-900 dark:text-amber-100 flex items-center gap-2">
                           <Users className="h-4 w-4" />
-                          Estimated FTEs
+                          Estimated FTEs Required
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -293,7 +367,7 @@ export default function Calculator() {
                           {estimatedFTE.toFixed(2)}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {totalLaborHoursPerMonth.toFixed(0)} hours/month
+                          {totalLaborHoursPerMonth.toFixed(0)} labor hours/month
                         </p>
                       </CardContent>
                     </Card>
@@ -301,26 +375,53 @@ export default function Calculator() {
                 )}
 
                 {selectedFacility && (
-                  <div className="mt-6 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                    <h4 className="font-semibold mb-2">Monthly Summary</h4>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="text-muted-foreground">Total Monthly Cost:</span>
-                        <span className="ml-2 font-semibold">${totalMonthlyCost.toFixed(2)}</span>
+                  <div className="mt-6 p-6 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 rounded-lg border-2 border-slate-300 dark:border-slate-700">
+                    <h4 className="font-bold text-lg mb-4 flex items-center gap-2">
+                      <DollarSign className="h-5 w-5" />
+                      Estimated Monthly Summary
+                    </h4>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <h5 className="font-semibold text-sm text-muted-foreground uppercase">Revenue Breakdown</h5>
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-sm">Storage Minimum:</span>
+                            <span className="font-semibold">${recommendedMonthlyStorage.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm">Est. Handling In:</span>
+                            <span className="font-semibold">${estimatedMonthlyHandlingIn.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm">Est. Handling Out:</span>
+                            <span className="font-semibold">${estimatedMonthlyHandlingOut.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between pt-2 border-t-2 border-slate-300 dark:border-slate-600">
+                            <span className="font-semibold">Total Est. Billing:</span>
+                            <span className="font-bold text-lg text-green-600">${totalEstimatedMonthlyBilling.toFixed(2)}</span>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <span className="text-muted-foreground">Total Monthly Billing:</span>
-                        <span className="ml-2 font-semibold">${(recommendedBilling * monthlyPallets).toFixed(2)}</span>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Monthly Profit:</span>
-                        <span className="ml-2 font-semibold text-green-600">
-                          ${((recommendedBilling * monthlyPallets) - totalMonthlyCost).toFixed(2)}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Total Sq Ft Required:</span>
-                        <span className="ml-2 font-semibold">{(sqFtPerPallet * monthlyPallets).toLocaleString()} sq ft</span>
+                      <div className="space-y-3">
+                        <h5 className="font-semibold text-sm text-muted-foreground uppercase">Cost & Profit</h5>
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-sm">Total Monthly Cost:</span>
+                            <span className="font-semibold">${totalMonthlyCost.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm">Est. Monthly Profit:</span>
+                            <span className="font-semibold text-green-600">${estimatedMonthlyProfit.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm">Profit Margin:</span>
+                            <span className="font-semibold">{((estimatedMonthlyProfit / totalEstimatedMonthlyBilling) * 100).toFixed(1)}%</span>
+                          </div>
+                          <div className="flex justify-between pt-2 border-t-2 border-slate-300 dark:border-slate-600">
+                            <span className="text-sm">Sq Ft Required:</span>
+                            <span className="font-semibold">{(sqFtPerPallet * monthlyPallets).toLocaleString()} sq ft</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>

@@ -44,3 +44,18 @@
 - [x] Update internal home page with correct facility count and total SF
 - [x] Test all facility data changes
 - [ ] Save checkpoint with corrected facility data
+- [x] Remove company names from capacity export CSV
+- [x] Add company filter (L&M vs Peach) to capacity tracking
+- [x] Update facility data to include company assignment
+- [x] Add Metabase Analytics tab to capacity tracking page
+- [ ] Test export with company filter
+- [ ] Save checkpoint with export improvements and Metabase integration
+- [x] Restructure calculator to separate storage minimum and handling charges
+- [x] Add monthly storage minimum calculation (recurring)
+- [x] Add handling in rate (activity-based per pallet)
+- [x] Add handling out rate (activity-based per pallet)
+- [x] Show estimated monthly handling based on turns
+- [x] Display total estimated monthly (storage + handling)
+- [ ] Test calculator with PA-1151 quote
+- [ ] Save checkpoint with updated calculator structure
+- [ ] Add passcode protection for Peach facilities (future enhancement)

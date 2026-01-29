@@ -12,11 +12,11 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 
 const facilities = [
-  { code: "PA-510", name: "Bensalem (Climate + Bonded)", totalSqFt: 85602 },
-  { code: "PA-1151", name: "Bristol", totalSqFt: 226000 },
-  { code: "PA-13200", name: "Townsend (Philadelphia)", totalSqFt: 65856 },
-  { code: "NJ-2279", name: "Logan Township (NJ)", totalSqFt: 84000 },
-  { code: "SC-577", name: "Rock Hill (SC)", totalSqFt: 275963 },
+  { code: "PA-510", name: "Bensalem", totalSqFt: 85602, company: "L&M" },
+  { code: "PA-1151", name: "Bristol", totalSqFt: 226000, company: "L&M" },
+  { code: "PA-13200", name: "Townsend", totalSqFt: 65856, company: "L&M" },
+  { code: "NJ-2279", name: "Logan Township", totalSqFt: 84000, company: "L&M" },
+  { code: "SC-577", name: "Rock Hill", totalSqFt: 275963, company: "L&M" },
 ];
 
 export default function CapacityTracking() {
@@ -28,6 +28,8 @@ export default function CapacityTracking() {
   const [availableSqFt, setAvailableSqFt] = useState("");
   const [notes, setNotes] = useState("");
   const [updatedBy, setUpdatedBy] = useState("");
+  const [selectedCompany, setSelectedCompany] = useState<"L&M" | "Peach">("L&M");
+  const [metabaseUrl, setMetabaseUrl] = useState(""); // Will be provided by user
 
   // Get next 6 months for forecasting
   const getNextMonths = (count: number) => {
@@ -96,11 +98,13 @@ export default function CapacityTracking() {
       toast.error("No data to export");
       return;
     }
-
-    // Create CSV content
-    const headers = ["Facility Code", "Facility Name", "Month", "Total Sq Ft", "Available Sq Ft", "Occupied Sq Ft", "Utilization %", "Updated By", "Notes", "Last Updated"];
     
-    const rows = facilities.map(facility => {
+    const headers = ["Facility Code", "Building Name", "Month", "Total Sq Ft", "Available Sq Ft", "Occupied Sq Ft", "Utilization %", "Updated By", "Notes", "Last Updated"];
+    
+    // Filter facilities by selected company
+    const filteredFacilities = facilities.filter(f => f.company === selectedCompany);
+    
+    const rows = filteredFacilities.map(facility => {
       const data = capacityData.find((d: any) => d.facilityCode === facility.code);
       const available = data?.availableSquareFeet ?? 0;
       const occupied = facility.totalSqFt - available;
@@ -131,7 +135,7 @@ export default function CapacityTracking() {
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
-    link.setAttribute("download", `lm-capacity-${selectedMonth}.csv`);
+    link.setAttribute("download", `${selectedCompany.toLowerCase().replace('&', '')}-capacity-${selectedMonth}.csv`);
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
@@ -160,9 +164,10 @@ export default function CapacityTracking() {
 
       <main className="container py-8">
         <Tabs defaultValue="input" className="space-y-6">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsList className="grid w-full max-w-2xl grid-cols-3">
             <TabsTrigger value="input">Input Availability</TabsTrigger>
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
 
           {/* Input Tab */}
@@ -295,21 +300,35 @@ export default function CapacityTracking() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="mb-4 flex items-end justify-between gap-4">
-                  <div className="flex-1">
-                    <Label htmlFor="overview-month">Select Month</Label>
-                    <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                      <SelectTrigger id="overview-month" className="max-w-xs">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {months.map((month) => (
-                          <SelectItem key={month.value} value={month.value}>
-                            {month.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
+                  <div className="flex gap-4">
+                    <div>
+                      <Label htmlFor="overview-company">Company</Label>
+                      <Select value={selectedCompany} onValueChange={(v) => setSelectedCompany(v as "L&M" | "Peach")}>
+                        <SelectTrigger id="overview-company" className="w-32">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="L&M">L&M</SelectItem>
+                          <SelectItem value="Peach">Peach</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="overview-month">Month</Label>
+                      <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                        <SelectTrigger id="overview-month" className="w-48">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {months.map((month) => (
+                            <SelectItem key={month.value} value={month.value}>
+                              {month.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                   <Button
                     variant="outline"
@@ -432,6 +451,43 @@ export default function CapacityTracking() {
                         </p>
                       </CardContent>
                     </Card>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Capacity Analytics Dashboard
+                </CardTitle>
+                <CardDescription>
+                  Interactive Metabase dashboard with advanced analytics and visualizations
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {metabaseUrl ? (
+                  <div className="w-full" style={{ height: '800px' }}>
+                    <iframe
+                      src={metabaseUrl}
+                      frameBorder="0"
+                      width="100%"
+                      height="100%"
+                      allowTransparency
+                      className="rounded-lg border"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-12 text-center">
+                    <TrendingUp className="h-12 w-12 text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">Metabase Dashboard Not Configured</h3>
+                    <p className="text-sm text-muted-foreground max-w-md">
+                      Contact your administrator to configure the Metabase embed URL for advanced analytics and reporting.
+                    </p>
                   </div>
                 )}
               </CardContent>
