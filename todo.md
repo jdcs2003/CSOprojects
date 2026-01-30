@@ -110,3 +110,6 @@
 - [x] Display actual margin % and cost breakdown after override
 - [x] Apply overridden rates to PDF export
 - [ ] Save checkpoint with value-added services and rate overrides
+- [x] Change VAS section in PDF to show rate card format (service name and rate only)
+- [x] Remove volume/quantity columns from VAS PDF export
+- [x] Show VAS as simple price list for both L&M and Peach

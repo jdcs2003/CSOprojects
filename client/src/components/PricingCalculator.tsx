@@ -250,58 +250,37 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     
     yPos += 15;
     
-    // Value-Added Services Section (if applicable)
-    if (monthlyOrders > 0 && totalValueAddedServices > 0) {
-      doc.setFontSize(13);
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(30, 30, 30);
-      doc.text("Value-Added Services", 15, yPos);
-      yPos += 8;
-      
-      const vasBody: string[][] = [];
-      
-      if (pickType !== "full" && monthlyCasePickRate > 0) {
-        vasBody.push([
-          `${pickType === "layer" ? "Layer" : "Case"} Pick`,
-          `${casesPerOrder} cases × ${monthlyOrders} orders`,
-          `$${monthlyCasePickRate.toFixed(2)}`
-        ]);
+    // Value-Added Services Section (Rate Card Format)
+    doc.setFontSize(13);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(30, 30, 30);
+    doc.text("Value-Added Services Rate Card", 15, yPos);
+    yPos += 8;
+    
+    const vasBody: string[][] = [
+      ["Case Pick", `$${casePickRate.toFixed(2)}/case`],
+      ["Layer Pick", `$${layerPickRate.toFixed(2)}/case`],
+      ["Pallet Supply", `$${palletSupplyFee.toFixed(2)}/pallet`],
+      ["Shrink Wrap", `$${shrinkWrapFee.toFixed(2)}/pallet`],
+      ["Labeling", `$${labelingFee.toFixed(2)}/label`],
+      ["Order Processing", `$${orderProcessingFee.toFixed(2)}/order`],
+      ["Cancellation/Restock", `$${cancellationFee.toFixed(2)}/order`]
+    ];
+    
+    autoTable(doc, {
+      startY: yPos,
+      head: [["Service", "Rate"]],
+      body: vasBody,
+      theme: "grid",
+      headStyles: { fillColor: [230, 126, 34], textColor: 255, fontStyle: "bold" },
+      styles: { fontSize: 10, cellPadding: 5 },
+      columnStyles: {
+        0: { cellWidth: 100 },
+        1: { cellWidth: 90, halign: "right", fontStyle: "bold" }
       }
-      if (monthlyPalletSupplyRate > 0) {
-        vasBody.push(["Pallet Supply", `${monthlyOrders} orders`, `$${monthlyPalletSupplyRate.toFixed(2)}`]);
-      }
-      if (monthlyShrinkWrapRate > 0) {
-        vasBody.push(["Shrink Wrap", `${monthlyOrders} orders`, `$${monthlyShrinkWrapRate.toFixed(2)}`]);
-      }
-      if (monthlyLabelingRate > 0) {
-        vasBody.push(["Labeling", `${labelsPerOrder} labels × ${monthlyOrders} orders`, `$${monthlyLabelingRate.toFixed(2)}`]);
-      }
-      if (monthlyOrderProcessingRate > 0) {
-        vasBody.push(["Order Processing", `${monthlyOrders} orders`, `$${monthlyOrderProcessingRate.toFixed(2)}`]);
-      }
-      
-      autoTable(doc, {
-        startY: yPos,
-        head: [["Service", "Volume", "Monthly Total"]],
-        body: vasBody,
-        theme: "grid",
-        headStyles: { fillColor: [230, 126, 34], textColor: 255, fontStyle: "bold" },
-        styles: { fontSize: 10, cellPadding: 5 },
-        columnStyles: {
-          0: { cellWidth: 70 },
-          1: { cellWidth: 60, halign: "center" },
-          2: { cellWidth: 60, halign: "right", fontStyle: "bold" }
-        }
-      });
-      
-      yPos = (doc as any).lastAutoTable.finalY + 5;
-      doc.setFontSize(9);
-      doc.setFont("helvetica", "italic");
-      doc.setTextColor(100, 100, 100);
-      doc.text(`Note: Cancellation/Restock fee ($${cancellationFee.toFixed(2)}) is charged per cancelled order.`, 15, yPos);
-      
-      yPos += 15;
-    }
+    });
+    
+    yPos = (doc as any).lastAutoTable.finalY + 15;
     
     // Monthly Summary Section
     doc.setFontSize(13);
