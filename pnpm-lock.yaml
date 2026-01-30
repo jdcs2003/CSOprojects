@@ -158,7 +158,7 @@ importers:
         specifier: 6.1.0
         version: 6.1.0
       jspdf:
-        specifier: ^2.5.1
+        specifier: ^2.5.2
         version: 2.5.2
       lucide-react:
         specifier: ^0.453.0

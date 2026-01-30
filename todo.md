@@ -56,6 +56,16 @@
 - [x] Add handling out rate (activity-based per pallet)
 - [x] Show estimated monthly handling based on turns
 - [x] Display total estimated monthly (storage + handling)
-- [ ] Test calculator with PA-1151 quote
-- [ ] Save checkpoint with updated calculator structure
+- [x] Test calculator with PA-1151 quote
+- [x] Save checkpoint with updated calculator structure
 - [ ] Add passcode protection for Peach facilities (future enhancement)
+- [x] Add PA-2101 Peach facility (85,716 sq ft, $11.50/sq ft/year, climate control)
+- [x] Add SC-144 Peach facility (150,000 sq ft, $5.00/sq ft/year)
+- [x] Implement Peach passcode protection (Peach2026!)
+- [x] Add stack height input to calculator
+- [x] Calculate effective sq ft per pallet based on stacking
+- [x] Add independent margin controls (storage, handling in, handling out)
+- [x] Add market rate reference guides ($6-8 in, $6-10 out)
+- [x] Implement PDF quote export functionality
+- [x] Test all new features
+- [ ] Save checkpoint with complete feature set
