@@ -84,5 +84,12 @@
 - [x] Update PeachCalculator.tsx to use shared component with Peach filter
 - [x] Add /peachcalculator route to App.tsx
 - [x] Test that changes apply to both calculators
-- [ ] Save checkpoint with linked calculators
+- [x] Save checkpoint with linked calculators
 - [x] Enhance PDF export with professional formatting (tables, colors, logo, better layout)
+- [x] Remove all market rate references from calculator UI
+- [x] Remove market range from PDF export
+- [x] Replace L&M logo with correct version (LM_pfp.png)
+- [x] Fix logo aspect ratio in PDF to prevent warping
+- [x] Add background shading to PDF for white logo visibility
+- [x] Test logo appearance in PDF export
+- [ ] Save checkpoint with fixes

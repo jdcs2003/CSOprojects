@@ -119,9 +119,13 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     
-    // Add logo
+    // Add logo with background for visibility
     try {
-      doc.addImage(logoPath, "JPEG", 15, 10, 40, 15);
+      // Add light background behind logo for white logos
+      doc.setFillColor(240, 245, 250);
+      doc.roundedRect(12, 8, 30, 20, 2, 2, "F");
+      // Use PNG format and maintain aspect ratio (square logo)
+      doc.addImage(logoPath, "PNG", 15, 10, 24, 16);
     } catch (e) {
       console.warn("Logo not loaded");
     }
@@ -190,18 +194,16 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     
     autoTable(doc, {
       startY: yPos,
-      head: [["Service", "Rate per Pallet", "Market Range", "Est. Monthly"]],
+      head: [["Service", "Rate per Pallet", "Est. Monthly"]],
       body: [
         [
           "Handling In",
           `$${recommendedHandlingInRate.toFixed(2)}`,
-          "$6-8/pallet",
           `$${estimatedMonthlyHandlingIn.toFixed(2)}`
         ],
         [
           "Handling Out",
           `$${recommendedHandlingOutRate.toFixed(2)}`,
-          "$6-10/pallet",
           `$${estimatedMonthlyHandlingOut.toFixed(2)}`
         ]
       ],
@@ -209,10 +211,9 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       headStyles: { fillColor: [52, 152, 219], textColor: 255, fontStyle: "bold" },
       styles: { fontSize: 10, cellPadding: 5 },
       columnStyles: {
-        0: { cellWidth: 50 },
-        1: { cellWidth: 45, halign: "right" },
-        2: { cellWidth: 45, halign: "center" },
-        3: { cellWidth: 50, halign: "right", fontStyle: "bold" }
+        0: { cellWidth: 70 },
+        1: { cellWidth: 60, halign: "right" },
+        2: { cellWidth: 60, halign: "right", fontStyle: "bold" }
       }
     });
     
@@ -561,10 +562,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                         <span className="text-muted-foreground">Recommended Rate ({handlingInMargin}% margin):</span>
                         <span className="font-mono font-semibold">${recommendedHandlingInRate.toFixed(2)}/pallet</span>
                       </div>
-                      <div className="flex justify-between text-xs text-muted-foreground">
-                        <span>Market Range:</span>
-                        <span>$6-8/pallet</span>
-                      </div>
+
                       <div className="flex justify-between pt-2 border-t">
                         <span className="font-semibold">Est. Monthly ({monthlyPallets} × {monthlyTurns} turns):</span>
                         <span className="font-mono text-lg font-bold">${estimatedMonthlyHandlingIn.toFixed(2)}</span>
@@ -584,10 +582,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                         <span className="text-muted-foreground">Recommended Rate ({handlingOutMargin}% margin):</span>
                         <span className="font-mono font-semibold">${recommendedHandlingOutRate.toFixed(2)}/pallet</span>
                       </div>
-                      <div className="flex justify-between text-xs text-muted-foreground">
-                        <span>Market Range:</span>
-                        <span>$6-10/pallet</span>
-                      </div>
+
                       <div className="flex justify-between pt-2 border-t">
                         <span className="font-semibold">Est. Monthly ({monthlyPallets} × {monthlyTurns} turns):</span>
                         <span className="font-mono text-lg font-bold">${estimatedMonthlyHandlingOut.toFixed(2)}</span>
