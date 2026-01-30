@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calculator as CalcIcon, Building2, DollarSign, Users, FileDown } from "lucide-react";
+import { Calculator as CalcIcon, Building2, DollarSign, Users, FileDown, Package, Layers, Box } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
@@ -108,6 +108,31 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const [storageMargin, setStorageMargin] = useState<number>(30);
   const [handlingInMargin, setHandlingInMargin] = useState<number>(30);
   const [handlingOutMargin, setHandlingOutMargin] = useState<number>(30);
+  
+  // Value-Added Services
+  const [casePickRate, setCasePickRate] = useState<number>(0.40);
+  const [layerPickRate, setLayerPickRate] = useState<number>(0.30);
+  const [palletSupplyFee, setPalletSupplyFee] = useState<number>(9.00);
+  const [shrinkWrapFee, setShrinkWrapFee] = useState<number>(3.00);
+  const [labelingFee, setLabelingFee] = useState<number>(0.50);
+  const [orderProcessingFee, setOrderProcessingFee] = useState<number>(10.00);
+  const [cancellationFee, setCancellationFee] = useState<number>(25.00);
+  const [pickType, setPickType] = useState<string>("full");
+  const [casesPerOrder, setCasesPerOrder] = useState<number>(0);
+  const [labelsPerOrder, setLabelsPerOrder] = useState<number>(1);
+  const [monthlyOrders, setMonthlyOrders] = useState<number>(0);
+  
+  // Value-added services margins
+  const [casePickMargin, setCasePickMargin] = useState<number>(0);
+  const [palletSupplyMargin, setPalletSupplyMargin] = useState<number>(0);
+  const [shrinkWrapMargin, setShrinkWrapMargin] = useState<number>(0);
+  const [labelingMargin, setLabelingMargin] = useState<number>(0);
+  const [orderProcessingMargin, setOrderProcessingMargin] = useState<number>(0);
+  
+  // Rate overrides
+  const [storageRateOverride, setStorageRateOverride] = useState<number | null>(null);
+  const [handlingInRateOverride, setHandlingInRateOverride] = useState<number | null>(null);
+  const [handlingOutRateOverride, setHandlingOutRateOverride] = useState<number | null>(null);
 
   const availableFacilities = facilities;
   
@@ -170,8 +195,8 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       body: [[
         "Pallet Positions",
         monthlyPallets.toString(),
-        `$${recommendedStorageRate.toFixed(2)}/pallet/month`,
-        `$${recommendedMonthlyStorage.toFixed(2)}`
+        `$${finalStorageRate.toFixed(2)}/pallet/month`,
+        `$${finalMonthlyStorage.toFixed(2)}`
       ]],
       theme: "grid",
       headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: "bold" },
@@ -198,13 +223,13 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       body: [
         [
           "Handling In",
-          `$${recommendedHandlingInRate.toFixed(2)}`,
-          `$${estimatedMonthlyHandlingIn.toFixed(2)}`
+          `$${finalHandlingInRate.toFixed(2)}`,
+          `$${finalMonthlyHandlingIn.toFixed(2)}`
         ],
         [
           "Handling Out",
-          `$${recommendedHandlingOutRate.toFixed(2)}`,
-          `$${estimatedMonthlyHandlingOut.toFixed(2)}`
+          `$${finalHandlingOutRate.toFixed(2)}`,
+          `$${finalMonthlyHandlingOut.toFixed(2)}`
         ]
       ],
       theme: "grid",
@@ -225,6 +250,59 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     
     yPos += 15;
     
+    // Value-Added Services Section (if applicable)
+    if (monthlyOrders > 0 && totalValueAddedServices > 0) {
+      doc.setFontSize(13);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(30, 30, 30);
+      doc.text("Value-Added Services", 15, yPos);
+      yPos += 8;
+      
+      const vasBody: string[][] = [];
+      
+      if (pickType !== "full" && monthlyCasePickRate > 0) {
+        vasBody.push([
+          `${pickType === "layer" ? "Layer" : "Case"} Pick`,
+          `${casesPerOrder} cases × ${monthlyOrders} orders`,
+          `$${monthlyCasePickRate.toFixed(2)}`
+        ]);
+      }
+      if (monthlyPalletSupplyRate > 0) {
+        vasBody.push(["Pallet Supply", `${monthlyOrders} orders`, `$${monthlyPalletSupplyRate.toFixed(2)}`]);
+      }
+      if (monthlyShrinkWrapRate > 0) {
+        vasBody.push(["Shrink Wrap", `${monthlyOrders} orders`, `$${monthlyShrinkWrapRate.toFixed(2)}`]);
+      }
+      if (monthlyLabelingRate > 0) {
+        vasBody.push(["Labeling", `${labelsPerOrder} labels × ${monthlyOrders} orders`, `$${monthlyLabelingRate.toFixed(2)}`]);
+      }
+      if (monthlyOrderProcessingRate > 0) {
+        vasBody.push(["Order Processing", `${monthlyOrders} orders`, `$${monthlyOrderProcessingRate.toFixed(2)}`]);
+      }
+      
+      autoTable(doc, {
+        startY: yPos,
+        head: [["Service", "Volume", "Monthly Total"]],
+        body: vasBody,
+        theme: "grid",
+        headStyles: { fillColor: [230, 126, 34], textColor: 255, fontStyle: "bold" },
+        styles: { fontSize: 10, cellPadding: 5 },
+        columnStyles: {
+          0: { cellWidth: 70 },
+          1: { cellWidth: 60, halign: "center" },
+          2: { cellWidth: 60, halign: "right", fontStyle: "bold" }
+        }
+      });
+      
+      yPos = (doc as any).lastAutoTable.finalY + 5;
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "italic");
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Note: Cancellation/Restock fee ($${cancellationFee.toFixed(2)}) is charged per cancelled order.`, 15, yPos);
+      
+      yPos += 15;
+    }
+    
     // Monthly Summary Section
     doc.setFontSize(13);
     doc.setFont("helvetica", "bold");
@@ -232,15 +310,24 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     doc.text("Monthly Investment Summary", 15, yPos);
     yPos += 8;
     
+    const summaryBody: string[][] = [
+      ["Storage Minimum (Recurring)", `$${finalMonthlyStorage.toFixed(2)}`],
+      ["Est. Handling In", `$${finalMonthlyHandlingIn.toFixed(2)}`],
+      ["Est. Handling Out", `$${finalMonthlyHandlingOut.toFixed(2)}`]
+    ];
+    
+    if (totalValueAddedServices > 0) {
+      summaryBody.push(["Value-Added Services", `$${totalValueAddedServices.toFixed(2)}`]);
+    }
+    
+    summaryBody.push(["Total Estimated Monthly", `$${totalEstimatedMonthlyBilling.toFixed(2)}`]);
+    
+    const totalRowIndex = summaryBody.length - 1;
+    
     autoTable(doc, {
       startY: yPos,
       head: [["Component", "Amount"]],
-      body: [
-        ["Storage Minimum (Recurring)", `$${recommendedMonthlyStorage.toFixed(2)}`],
-        ["Est. Handling In", `$${estimatedMonthlyHandlingIn.toFixed(2)}`],
-        ["Est. Handling Out", `$${estimatedMonthlyHandlingOut.toFixed(2)}`],
-        ["Total Estimated Monthly", `$${totalEstimatedMonthlyBilling.toFixed(2)}`]
-      ],
+      body: summaryBody,
       theme: "grid",
       headStyles: { fillColor: [44, 62, 80], textColor: 255, fontStyle: "bold" },
       bodyStyles: { fontSize: 10 },
@@ -250,7 +337,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
         1: { cellWidth: 60, halign: "right", fontStyle: "bold" }
       },
       didParseCell: (data) => {
-        if (data.row.index === 3 && data.section === "body") {
+        if (data.row.index === totalRowIndex && data.section === "body") {
           data.cell.styles.fillColor = [231, 76, 60];
           data.cell.styles.textColor = [255, 255, 255];
           data.cell.styles.fontSize = 12;
@@ -311,7 +398,39 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const recommendedHandlingOutRate = handlingOutCost * (1 + handlingOutMargin / 100);
   const estimatedMonthlyHandlingOut = recommendedHandlingOutRate * monthlyPallets * monthlyTurns;
   
-  const totalEstimatedMonthlyBilling = recommendedMonthlyStorage + estimatedMonthlyHandlingIn + estimatedMonthlyHandlingOut;
+  // Value-Added Services Calculations
+  const pickRatePerCase = pickType === "layer" ? layerPickRate : pickType === "case" ? casePickRate : 0;
+  const monthlyCasePickCost = pickRatePerCase * casesPerOrder * monthlyOrders;
+  const monthlyCasePickRate = monthlyCasePickCost * (1 + casePickMargin / 100);
+  
+  const monthlyPalletSupplyCost = palletSupplyFee * monthlyOrders;
+  const monthlyPalletSupplyRate = monthlyPalletSupplyCost * (1 + palletSupplyMargin / 100);
+  
+  const monthlyShrinkWrapCost = shrinkWrapFee * monthlyOrders;
+  const monthlyShrinkWrapRate = monthlyShrinkWrapCost * (1 + shrinkWrapMargin / 100);
+  
+  const monthlyLabelingCost = labelingFee * labelsPerOrder * monthlyOrders;
+  const monthlyLabelingRate = monthlyLabelingCost * (1 + labelingMargin / 100);
+  
+  const monthlyOrderProcessingCost = orderProcessingFee * monthlyOrders;
+  const monthlyOrderProcessingRate = monthlyOrderProcessingCost * (1 + orderProcessingMargin / 100);
+  
+  const totalValueAddedServices = monthlyCasePickRate + monthlyPalletSupplyRate + monthlyShrinkWrapRate + monthlyLabelingRate + monthlyOrderProcessingRate;
+  
+  // Apply overrides and calculate actual margins
+  const finalStorageRate = storageRateOverride !== null ? storageRateOverride : recommendedStorageRate;
+  const actualStorageMargin = storageCostPerPallet > 0 ? ((finalStorageRate - storageCostPerPallet) / storageCostPerPallet) * 100 : 0;
+  const finalMonthlyStorage = finalStorageRate * monthlyPallets;
+  
+  const finalHandlingInRate = handlingInRateOverride !== null ? handlingInRateOverride : recommendedHandlingInRate;
+  const actualHandlingInMargin = handlingInCost > 0 ? ((finalHandlingInRate - handlingInCost) / handlingInCost) * 100 : 0;
+  const finalMonthlyHandlingIn = finalHandlingInRate * monthlyPallets * monthlyTurns;
+  
+  const finalHandlingOutRate = handlingOutRateOverride !== null ? handlingOutRateOverride : recommendedHandlingOutRate;
+  const actualHandlingOutMargin = handlingOutCost > 0 ? ((finalHandlingOutRate - handlingOutCost) / handlingOutCost) * 100 : 0;
+  const finalMonthlyHandlingOut = finalHandlingOutRate * monthlyPallets * monthlyTurns;
+  
+  const totalEstimatedMonthlyBilling = finalMonthlyStorage + finalMonthlyHandlingIn + finalMonthlyHandlingOut + totalValueAddedServices;
 
   return (
     <div className="min-h-screen bg-background py-8">
@@ -515,6 +634,160 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                 </div>
               </CardContent>
             </Card>
+            
+            {/* Value-Added Services */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Value-Added Services</CardTitle>
+                <CardDescription>Configure pick type, order volume, and service fees</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Pick Type Selection */}
+                <div className="space-y-4">
+                  <Label>Pick Type</Label>
+                  <div className="grid grid-cols-3 gap-4">
+                    <Button
+                      variant={pickType === "full" ? "default" : "outline"}
+                      onClick={() => setPickType("full")}
+                      className="h-auto py-3 flex flex-col items-center gap-2"
+                    >
+                      <Package className="h-5 w-5" />
+                      <div className="text-center">
+                        <div className="font-semibold">Full Pallet</div>
+                        <div className="text-xs text-muted-foreground">No case pick fee</div>
+                      </div>
+                    </Button>
+                    <Button
+                      variant={pickType === "layer" ? "default" : "outline"}
+                      onClick={() => setPickType("layer")}
+                      className="h-auto py-3 flex flex-col items-center gap-2"
+                    >
+                      <Layers className="h-5 w-5" />
+                      <div className="text-center">
+                        <div className="font-semibold">Layer Pick</div>
+                        <div className="text-xs text-muted-foreground">${layerPickRate.toFixed(2)}/case</div>
+                      </div>
+                    </Button>
+                    <Button
+                      variant={pickType === "case" ? "default" : "outline"}
+                      onClick={() => setPickType("case")}
+                      className="h-auto py-3 flex flex-col items-center gap-2"
+                    >
+                      <Box className="h-5 w-5" />
+                      <div className="text-center">
+                        <div className="font-semibold">Case Pick</div>
+                        <div className="text-xs text-muted-foreground">${casePickRate.toFixed(2)}/case</div>
+                      </div>
+                    </Button>
+                  </div>
+                </div>
+                
+                {/* Order Volume */}
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="monthly-orders">Monthly Orders</Label>
+                    <Input
+                      id="monthly-orders"
+                      type="number"
+                      value={monthlyOrders}
+                      onChange={(e) => setMonthlyOrders(Number(e.target.value))}
+                      min="0"
+                    />
+                  </div>
+                  {pickType !== "full" && (
+                    <div className="space-y-2">
+                      <Label htmlFor="cases-per-order">Cases per Order</Label>
+                      <Input
+                        id="cases-per-order"
+                        type="number"
+                        value={casesPerOrder}
+                        onChange={(e) => setCasesPerOrder(Number(e.target.value))}
+                        min="0"
+                      />
+                    </div>
+                  )}
+                  <div className="space-y-2">
+                    <Label htmlFor="labels-per-order">Labels per Order</Label>
+                    <Input
+                      id="labels-per-order"
+                      type="number"
+                      value={labelsPerOrder}
+                      onChange={(e) => setLabelsPerOrder(Number(e.target.value))}
+                      min="0"
+                    />
+                  </div>
+                </div>
+                
+                {/* Service Rates */}
+                <div className="space-y-4">
+                  <h4 className="font-semibold">Service Rates & Margins</h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {pickType !== "full" && (
+                      <div className="space-y-2">
+                        <Label htmlFor="case-pick-rate">{pickType === "layer" ? "Layer" : "Case"} Pick Rate ($/case)</Label>
+                        <Input
+                          id="case-pick-rate"
+                          type="number"
+                          value={pickType === "layer" ? layerPickRate : casePickRate}
+                          onChange={(e) => pickType === "layer" ? setLayerPickRate(Number(e.target.value)) : setCasePickRate(Number(e.target.value))}
+                          step="0.05"
+                        />
+                      </div>
+                    )}
+                    <div className="space-y-2">
+                      <Label htmlFor="pallet-supply">Pallet Supply ($/pallet)</Label>
+                      <Input
+                        id="pallet-supply"
+                        type="number"
+                        value={palletSupplyFee}
+                        onChange={(e) => setPalletSupplyFee(Number(e.target.value))}
+                        step="0.50"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="shrink-wrap">Shrink Wrap ($/pallet)</Label>
+                      <Input
+                        id="shrink-wrap"
+                        type="number"
+                        value={shrinkWrapFee}
+                        onChange={(e) => setShrinkWrapFee(Number(e.target.value))}
+                        step="0.50"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="labeling">Labeling ($/label)</Label>
+                      <Input
+                        id="labeling"
+                        type="number"
+                        value={labelingFee}
+                        onChange={(e) => setLabelingFee(Number(e.target.value))}
+                        step="0.05"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="order-processing">Order Processing ($/order)</Label>
+                      <Input
+                        id="order-processing"
+                        type="number"
+                        value={orderProcessingFee}
+                        onChange={(e) => setOrderProcessingFee(Number(e.target.value))}
+                        step="1.00"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="cancellation">Cancellation/Restock ($/order)</Label>
+                      <Input
+                        id="cancellation"
+                        type="number"
+                        value={cancellationFee}
+                        onChange={(e) => setCancellationFee(Number(e.target.value))}
+                        step="5.00"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             {selectedFacility && (
               <Card>
@@ -589,6 +862,127 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                       </div>
                     </div>
                   </div>
+                  
+                  {/* Value-Added Services Display */}
+                  {monthlyOrders > 0 && (
+                    <div className="border rounded-lg p-4 bg-amber-50 dark:bg-amber-950">
+                      <h3 className="font-semibold text-lg mb-3">Value-Added Services</h3>
+                      <div className="grid gap-2 text-sm">
+                        {pickType !== "full" && monthlyCasePickRate > 0 && (
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">{pickType === "layer" ? "Layer" : "Case"} Pick ({casesPerOrder} cases × {monthlyOrders} orders):</span>
+                            <span className="font-mono">${monthlyCasePickRate.toFixed(2)}</span>
+                          </div>
+                        )}
+                        {monthlyPalletSupplyRate > 0 && (
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Pallet Supply ({monthlyOrders} orders):</span>
+                            <span className="font-mono">${monthlyPalletSupplyRate.toFixed(2)}</span>
+                          </div>
+                        )}
+                        {monthlyShrinkWrapRate > 0 && (
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Shrink Wrap ({monthlyOrders} orders):</span>
+                            <span className="font-mono">${monthlyShrinkWrapRate.toFixed(2)}</span>
+                          </div>
+                        )}
+                        {monthlyLabelingRate > 0 && (
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Labeling ({labelsPerOrder} labels × {monthlyOrders} orders):</span>
+                            <span className="font-mono">${monthlyLabelingRate.toFixed(2)}</span>
+                          </div>
+                        )}
+                        {monthlyOrderProcessingRate > 0 && (
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Order Processing ({monthlyOrders} orders):</span>
+                            <span className="font-mono">${monthlyOrderProcessingRate.toFixed(2)}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between pt-2 border-t">
+                          <span className="font-semibold">Total Value-Added Services:</span>
+                          <span className="font-mono text-lg font-bold">${totalValueAddedServices.toFixed(2)}</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t text-xs text-muted-foreground">
+                        <p>Note: Cancellation/Restock fee (${cancellationFee.toFixed(2)}) is charged per cancelled order and not included in monthly estimates.</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Rate Override Section */}
+                  <div className="border-2 border-amber-500 rounded-lg p-4 bg-amber-50 dark:bg-amber-950">
+                    <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                      <DollarSign className="h-5 w-5" />
+                      Override Final Rates (Optional)
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-4">Adjust rates before PDF export. Actual margins will be recalculated below.</p>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="storage-override">Storage Rate Override ($/pallet/month)</Label>
+                        <Input
+                          id="storage-override"
+                          type="number"
+                          value={storageRateOverride ?? ""}
+                          onChange={(e) => setStorageRateOverride(e.target.value ? Number(e.target.value) : null)}
+                          placeholder={`Default: $${recommendedStorageRate.toFixed(2)}`}
+                          step="0.50"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="handling-in-override">Handling In Override ($/pallet)</Label>
+                        <Input
+                          id="handling-in-override"
+                          type="number"
+                          value={handlingInRateOverride ?? ""}
+                          onChange={(e) => setHandlingInRateOverride(e.target.value ? Number(e.target.value) : null)}
+                          placeholder={`Default: $${recommendedHandlingInRate.toFixed(2)}`}
+                          step="0.50"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="handling-out-override">Handling Out Override ($/pallet)</Label>
+                        <Input
+                          id="handling-out-override"
+                          type="number"
+                          value={handlingOutRateOverride ?? ""}
+                          onChange={(e) => setHandlingOutRateOverride(e.target.value ? Number(e.target.value) : null)}
+                          placeholder={`Default: $${recommendedHandlingOutRate.toFixed(2)}`}
+                          step="0.50"
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Show actual margins when overridden */}
+                    {(storageRateOverride !== null || handlingInRateOverride !== null || handlingOutRateOverride !== null) && (
+                      <div className="mt-4 pt-4 border-t space-y-2 text-sm">
+                        <p className="font-semibold">Actual Margins with Overrides:</p>
+                        {storageRateOverride !== null && (
+                          <div className="flex justify-between">
+                            <span>Storage: Cost ${storageCostPerPallet.toFixed(2)} → Rate ${finalStorageRate.toFixed(2)}</span>
+                            <span className={`font-mono font-semibold ${actualStorageMargin < 0 ? 'text-red-600' : actualStorageMargin < 20 ? 'text-amber-600' : 'text-green-600'}`}>
+                              {actualStorageMargin.toFixed(1)}% margin
+                            </span>
+                          </div>
+                        )}
+                        {handlingInRateOverride !== null && (
+                          <div className="flex justify-between">
+                            <span>Handling In: Cost ${handlingInCost.toFixed(2)} → Rate ${finalHandlingInRate.toFixed(2)}</span>
+                            <span className={`font-mono font-semibold ${actualHandlingInMargin < 0 ? 'text-red-600' : actualHandlingInMargin < 20 ? 'text-amber-600' : 'text-green-600'}`}>
+                              {actualHandlingInMargin.toFixed(1)}% margin
+                            </span>
+                          </div>
+                        )}
+                        {handlingOutRateOverride !== null && (
+                          <div className="flex justify-between">
+                            <span>Handling Out: Cost ${handlingOutCost.toFixed(2)} → Rate ${finalHandlingOutRate.toFixed(2)}</span>
+                            <span className={`font-mono font-semibold ${actualHandlingOutMargin < 0 ? 'text-red-600' : actualHandlingOutMargin < 20 ? 'text-amber-600' : 'text-green-600'}`}>
+                              {actualHandlingOutMargin.toFixed(1)}% margin
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
 
                   {/* Monthly Summary */}
                   <div className="border-2 border-primary rounded-lg p-4 bg-primary/5">
@@ -596,16 +990,22 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                     <div className="grid gap-2 text-sm">
                       <div className="flex justify-between">
                         <span>Storage Minimum:</span>
-                        <span className="font-mono">${recommendedMonthlyStorage.toFixed(2)}</span>
+                        <span className="font-mono">${finalMonthlyStorage.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Est. Handling In:</span>
-                        <span className="font-mono">${estimatedMonthlyHandlingIn.toFixed(2)}</span>
+                        <span className="font-mono">${finalMonthlyHandlingIn.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Est. Handling Out:</span>
-                        <span className="font-mono">${estimatedMonthlyHandlingOut.toFixed(2)}</span>
+                        <span className="font-mono">${finalMonthlyHandlingOut.toFixed(2)}</span>
                       </div>
+                      {totalValueAddedServices > 0 && (
+                        <div className="flex justify-between">
+                          <span>Value-Added Services:</span>
+                          <span className="font-mono">${totalValueAddedServices.toFixed(2)}</span>
+                        </div>
+                      )}
                       <div className="flex justify-between pt-3 border-t-2 border-primary">
                         <span className="font-bold text-lg">Total Est. Monthly:</span>
                         <span className="font-mono text-2xl font-bold text-primary">${totalEstimatedMonthlyBilling.toFixed(2)}</span>

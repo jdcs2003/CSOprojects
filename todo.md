@@ -92,4 +92,21 @@
 - [x] Fix logo aspect ratio in PDF to prevent warping
 - [x] Add background shading to PDF for white logo visibility
 - [x] Test logo appearance in PDF export
-- [ ] Save checkpoint with fixes
+- [x] Save checkpoint with fixes
+- [x] Add case pick fee input ($0.40 per case default)
+- [x] Add layer pick fee input ($0.30 per case default)
+- [x] Add pallet supply fee input ($9.00 default)
+- [x] Add shrink wrap fee input ($3.00 default)
+- [x] Add labeling fee input ($0.50 per label default)
+- [x] Add order processing fee input ($10.00 default)
+- [x] Add order cancellation/restock fee input ($25.00 default)
+- [x] Add pick type selector (Full Pallet / Layer Pick / Case Pick)
+- [x] Add margin controls for each value-added service
+- [x] Calculate value-added services costs based on order volume
+- [x] Add "Value-Added Services" section to PDF quote
+- [x] Test all new calculations
+- [x] Add manual rate override fields for all services
+- [x] Recalculate actual margin when rates are overridden
+- [x] Display actual margin % and cost breakdown after override
+- [x] Apply overridden rates to PDF export
+- [ ] Save checkpoint with value-added services and rate overrides
