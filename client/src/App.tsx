@@ -5,7 +5,8 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
-import Calculator from "./pages/Calculator";
+import Calculator from "@/pages/Calculator";
+import PeachCalculator from "@/pages/PeachCalculator";
 import CapacityTracking from "./pages/CapacityTracking";
 import InternalHome from "./pages/InternalHome";
 
@@ -16,7 +17,8 @@ function Router() {
       <Route path={"/"} component={Home} />
       <Route path={"/internal"} component={InternalHome} />
       <Route path={"/calculator"} component={Calculator} />
-      <Route path={"/capacity"} component={CapacityTracking} />
+        <Route path="/capacity" component={CapacityTracking} />
+        <Route path="/peachcalculator" component={PeachCalculator} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

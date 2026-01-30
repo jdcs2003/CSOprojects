@@ -68,4 +68,21 @@
 - [x] Add market rate reference guides ($6-8 in, $6-10 out)
 - [x] Implement PDF quote export functionality
 - [x] Test all new features
-- [ ] Save checkpoint with complete feature set
+- [x] Save checkpoint with complete feature set
+- [x] Create separate /peachcalculator page with passcode entry
+- [x] Copy all calculator functionality to Peach calculator
+- [x] Show only Peach facilities (PA-2101, SC-144) on Peach calculator
+- [ ] Remove Peach facilities from main calculator
+- [ ] Remove Peach facilities from facility manager tab
+- [ ] Remove passcode dialog from main calculator
+- [ ] Add route for /peachcalculator in App.tsx
+- [ ] Test both calculators independently
+- [ ] Save checkpoint with separated Peach calculator
+- [x] Create shared PricingCalculator component with facility filter prop
+- [ ] Extract all calculator logic to shared component
+- [x] Update Calculator.tsx to use shared component with L&M filter
+- [x] Update PeachCalculator.tsx to use shared component with Peach filter
+- [x] Add /peachcalculator route to App.tsx
+- [x] Test that changes apply to both calculators
+- [ ] Save checkpoint with linked calculators
+- [x] Enhance PDF export with professional formatting (tables, colors, logo, better layout)
