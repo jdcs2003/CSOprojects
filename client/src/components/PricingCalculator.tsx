@@ -136,7 +136,11 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const [handlingInRateOverride, setHandlingInRateOverride] = useState<number | null>(null);
   const [handlingOutRateOverride, setHandlingOutRateOverride] = useState<number | null>(null);
   
-  // Client & Quote Info
+   // Quote Management
+  const [currentQuoteId, setCurrentQuoteId] = useState<number | null>(null);
+  const [quoteName, setQuoteName] = useState<string>("");
+  
+  // Client Information
   const [clientCompany, setClientCompany] = useState<string>("");
   const [clientContact, setClientContact] = useState<string>("");
   const [clientAddress1, setClientAddress1] = useState<string>("");
@@ -304,7 +308,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
           [tier4Length, `${tier4Discount}%`, tier4Name],
         ],
         theme: "grid",
-        headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: "bold" },
+        headStyles: { fillColor: companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99], textColor: 255, fontStyle: "bold" },
         styles: { fontSize: 9, cellPadding: 3 },
         didParseCell: (data) => {
           // Highlight selected tier
@@ -317,17 +321,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
         },
       });
       
-      yPos = (doc as any).lastAutoTable.finalY + 5;
-      
-      // Show applied discount
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(0, 128, 0);
-      const appliedDiscount = selectedDiscountTier === "tier1" ? tier1Discount : selectedDiscountTier === "tier2" ? tier2Discount : selectedDiscountTier === "tier3" ? tier3Discount : tier4Discount;
-      const appliedTierName = selectedDiscountTier === "tier1" ? tier1Name : selectedDiscountTier === "tier2" ? tier2Name : selectedDiscountTier === "tier3" ? tier3Name : tier4Name;
-      const appliedLength = selectedDiscountTier === "tier1" ? tier1Length : selectedDiscountTier === "tier2" ? tier2Length : selectedDiscountTier === "tier3" ? tier3Length : tier4Length;
-      doc.text(`✓ ${appliedTierName} Tier Applied: ${appliedLength} - ${appliedDiscount}% discount on all rates`, 15, yPos);
-      yPos += 10;
+      yPos = (doc as any).lastAutoTable.finalY + 10;
     }
     
     // Monthly Storage Minimum Section
@@ -347,7 +341,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
         `$${finalMonthlyStorage.toFixed(2)}`
       ]],
       theme: "grid",
-      headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: "bold" },
+      headStyles: { fillColor: companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99], textColor: 255, fontStyle: "bold" },
       styles: { fontSize: 10, cellPadding: 5 },
       columnStyles: {
         0: { cellWidth: 70 },
@@ -381,7 +375,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
         ]
       ],
       theme: "grid",
-      headStyles: { fillColor: [52, 152, 219], textColor: 255, fontStyle: "bold" },
+      headStyles: { fillColor: companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99], textColor: 255, fontStyle: "bold" },
       styles: { fontSize: 10, cellPadding: 5 },
       columnStyles: {
         0: { cellWidth: 70 },
@@ -420,7 +414,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       head: [["Service", "Rate"]],
       body: vasBody,
       theme: "grid",
-      headStyles: { fillColor: [230, 126, 34], textColor: 255, fontStyle: "bold" },
+      headStyles: { fillColor: companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99], textColor: 255, fontStyle: "bold" },
       styles: { fontSize: 10, cellPadding: 5 },
       columnStyles: {
         0: { cellWidth: 100 },
@@ -456,7 +450,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       head: [["Component", "Amount"]],
       body: summaryBody,
       theme: "grid",
-      headStyles: { fillColor: [44, 62, 80], textColor: 255, fontStyle: "bold" },
+      headStyles: { fillColor: companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99], textColor: 255, fontStyle: "bold" },
       bodyStyles: { fontSize: 10 },
       styles: { cellPadding: 5 },
       columnStyles: {

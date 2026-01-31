@@ -44,3 +44,90 @@ export const facilityCapacity = mysqlTable("facilityCapacity", {
 
 export type FacilityCapacity = typeof facilityCapacity.$inferSelect;
 export type InsertFacilityCapacity = typeof facilityCapacity.$inferInsert;
+
+/**
+ * Saved quotes table
+ * Stores all calculator inputs for retrieval and editing
+ */
+export const savedQuotes = mysqlTable("savedQuotes", {
+  id: int("id").autoincrement().primaryKey(),
+  quoteName: varchar("quoteName", { length: 200 }).notNull(),
+  company: mysqlEnum("company", ["L&M", "Peach"]).notNull(),
+  
+  // Client Information
+  clientCompany: varchar("clientCompany", { length: 200 }),
+  clientContact: varchar("clientContact", { length: 100 }),
+  clientAddress1: varchar("clientAddress1", { length: 200 }),
+  clientAddress2: varchar("clientAddress2", { length: 100 }),
+  clientCity: varchar("clientCity", { length: 100 }),
+  clientState: varchar("clientState", { length: 2 }),
+  clientZip: varchar("clientZip", { length: 10 }),
+  clientPhone: varchar("clientPhone", { length: 20 }),
+  clientEmail: varchar("clientEmail", { length: 320 }),
+  
+  // Facility & Volume
+  facilityId: varchar("facilityId", { length: 50 }).notNull(),
+  monthlyPallets: int("monthlyPallets").notNull(),
+  monthlyTurns: int("monthlyTurns").notNull(), // Store as integer (multiply by 100)
+  sqFtPerPallet: int("sqFtPerPallet").notNull(),
+  stackHeight: int("stackHeight").notNull(),
+  
+  // Labor & Margins
+  fullyLoadedLaborRate: int("fullyLoadedLaborRate").notNull(), // Store as cents
+  inboundMinutes: int("inboundMinutes").notNull(),
+  outboundMinutes: int("outboundMinutes").notNull(),
+  storageMargin: int("storageMargin").notNull(),
+  handlingInMargin: int("handlingInMargin").notNull(),
+  handlingOutMargin: int("handlingOutMargin").notNull(),
+  
+  // Value-Added Services
+  pickType: mysqlEnum("pickType", ["full", "layer", "case"]).notNull(),
+  monthlyOrders: int("monthlyOrders").notNull(),
+  casesPerOrder: int("casesPerOrder").notNull(),
+  labelsPerOrder: int("labelsPerOrder").notNull(),
+  casePickRate: int("casePickRate").notNull(), // Store as cents
+  layerPickRate: int("layerPickRate").notNull(),
+  palletSupplyFee: int("palletSupplyFee").notNull(),
+  shrinkWrapFee: int("shrinkWrapFee").notNull(),
+  labelingFee: int("labelingFee").notNull(),
+  orderProcessingFee: int("orderProcessingFee").notNull(),
+  cancellationFee: int("cancellationFee").notNull(),
+  casePickMargin: int("casePickMargin").notNull(),
+  palletSupplyMargin: int("palletSupplyMargin").notNull(),
+  shrinkWrapMargin: int("shrinkWrapMargin").notNull(),
+  labelingMargin: int("labelingMargin").notNull(),
+  orderProcessingMargin: int("orderProcessingMargin").notNull(),
+  
+  // Contract Discounts
+  tier1Name: varchar("tier1Name", { length: 50 }),
+  tier1Length: varchar("tier1Length", { length: 50 }),
+  tier1Discount: int("tier1Discount"),
+  tier2Name: varchar("tier2Name", { length: 50 }),
+  tier2Length: varchar("tier2Length", { length: 50 }),
+  tier2Discount: int("tier2Discount"),
+  tier3Name: varchar("tier3Name", { length: 50 }),
+  tier3Length: varchar("tier3Length", { length: 50 }),
+  tier3Discount: int("tier3Discount"),
+  tier4Name: varchar("tier4Name", { length: 50 }),
+  tier4Length: varchar("tier4Length", { length: 50 }),
+  tier4Discount: int("tier4Discount"),
+  selectedDiscountTier: varchar("selectedDiscountTier", { length: 20 }),
+  
+  // Rate Overrides (nullable, store as cents)
+  storageRateOverride: int("storageRateOverride"),
+  handlingInRateOverride: int("handlingInRateOverride"),
+  handlingOutRateOverride: int("handlingOutRateOverride"),
+  
+  // Terms & Disclosures
+  quoteValidDays: int("quoteValidDays"),
+  paymentTerms: varchar("paymentTerms", { length: 100 }),
+  minimumCommitment: varchar("minimumCommitment", { length: 100 }),
+  customDisclosures: text("customDisclosures"),
+  
+  createdBy: varchar("createdBy", { length: 100 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type SavedQuote = typeof savedQuotes.$inferSelect;
+export type InsertSavedQuote = typeof savedQuotes.$inferInsert;

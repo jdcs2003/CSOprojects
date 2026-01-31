@@ -134,3 +134,14 @@
 - [x] Show discounted rates in quote calculations
 - [x] Apply to both L&M and Peach calculators
 - [x] Fix ZIP code lookup to use backend tRPC endpoint instead of direct API call
+- [ ] Create database schema for saved quotes
+- [ ] Add save quote button to calculator
+- [ ] Store all calculator inputs (client info, facility, rates, margins, discounts, VAS settings)
+- [ ] Add load quote dropdown to retrieve previous quotes
+- [ ] Display quote list with client name, date, and facility
+- [ ] Auto-populate all fields when loading a saved quote
+- [ ] Add update/overwrite functionality for existing quotes
+- [ ] Apply to both L&M and Peach calculators
+- [x] Remove green discount message from PDF export
+- [x] Style all PDF section headers consistently (dark blue #1e3e63 for L&M, light orange for Peach)
+- [x] Apply header styling to all tables (Contract Discounts, Storage, Handling, VAS, Summary)

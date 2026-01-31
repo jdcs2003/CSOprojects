@@ -4,8 +4,8 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { getDb } from "./db";
-import { facilityCapacity } from "../drizzle/schema";
-import { eq, and } from "drizzle-orm";
+import { facilityCapacity, savedQuotes } from "../drizzle/schema";
+import { eq, and, desc } from "drizzle-orm";
 import { makeRequest, GeocodingResult } from "./_core/map";
 
 export const appRouter = router({
@@ -107,6 +107,193 @@ export const appRouter = router({
           console.error('ZIP lookup failed:', error);
           return { city: "", state: "" };
         }
+      }),
+  }),
+  
+  // Saved quotes router
+  quotes: router({
+    // Get all quotes
+    getAll: publicProcedure
+      .input(z.object({ company: z.enum(["L&M", "Peach"]).optional() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return [];
+        
+        if (input.company) {
+          return await db.select().from(savedQuotes)
+            .where(eq(savedQuotes.company, input.company))
+            .orderBy(desc(savedQuotes.updatedAt));
+        }
+        
+        return await db.select().from(savedQuotes)
+          .orderBy(desc(savedQuotes.updatedAt));
+      }),
+    
+    // Get quote by ID
+    getById: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return null;
+        
+        const results = await db.select().from(savedQuotes)
+          .where(eq(savedQuotes.id, input.id));
+        
+        return results[0] || null;
+      }),
+    
+    // Save new quote
+    create: publicProcedure
+      .input(z.object({
+        quoteName: z.string(),
+        company: z.enum(["L&M", "Peach"]),
+        clientCompany: z.string().optional(),
+        clientContact: z.string().optional(),
+        clientAddress1: z.string().optional(),
+        clientAddress2: z.string().optional(),
+        clientCity: z.string().optional(),
+        clientState: z.string().optional(),
+        clientZip: z.string().optional(),
+        clientPhone: z.string().optional(),
+        clientEmail: z.string().optional(),
+        facilityId: z.string(),
+        monthlyPallets: z.number(),
+        monthlyTurns: z.number(),
+        sqFtPerPallet: z.number(),
+        stackHeight: z.number(),
+        fullyLoadedLaborRate: z.number(),
+        inboundMinutes: z.number(),
+        outboundMinutes: z.number(),
+        storageMargin: z.number(),
+        handlingInMargin: z.number(),
+        handlingOutMargin: z.number(),
+        pickType: z.enum(["full", "layer", "case"]),
+        monthlyOrders: z.number(),
+        casesPerOrder: z.number(),
+        labelsPerOrder: z.number(),
+        casePickRate: z.number(),
+        layerPickRate: z.number(),
+        palletSupplyFee: z.number(),
+        shrinkWrapFee: z.number(),
+        labelingFee: z.number(),
+        orderProcessingFee: z.number(),
+        cancellationFee: z.number(),
+        casePickMargin: z.number(),
+        palletSupplyMargin: z.number(),
+        shrinkWrapMargin: z.number(),
+        labelingMargin: z.number(),
+        orderProcessingMargin: z.number(),
+        tier1Name: z.string().optional(),
+        tier1Length: z.string().optional(),
+        tier1Discount: z.number().optional(),
+        tier2Name: z.string().optional(),
+        tier2Length: z.string().optional(),
+        tier2Discount: z.number().optional(),
+        tier3Name: z.string().optional(),
+        tier3Length: z.string().optional(),
+        tier3Discount: z.number().optional(),
+        tier4Name: z.string().optional(),
+        tier4Length: z.string().optional(),
+        tier4Discount: z.number().optional(),
+        selectedDiscountTier: z.string().optional(),
+        storageRateOverride: z.number().optional(),
+        handlingInRateOverride: z.number().optional(),
+        handlingOutRateOverride: z.number().optional(),
+        quoteValidDays: z.number().optional(),
+        paymentTerms: z.string().optional(),
+        minimumCommitment: z.string().optional(),
+        customDisclosures: z.string().optional(),
+        createdBy: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        
+        const result = await db.insert(savedQuotes).values(input);
+        return { success: true, id: Number((result as any).insertId) };
+      }),
+    
+    // Update existing quote
+    update: publicProcedure
+      .input(z.object({
+        id: z.number(),
+        quoteName: z.string(),
+        company: z.enum(["L&M", "Peach"]),
+        clientCompany: z.string().optional(),
+        clientContact: z.string().optional(),
+        clientAddress1: z.string().optional(),
+        clientAddress2: z.string().optional(),
+        clientCity: z.string().optional(),
+        clientState: z.string().optional(),
+        clientZip: z.string().optional(),
+        clientPhone: z.string().optional(),
+        clientEmail: z.string().optional(),
+        facilityId: z.string(),
+        monthlyPallets: z.number(),
+        monthlyTurns: z.number(),
+        sqFtPerPallet: z.number(),
+        stackHeight: z.number(),
+        fullyLoadedLaborRate: z.number(),
+        inboundMinutes: z.number(),
+        outboundMinutes: z.number(),
+        storageMargin: z.number(),
+        handlingInMargin: z.number(),
+        handlingOutMargin: z.number(),
+        pickType: z.enum(["full", "layer", "case"]),
+        monthlyOrders: z.number(),
+        casesPerOrder: z.number(),
+        labelsPerOrder: z.number(),
+        casePickRate: z.number(),
+        layerPickRate: z.number(),
+        palletSupplyFee: z.number(),
+        shrinkWrapFee: z.number(),
+        labelingFee: z.number(),
+        orderProcessingFee: z.number(),
+        cancellationFee: z.number(),
+        casePickMargin: z.number(),
+        palletSupplyMargin: z.number(),
+        shrinkWrapMargin: z.number(),
+        labelingMargin: z.number(),
+        orderProcessingMargin: z.number(),
+        tier1Name: z.string().optional(),
+        tier1Length: z.string().optional(),
+        tier1Discount: z.number().optional(),
+        tier2Name: z.string().optional(),
+        tier2Length: z.string().optional(),
+        tier2Discount: z.number().optional(),
+        tier3Name: z.string().optional(),
+        tier3Length: z.string().optional(),
+        tier3Discount: z.number().optional(),
+        tier4Name: z.string().optional(),
+        tier4Length: z.string().optional(),
+        tier4Discount: z.number().optional(),
+        selectedDiscountTier: z.string().optional(),
+        storageRateOverride: z.number().optional(),
+        handlingInRateOverride: z.number().optional(),
+        handlingOutRateOverride: z.number().optional(),
+        quoteValidDays: z.number().optional(),
+        paymentTerms: z.string().optional(),
+        minimumCommitment: z.string().optional(),
+        customDisclosures: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        
+        const { id, ...updateData } = input;
+        await db.update(savedQuotes).set(updateData).where(eq(savedQuotes.id, id));
+        return { success: true };
+      }),
+    
+    // Delete quote
+    delete: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        
+        await db.delete(savedQuotes).where(eq(savedQuotes.id, input.id));
+        return { success: true };
       }),
   }),
 });
