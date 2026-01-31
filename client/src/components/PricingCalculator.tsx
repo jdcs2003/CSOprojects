@@ -136,7 +136,15 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const [handlingOutRateOverride, setHandlingOutRateOverride] = useState<number | null>(null);
   
   // Client & Quote Info
-  const [preparedFor, setPreparedFor] = useState<string>("");
+  const [clientCompany, setClientCompany] = useState<string>("");
+  const [clientContact, setClientContact] = useState<string>("");
+  const [clientAddress1, setClientAddress1] = useState<string>("");
+  const [clientAddress2, setClientAddress2] = useState<string>("");
+  const [clientCity, setClientCity] = useState<string>("");
+  const [clientState, setClientState] = useState<string>("");
+  const [clientZip, setClientZip] = useState<string>("");
+  const [clientPhone, setClientPhone] = useState<string>("");
+  const [clientEmail, setClientEmail] = useState<string>("");
   
   // Disclosures & Assumptions
   const [quoteValidDays, setQuoteValidDays] = useState<number>(90);
@@ -176,15 +184,17 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     doc.text("Warehousing Services Quote", pageWidth / 2, 28, { align: "center" });
     
     // Prepared For (if provided)
-    if (preparedFor) {
+    const hasClientInfo = clientCompany || clientContact;
+    if (hasClientInfo) {
       doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(60, 60, 60);
-      doc.text(`PREPARED FOR: ${preparedFor.toUpperCase()}`, pageWidth / 2, 35, { align: "center" });
+      const preparedForText = clientCompany || clientContact || "";
+      doc.text(`PREPARED FOR: ${preparedForText.toUpperCase()}`, pageWidth / 2, 35, { align: "center" });
     }
     
-    // Facility & Date Info Box (adjust position if preparedFor is present)
-    const infoBoxY = preparedFor ? 42 : 35;
+    // Facility & Date Info Box (adjust position if client info is present)
+    const infoBoxY = hasClientInfo ? 42 : 35;
     doc.setFillColor(245, 247, 250);
     doc.rect(15, infoBoxY, pageWidth - 30, 20, "F");
     
@@ -200,8 +210,47 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     doc.setFont("helvetica", "normal");
     doc.text(new Date().toLocaleDateString(), pageWidth - 60, infoBoxY + 13);
     
+    // Client Contact Details (if provided)
+    let yPos = infoBoxY + 25;
+    if (clientContact || clientAddress1 || clientPhone || clientEmail) {
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(60, 60, 60);
+      doc.text("Client Contact:", 15, yPos);
+      yPos += 5;
+      
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+      if (clientContact) {
+        doc.text(clientContact, 15, yPos);
+        yPos += 4;
+      }
+      if (clientAddress1) {
+        doc.text(clientAddress1, 15, yPos);
+        yPos += 4;
+      }
+      if (clientAddress2) {
+        doc.text(clientAddress2, 15, yPos);
+        yPos += 4;
+      }
+      if (clientCity || clientState || clientZip) {
+        const cityStateZip = [clientCity, clientState, clientZip].filter(Boolean).join(", ");
+        doc.text(cityStateZip, 15, yPos);
+        yPos += 4;
+      }
+      if (clientPhone) {
+        doc.text(clientPhone, 15, yPos);
+        yPos += 4;
+      }
+      if (clientEmail) {
+        doc.text(clientEmail, 15, yPos);
+        yPos += 4;
+      }
+      yPos += 5;
+    }
+    
     // Monthly Storage Minimum Section
-    let yPos = infoBoxY + 30;
+    yPos = Math.max(yPos, infoBoxY + 30);
     doc.setFontSize(13);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(30, 30, 30);
@@ -491,15 +540,105 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Client Information */}
-                <div className="space-y-2">
-                  <Label htmlFor="prepared-for">Prepared For (Client Name)</Label>
-                  <Input
-                    id="prepared-for"
-                    type="text"
-                    value={preparedFor}
-                    onChange={(e) => setPreparedFor(e.target.value)}
-                    placeholder="e.g., Frederick P. Wildman"
-                  />
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-sm">Client Information</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="client-company">Company Name</Label>
+                      <Input
+                        id="client-company"
+                        type="text"
+                        value={clientCompany}
+                        onChange={(e) => setClientCompany(e.target.value)}
+                        placeholder="e.g., Señor Sangria, Inc."
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="client-contact">Contact Name</Label>
+                      <Input
+                        id="client-contact"
+                        type="text"
+                        value={clientContact}
+                        onChange={(e) => setClientContact(e.target.value)}
+                        placeholder="e.g., Frederick P. Wildman"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="client-address1">Address Line 1</Label>
+                    <Input
+                      id="client-address1"
+                      type="text"
+                      value={clientAddress1}
+                      onChange={(e) => setClientAddress1(e.target.value)}
+                      placeholder="e.g., 1955 Springfield Ave"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="client-address2">Address Line 2 (Optional)</Label>
+                    <Input
+                      id="client-address2"
+                      type="text"
+                      value={clientAddress2}
+                      onChange={(e) => setClientAddress2(e.target.value)}
+                      placeholder="e.g., Suite 201"
+                    />
+                  </div>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="client-city">City</Label>
+                      <Input
+                        id="client-city"
+                        type="text"
+                        value={clientCity}
+                        onChange={(e) => setClientCity(e.target.value)}
+                        placeholder="e.g., Maplewood"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="client-state">State</Label>
+                      <Input
+                        id="client-state"
+                        type="text"
+                        value={clientState}
+                        onChange={(e) => setClientState(e.target.value)}
+                        placeholder="e.g., NJ"
+                        maxLength={2}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="client-zip">ZIP Code</Label>
+                      <Input
+                        id="client-zip"
+                        type="text"
+                        value={clientZip}
+                        onChange={(e) => setClientZip(e.target.value)}
+                        placeholder="e.g., 07040"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="client-phone">Phone</Label>
+                      <Input
+                        id="client-phone"
+                        type="tel"
+                        value={clientPhone}
+                        onChange={(e) => setClientPhone(e.target.value)}
+                        placeholder="e.g., +1 (201) 218-5791"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="client-email">Email</Label>
+                      <Input
+                        id="client-email"
+                        type="email"
+                        value={clientEmail}
+                        onChange={(e) => setClientEmail(e.target.value)}
+                        placeholder="e.g., contact@senorsangria.com"
+                      />
+                    </div>
+                  </div>
                 </div>
                 
                 {/* Facility Selection */}

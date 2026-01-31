@@ -118,3 +118,7 @@
 - [x] Apply to both L&M and Peach calculators
 - [x] Add "Prepared For" client name input field
 - [x] Display "PREPARED FOR: [Name]" in PDF header below company name
+- [x] Expand client information section with full contact fields
+- [x] Add company name, contact name, address, city/state/zip, phone, email inputs
+- [x] Display client contact info in PDF header or info box
+- [x] Apply to both L&M and Peach calculators
