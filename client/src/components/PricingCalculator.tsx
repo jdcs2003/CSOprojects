@@ -601,12 +601,12 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     
     const summaryBody: string[][] = [
       ["Storage Minimum (Recurring)", `$${finalMonthlyStorage.toFixed(2)}`],
-      ["Est. Handling In", `$${finalMonthlyHandlingIn.toFixed(2)}`],
-      ["Est. Handling Out", `$${finalMonthlyHandlingOut.toFixed(2)}`]
+      ["Est. Handling In", `${Math.round(monthlyPallets * monthlyTurns)} pallets`],
+      ["Est. Handling Out", `${Math.round(monthlyPallets * monthlyTurns)} pallets`]
     ];
     
-    if (totalValueAddedServices > 0) {
-      summaryBody.push(["Value-Added Services", `$${totalValueAddedServices.toFixed(2)}`]);
+    if (totalValueAddedServices > 0 || monthlyOrders > 0) {
+      summaryBody.push(["Value-Added Services", "As needed"]);
     }
     
     summaryBody.push(["Total Estimated Monthly", `$${totalEstimatedMonthlyBilling.toFixed(2)}`]);

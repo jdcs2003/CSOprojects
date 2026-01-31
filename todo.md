@@ -154,3 +154,17 @@
 - [x] Use adjustable storage minimum in calculations instead of hardcoded value
 - [ ] Save storage minimum to database with quotes
 - [ ] Load storage minimum when loading saved quotes
+- [ ] Fix Value-Added Services header from orange to blue for L&M
+- [ ] Fix Total Estimated Monthly row from red to blue for L&M
+- [ ] Fix Terms & Assumptions Component/Amount header from dark gray to blue for L&M
+- [ ] Fix text overlap in Terms & Assumptions (disclosures overlapping with table)
+- [ ] Ensure all PDF headers use consistent company colors throughout
+- [ ] Fix missing contract discount table in PDF export
+- [ ] Ensure contract discount table renders when discount tier is selected
+- [ ] Check if condition is preventing discount table from showing
+- [x] Change Monthly Investment Summary to show assumptions instead of dollar amounts
+- [x] Storage Minimum: Show dollar amount (keep as is)
+- [x] Est. Handling In: Show "XX pallets" instead of dollar amount
+- [x] Est. Handling Out: Show "XX pallets" instead of dollar amount
+- [x] Value-Added Services: Show "As needed" instead of dollar amount
+- [x] Total Estimated Monthly: Keep dollar amount
