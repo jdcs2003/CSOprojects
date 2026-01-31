@@ -67,12 +67,15 @@ export const savedQuotes = mysqlTable("savedQuotes", {
   
   // Facility & Volume
   facilityId: varchar("facilityId", { length: 50 }).notNull(),
+  selectedFacility: varchar("selectedFacility", { length: 50 }).notNull(),
   monthlyPallets: int("monthlyPallets").notNull(),
   monthlyTurns: int("monthlyTurns").notNull(), // Store as integer (multiply by 100)
   sqFtPerPallet: int("sqFtPerPallet").notNull(),
   stackHeight: int("stackHeight").notNull(),
   
   // Labor & Margins
+  laborRate: int("laborRate").notNull(),
+  taxRate: int("taxRate").notNull(),
   fullyLoadedLaborRate: int("fullyLoadedLaborRate").notNull(), // Store as cents
   inboundMinutes: int("inboundMinutes").notNull(),
   outboundMinutes: int("outboundMinutes").notNull(),
@@ -97,6 +100,7 @@ export const savedQuotes = mysqlTable("savedQuotes", {
   shrinkWrapMargin: int("shrinkWrapMargin").notNull(),
   labelingMargin: int("labelingMargin").notNull(),
   orderProcessingMargin: int("orderProcessingMargin").notNull(),
+  cancellationMargin: int("cancellationMargin").notNull(),
   
   // Contract Discounts
   tier1Name: varchar("tier1Name", { length: 50 }),

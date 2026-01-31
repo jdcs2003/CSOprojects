@@ -148,3 +148,9 @@
 - [x] Fix Terms & Assumptions section overlapping with Monthly Summary table
 - [x] Change total row color from red to match header colors (blue for L&M, orange for Peach)
 - [x] Add proper spacing between summary table and terms section
+- [x] Fix JSX closing tag errors in save/load UI section
+- [x] Add monthly storage minimum input field
+- [x] Add state variable for storage minimum amount
+- [x] Use adjustable storage minimum in calculations instead of hardcoded value
+- [ ] Save storage minimum to database with quotes
+- [ ] Load storage minimum when loading saved quotes

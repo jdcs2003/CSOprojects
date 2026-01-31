@@ -107,6 +107,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const [outboundMinutes, setOutboundMinutes] = useState<number>(5);
   const [monthlyPallets, setMonthlyPallets] = useState<number>(35);
   const [monthlyTurns, setMonthlyTurns] = useState<number>(0.5);
+  const [storageMinimum, setStorageMinimum] = useState<number>(0); // Adjustable storage minimum in dollars
   const [storageMargin, setStorageMargin] = useState<number>(30);
   const [handlingInMargin, setHandlingInMargin] = useState<number>(30);
   const [handlingOutMargin, setHandlingOutMargin] = useState<number>(30);
@@ -130,6 +131,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const [shrinkWrapMargin, setShrinkWrapMargin] = useState<number>(0);
   const [labelingMargin, setLabelingMargin] = useState<number>(0);
   const [orderProcessingMargin, setOrderProcessingMargin] = useState<number>(0);
+  const [cancellationMargin, setCancellationMargin] = useState<number>(0);
   
   // Rate overrides
   const [storageRateOverride, setStorageRateOverride] = useState<number | null>(null);
@@ -193,6 +195,172 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       if (zipLookupQuery.data.state) setClientState(zipLookupQuery.data.state);
     }
   }, [zipLookupQuery.data]);
+  
+  // Save quote mutation
+  const saveQuoteMutation = trpc.quotes.create.useMutation({
+    onSuccess: (data: any) => {
+      setCurrentQuoteId(data.id);
+      alert(`Quote "${quoteName}" saved successfully!`);
+    },
+    onError: (error: any) => {
+      alert(`Failed to save quote: ${error.message}`);
+    }
+  });
+  
+  // Load quotes query
+  const quotesQuery = trpc.quotes.getAll.useQuery({ company: companyFilter });
+  
+  // Save quote function
+  const saveQuote = () => {
+    if (!quoteName.trim()) {
+      alert("Please enter a quote name before saving.");
+      return;
+    }
+    
+    const quoteData = {
+      quoteName,
+      company: companyFilter,
+      facilityId: selectedFacility,
+      selectedFacility,
+      laborRate,
+      taxRate,
+      fullyLoadedLaborRate: laborRate * (1 + taxRate / 100),
+      sqFtPerPallet,
+      stackHeight,
+      inboundMinutes,
+      outboundMinutes,
+      monthlyPallets,
+      monthlyTurns,
+      storageMargin,
+      handlingInMargin,
+      handlingOutMargin,
+      casePickRate,
+      layerPickRate,
+      palletSupplyFee,
+      shrinkWrapFee,
+      labelingFee,
+      orderProcessingFee,
+      cancellationFee,
+      pickType: pickType as "full" | "layer" | "case",
+      casesPerOrder,
+      labelsPerOrder,
+      monthlyOrders,
+      casePickMargin,
+      palletSupplyMargin,
+      shrinkWrapMargin,
+      labelingMargin,
+      orderProcessingMargin,
+      cancellationMargin,
+      storageRateOverride: storageRateOverride ?? undefined,
+      handlingInRateOverride: handlingInRateOverride ?? undefined,
+      handlingOutRateOverride: handlingOutRateOverride ?? undefined,
+      clientCompany,
+      clientContact,
+      clientAddress1,
+      clientAddress2,
+      clientCity,
+      clientState,
+      clientZip,
+      clientPhone,
+      clientEmail,
+      tier1Name,
+      tier1Length,
+      tier1Discount,
+      tier2Name,
+      tier2Length,
+      tier2Discount,
+      tier3Name,
+      tier3Length,
+      tier3Discount,
+      tier4Name,
+      tier4Length,
+      tier4Discount,
+      selectedDiscountTier,
+      quoteValidDays,
+      paymentTerms,
+      minimumCommitment,
+      customDisclosures
+    };
+    
+    if (currentQuoteId) {
+      // Update existing quote
+      // TODO: implement update
+      saveQuoteMutation.mutate(quoteData);
+    } else {
+      // Save new quote
+      saveQuoteMutation.mutate(quoteData);
+    }
+  };
+  
+  // Load quote function
+  const loadQuote = (quoteId: number) => {
+    const quote = quotesQuery.data?.find((q: any) => q.id === quoteId);
+    if (!quote) return;
+    
+    // Load all fields
+    setQuoteName(quote.quoteName);
+    setSelectedFacility(quote.selectedFacility);
+    setLaborRate(quote.laborRate);
+    setTaxRate(quote.taxRate);
+    setSqFtPerPallet(quote.sqFtPerPallet);
+    setStackHeight(quote.stackHeight);
+    setInboundMinutes(quote.inboundMinutes);
+    setOutboundMinutes(quote.outboundMinutes);
+    setMonthlyPallets(quote.monthlyPallets);
+    setMonthlyTurns(quote.monthlyTurns);
+    setStorageMargin(quote.storageMargin);
+    setHandlingInMargin(quote.handlingInMargin);
+    setHandlingOutMargin(quote.handlingOutMargin);
+    setCasePickRate(quote.casePickRate);
+    setLayerPickRate(quote.layerPickRate);
+    setPalletSupplyFee(quote.palletSupplyFee);
+    setShrinkWrapFee(quote.shrinkWrapFee);
+    setLabelingFee(quote.labelingFee);
+    setOrderProcessingFee(quote.orderProcessingFee);
+    setCancellationFee(quote.cancellationFee);
+    setPickType(quote.pickType);
+    setCasesPerOrder(quote.casesPerOrder);
+    setLabelsPerOrder(quote.labelsPerOrder);
+    setMonthlyOrders(quote.monthlyOrders);
+    setCasePickMargin(quote.casePickMargin);
+    setPalletSupplyMargin(quote.palletSupplyMargin);
+    setShrinkWrapMargin(quote.shrinkWrapMargin);
+    setLabelingMargin(quote.labelingMargin);
+    setOrderProcessingMargin(quote.orderProcessingMargin);
+    setCancellationMargin(quote.cancellationMargin);
+    setStorageRateOverride(quote.storageRateOverride ?? null);
+    setHandlingInRateOverride(quote.handlingInRateOverride ?? null);
+    setHandlingOutRateOverride(quote.handlingOutRateOverride ?? null);
+    setClientCompany(quote.clientCompany || "");
+    setClientContact(quote.clientContact || "");
+    setClientAddress1(quote.clientAddress1 || "");
+    setClientAddress2(quote.clientAddress2 || "");
+    setClientCity(quote.clientCity || "");
+    setClientState(quote.clientState || "");
+    setClientZip(quote.clientZip || "");
+    setClientPhone(quote.clientPhone || "");
+    setClientEmail(quote.clientEmail || "");
+    setTier1Name(quote.tier1Name || "Standard");
+    setTier1Length(quote.tier1Length || "0-60 days");
+    setTier1Discount(quote.tier1Discount || 0);
+    setTier2Name(quote.tier2Name || "Bronze");
+    setTier2Length(quote.tier2Length || "12 months");
+    setTier2Discount(quote.tier2Discount || 5);
+    setTier3Name(quote.tier3Name || "Silver");
+    setTier3Length(quote.tier3Length || "36 months");
+    setTier3Discount(quote.tier3Discount || 10);
+    setTier4Name(quote.tier4Name || "Gold");
+    setTier4Length(quote.tier4Length || "60+ months");
+    setTier4Discount(quote.tier4Discount || 15);
+    setSelectedDiscountTier(quote.selectedDiscountTier || "tier1");
+    setQuoteValidDays(quote.quoteValidDays || 90);
+    setPaymentTerms(quote.paymentTerms || "Net 30");
+    setMinimumCommitment(quote.minimumCommitment || "");
+    setCustomDisclosures(quote.customDisclosures || "");
+    setCurrentQuoteId(quote.id);
+    
+    alert(`Quote "${quote.quoteName}" loaded successfully!`);
+  };
   
   // Export quote to PDF
   const exportQuotePDF = () => {
@@ -545,7 +713,8 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     ? (selectedFacilityData.totalCost * effectiveSqFtPerPallet) / 12 
     : 0;
   const recommendedStorageRate = storageCostPerPallet * (1 + storageMargin / 100);
-  const recommendedMonthlyStorage = recommendedStorageRate * monthlyPallets;
+  const calculatedMonthlyStorage = recommendedStorageRate * monthlyPallets;
+  const recommendedMonthlyStorage = Math.max(calculatedMonthlyStorage, storageMinimum); // Apply minimum if set
   
   const handlingInCost = (inboundMinutes / 60) * fullyLoadedLaborRate;
   const recommendedHandlingInRate = handlingInCost * (1 + handlingInMargin / 100);
@@ -630,6 +799,53 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                 <CardDescription>Configure facility, labor, and deal parameters</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Save/Load Quote */}
+                <div className="space-y-4 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg border">
+                  <h3 className="font-semibold text-sm">Save & Load Quotes</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="quote-name">Quote Name</Label>
+                      <Input
+                        id="quote-name"
+                        type="text"
+                        value={quoteName}
+                        onChange={(e) => setQuoteName(e.target.value)}
+                        placeholder="e.g., Señor Sangria - Initial Quote"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="load-quote">Load Saved Quote</Label>
+                      <Select onValueChange={(v) => loadQuote(Number(v))}>
+                        <SelectTrigger id="load-quote">
+                          <SelectValue placeholder="Select a quote..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {quotesQuery.data?.map((quote: any) => (
+                            <SelectItem key={quote.id} value={quote.id.toString()}>
+                              {quote.quoteName} - {new Date(quote.updatedAt).toLocaleDateString()}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <Button onClick={saveQuote} variant="default" size="sm" className="w-full" disabled={saveQuoteMutation.isPending}>
+                    {saveQuoteMutation.isPending ? "Saving..." : currentQuoteId ? "Update Quote" : "Save New Quote"}
+                  </Button>
+                </div>
+                
+                {/* New Quote Button */}
+                {currentQuoteId && (
+                  <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <p className="text-sm text-blue-700 dark:text-blue-300 mb-2">
+                      Currently editing: <strong>{quoteName}</strong>
+                    </p>
+                    <Button onClick={() => { setCurrentQuoteId(null); setQuoteName(""); }} variant="outline" size="sm">
+                      Start New Quote
+                    </Button>
+                                  </div>
+                )}
+                
                 {/* Client Information */}
                 <div className="space-y-4">
                   <h3 className="font-semibold text-sm">Client Information</h3>
@@ -866,6 +1082,20 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                         onChange={(e) => setMonthlyTurns(Number(e.target.value))}
                         step="0.1"
                       />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="storage-minimum">Monthly Storage Minimum ($)</Label>
+                      <Input
+                        id="storage-minimum"
+                        type="number"
+                        value={storageMinimum}
+                        onChange={(e) => setStorageMinimum(Number(e.target.value))}
+                        step="50"
+                        placeholder="0 = no minimum"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Set minimum monthly storage charge (adjustable for client flow)
+                      </p>
                     </div>
                   </div>
                 </div>
