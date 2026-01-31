@@ -116,3 +116,5 @@
 - [x] Add disclosures/assumptions text input section to calculator
 - [x] Include disclosures in PDF export below monthly summary
 - [x] Apply to both L&M and Peach calculators
+- [x] Add "Prepared For" client name input field
+- [x] Display "PREPARED FOR: [Name]" in PDF header below company name

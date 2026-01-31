@@ -135,6 +135,9 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const [handlingInRateOverride, setHandlingInRateOverride] = useState<number | null>(null);
   const [handlingOutRateOverride, setHandlingOutRateOverride] = useState<number | null>(null);
   
+  // Client & Quote Info
+  const [preparedFor, setPreparedFor] = useState<string>("");
+  
   // Disclosures & Assumptions
   const [quoteValidDays, setQuoteValidDays] = useState<number>(90);
   const [paymentTerms, setPaymentTerms] = useState<string>("Net 30");
@@ -172,24 +175,33 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     doc.setTextColor(100, 100, 100);
     doc.text("Warehousing Services Quote", pageWidth / 2, 28, { align: "center" });
     
-    // Facility & Date Info Box
+    // Prepared For (if provided)
+    if (preparedFor) {
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(60, 60, 60);
+      doc.text(`PREPARED FOR: ${preparedFor.toUpperCase()}`, pageWidth / 2, 35, { align: "center" });
+    }
+    
+    // Facility & Date Info Box (adjust position if preparedFor is present)
+    const infoBoxY = preparedFor ? 42 : 35;
     doc.setFillColor(245, 247, 250);
-    doc.rect(15, 35, pageWidth - 30, 20, "F");
+    doc.rect(15, infoBoxY, pageWidth - 30, 20, "F");
     
     doc.setFontSize(10);
     doc.setTextColor(60, 60, 60);
     doc.setFont("helvetica", "bold");
-    doc.text("Facility:", 20, 43);
+    doc.text("Facility:", 20, infoBoxY + 8);
     doc.setFont("helvetica", "normal");
-    doc.text(selectedFacilityData.name, 20, 48);
+    doc.text(selectedFacilityData.name, 20, infoBoxY + 13);
     
     doc.setFont("helvetica", "bold");
-    doc.text("Quote Date:", pageWidth - 60, 43);
+    doc.text("Quote Date:", pageWidth - 60, infoBoxY + 8);
     doc.setFont("helvetica", "normal");
-    doc.text(new Date().toLocaleDateString(), pageWidth - 60, 48);
+    doc.text(new Date().toLocaleDateString(), pageWidth - 60, infoBoxY + 13);
     
     // Monthly Storage Minimum Section
-    let yPos = 65;
+    let yPos = infoBoxY + 30;
     doc.setFontSize(13);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(30, 30, 30);
@@ -478,6 +490,18 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                 <CardDescription>Configure facility, labor, and deal parameters</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Client Information */}
+                <div className="space-y-2">
+                  <Label htmlFor="prepared-for">Prepared For (Client Name)</Label>
+                  <Input
+                    id="prepared-for"
+                    type="text"
+                    value={preparedFor}
+                    onChange={(e) => setPreparedFor(e.target.value)}
+                    placeholder="e.g., Frederick P. Wildman"
+                  />
+                </div>
+                
                 {/* Facility Selection */}
                 <div className="space-y-2">
                   <Label htmlFor="facility">Select Facility</Label>
