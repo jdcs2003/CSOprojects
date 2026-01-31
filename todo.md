@@ -145,3 +145,6 @@
 - [x] Remove green discount message from PDF export
 - [x] Style all PDF section headers consistently (dark blue #1e3e63 for L&M, light orange for Peach)
 - [x] Apply header styling to all tables (Contract Discounts, Storage, Handling, VAS, Summary)
+- [x] Fix Terms & Assumptions section overlapping with Monthly Summary table
+- [x] Change total row color from red to match header colors (blue for L&M, orange for Peach)
+- [x] Add proper spacing between summary table and terms section

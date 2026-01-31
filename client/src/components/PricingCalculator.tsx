@@ -459,12 +459,14 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       },
       didParseCell: (data) => {
         if (data.row.index === totalRowIndex && data.section === "body") {
-          data.cell.styles.fillColor = [231, 76, 60];
+          data.cell.styles.fillColor = companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99];
           data.cell.styles.textColor = [255, 255, 255];
           data.cell.styles.fontSize = 12;
         }
       }
     });
+    
+    yPos = (doc as any).lastAutoTable.finalY + 15;
     
     // Terms & Disclosures Section (compact)
     if (yPos < pageHeight - 80) {
