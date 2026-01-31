@@ -122,3 +122,6 @@
 - [x] Add company name, contact name, address, city/state/zip, phone, email inputs
 - [x] Display client contact info in PDF header or info box
 - [x] Apply to both L&M and Peach calculators
+- [x] Remove "e.g." from placeholders, use simple descriptions
+- [x] Add ZIP code validation and auto-lookup using Google geocoding
+- [x] Auto-populate city and state when ZIP code is entered

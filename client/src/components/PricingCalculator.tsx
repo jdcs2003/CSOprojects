@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -153,6 +153,43 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const [customDisclosures, setCustomDisclosures] = useState<string>("");
 
   const availableFacilities = facilities;
+  
+  // ZIP code auto-lookup using Google Geocoding API via Manus proxy
+  useEffect(() => {
+    const lookupZipCode = async () => {
+      if (clientZip.length === 5 && /^\d{5}$/.test(clientZip)) {
+        try {
+          const response = await fetch(
+            `https://maps-proxy.manus.im/maps/api/geocode/json?address=${clientZip}`
+          );
+          const data = await response.json();
+          
+          if (data.results && data.results.length > 0) {
+            const addressComponents = data.results[0].address_components;
+            
+            // Extract city and state
+            const cityComponent = addressComponents.find((c: any) => 
+              c.types.includes('locality') || c.types.includes('postal_town')
+            );
+            const stateComponent = addressComponents.find((c: any) => 
+              c.types.includes('administrative_area_level_1')
+            );
+            
+            if (cityComponent) {
+              setClientCity(cityComponent.long_name);
+            }
+            if (stateComponent) {
+              setClientState(stateComponent.short_name);
+            }
+          }
+        } catch (error) {
+          console.error('ZIP lookup failed:', error);
+        }
+      }
+    };
+    
+    lookupZipCode();
+  }, [clientZip]);
   
   // Export quote to PDF
   const exportQuotePDF = () => {
@@ -550,7 +587,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                         type="text"
                         value={clientCompany}
                         onChange={(e) => setClientCompany(e.target.value)}
-                        placeholder="e.g., Señor Sangria, Inc."
+                        placeholder="Company name"
                       />
                     </div>
                     <div className="space-y-2">
@@ -560,7 +597,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                         type="text"
                         value={clientContact}
                         onChange={(e) => setClientContact(e.target.value)}
-                        placeholder="e.g., Frederick P. Wildman"
+                        placeholder="Contact person"
                       />
                     </div>
                   </div>
@@ -571,7 +608,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                       type="text"
                       value={clientAddress1}
                       onChange={(e) => setClientAddress1(e.target.value)}
-                      placeholder="e.g., 1955 Springfield Ave"
+                        placeholder="Street address"
                     />
                   </div>
                   <div className="space-y-2">
@@ -581,7 +618,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                       type="text"
                       value={clientAddress2}
                       onChange={(e) => setClientAddress2(e.target.value)}
-                      placeholder="e.g., Suite 201"
+                        placeholder="Suite, floor, etc."
                     />
                   </div>
                   <div className="grid md:grid-cols-3 gap-4">
@@ -592,7 +629,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                         type="text"
                         value={clientCity}
                         onChange={(e) => setClientCity(e.target.value)}
-                        placeholder="e.g., Maplewood"
+                        placeholder="City"
                       />
                     </div>
                     <div className="space-y-2">
@@ -602,7 +639,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                         type="text"
                         value={clientState}
                         onChange={(e) => setClientState(e.target.value)}
-                        placeholder="e.g., NJ"
+                        placeholder="State"
                         maxLength={2}
                       />
                     </div>
@@ -613,7 +650,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                         type="text"
                         value={clientZip}
                         onChange={(e) => setClientZip(e.target.value)}
-                        placeholder="e.g., 07040"
+                        placeholder="ZIP code"
                       />
                     </div>
                   </div>
@@ -625,7 +662,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                         type="tel"
                         value={clientPhone}
                         onChange={(e) => setClientPhone(e.target.value)}
-                        placeholder="e.g., +1 (201) 218-5791"
+                        placeholder="Phone number"
                       />
                     </div>
                     <div className="space-y-2">
@@ -635,7 +672,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                         type="email"
                         value={clientEmail}
                         onChange={(e) => setClientEmail(e.target.value)}
-                        placeholder="e.g., contact@senorsangria.com"
+                        placeholder="Email address"
                       />
                     </div>
                   </div>
