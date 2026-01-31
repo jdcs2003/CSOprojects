@@ -125,3 +125,11 @@
 - [x] Remove "e.g." from placeholders, use simple descriptions
 - [x] Add ZIP code validation and auto-lookup using Google geocoding
 - [x] Auto-populate city and state when ZIP code is entered
+- [x] Add contract length discount tier configuration inputs
+- [x] Create 4 discount tiers with length (days/months) and percentage inputs
+- [x] Add tier name inputs (Standard, Bronze, Silver, Gold)
+- [x] Add dropdown to select which discount tier applies to quote
+- [x] Automatically reduce storage, handling in, and handling out rates by selected discount %
+- [x] Display contract length discount table in PDF export
+- [x] Show discounted rates in quote calculations
+- [x] Apply to both L&M and Peach calculators

@@ -146,6 +146,25 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const [clientPhone, setClientPhone] = useState<string>("");
   const [clientEmail, setClientEmail] = useState<string>("");
   
+  // Contract Length Discount Tiers
+  const [tier1Name, setTier1Name] = useState<string>("Standard");
+  const [tier1Length, setTier1Length] = useState<string>("0-60 days");
+  const [tier1Discount, setTier1Discount] = useState<number>(0);
+  
+  const [tier2Name, setTier2Name] = useState<string>("Bronze");
+  const [tier2Length, setTier2Length] = useState<string>("12 months");
+  const [tier2Discount, setTier2Discount] = useState<number>(5);
+  
+  const [tier3Name, setTier3Name] = useState<string>("Silver");
+  const [tier3Length, setTier3Length] = useState<string>("36 months");
+  const [tier3Discount, setTier3Discount] = useState<number>(10);
+  
+  const [tier4Name, setTier4Name] = useState<string>("Gold");
+  const [tier4Length, setTier4Length] = useState<string>("60+ months");
+  const [tier4Discount, setTier4Discount] = useState<number>(15);
+  
+  const [selectedDiscountTier, setSelectedDiscountTier] = useState<string>("none");
+  
   // Disclosures & Assumptions
   const [quoteValidDays, setQuoteValidDays] = useState<number>(90);
   const [paymentTerms, setPaymentTerms] = useState<string>("Net 30");
@@ -286,8 +305,52 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       yPos += 5;
     }
     
-    // Monthly Storage Minimum Section
+    // Contract Length Discounts Table (if discount is applied)
     yPos = Math.max(yPos, infoBoxY + 30);
+    if (selectedDiscountTier !== "none") {
+      doc.setFontSize(13);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(30, 30, 30);
+      doc.text("Contract Length Discounts", 15, yPos);
+      yPos += 8;
+      
+      autoTable(doc, {
+        startY: yPos,
+        head: [["Contract Length", "Discount", "Notes"]],
+        body: [
+          [tier1Length, `${tier1Discount}%`, tier1Name],
+          [tier2Length, `${tier2Discount}%`, tier2Name],
+          [tier3Length, `${tier3Discount}%`, tier3Name],
+          [tier4Length, `${tier4Discount}%`, tier4Name],
+        ],
+        theme: "grid",
+        headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: "bold" },
+        styles: { fontSize: 9, cellPadding: 3 },
+        didParseCell: (data) => {
+          // Highlight selected tier
+          const rowIndex = data.row.index;
+          const selectedIndex = selectedDiscountTier === "tier1" ? 0 : selectedDiscountTier === "tier2" ? 1 : selectedDiscountTier === "tier3" ? 2 : 3;
+          if (data.section === "body" && rowIndex === selectedIndex) {
+            data.cell.styles.fillColor = [255, 248, 220]; // Light yellow highlight
+            data.cell.styles.fontStyle = "bold";
+          }
+        },
+      });
+      
+      yPos = (doc as any).lastAutoTable.finalY + 5;
+      
+      // Show applied discount
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(0, 128, 0);
+      const appliedDiscount = selectedDiscountTier === "tier1" ? tier1Discount : selectedDiscountTier === "tier2" ? tier2Discount : selectedDiscountTier === "tier3" ? tier3Discount : tier4Discount;
+      const appliedTierName = selectedDiscountTier === "tier1" ? tier1Name : selectedDiscountTier === "tier2" ? tier2Name : selectedDiscountTier === "tier3" ? tier3Name : tier4Name;
+      const appliedLength = selectedDiscountTier === "tier1" ? tier1Length : selectedDiscountTier === "tier2" ? tier2Length : selectedDiscountTier === "tier3" ? tier3Length : tier4Length;
+      doc.text(`✓ ${appliedTierName} Tier Applied: ${appliedLength} - ${appliedDiscount}% discount on all rates`, 15, yPos);
+      yPos += 10;
+    }
+    
+    // Monthly Storage Minimum Section
     doc.setFontSize(13);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(30, 30, 30);
@@ -535,16 +598,31 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   
   const totalValueAddedServices = monthlyCasePickRate + monthlyPalletSupplyRate + monthlyShrinkWrapRate + monthlyLabelingRate + monthlyOrderProcessingRate;
   
-  // Apply overrides and calculate actual margins
-  const finalStorageRate = storageRateOverride !== null ? storageRateOverride : recommendedStorageRate;
+  // Apply overrides first, then apply contract length discount
+  const getDiscountMultiplier = () => {
+    if (selectedDiscountTier === "tier1") return 1 - (tier1Discount / 100);
+    if (selectedDiscountTier === "tier2") return 1 - (tier2Discount / 100);
+    if (selectedDiscountTier === "tier3") return 1 - (tier3Discount / 100);
+    if (selectedDiscountTier === "tier4") return 1 - (tier4Discount / 100);
+    return 1; // no discount
+  };
+  const discountMultiplier = getDiscountMultiplier();
+  
+  // Storage: override first, then discount
+  const baseStorageRate = storageRateOverride !== null ? storageRateOverride : recommendedStorageRate;
+  const finalStorageRate = baseStorageRate * discountMultiplier;
   const actualStorageMargin = storageCostPerPallet > 0 ? ((finalStorageRate - storageCostPerPallet) / storageCostPerPallet) * 100 : 0;
   const finalMonthlyStorage = finalStorageRate * monthlyPallets;
   
-  const finalHandlingInRate = handlingInRateOverride !== null ? handlingInRateOverride : recommendedHandlingInRate;
+  // Handling In: override first, then discount
+  const baseHandlingInRate = handlingInRateOverride !== null ? handlingInRateOverride : recommendedHandlingInRate;
+  const finalHandlingInRate = baseHandlingInRate * discountMultiplier;
   const actualHandlingInMargin = handlingInCost > 0 ? ((finalHandlingInRate - handlingInCost) / handlingInCost) * 100 : 0;
   const finalMonthlyHandlingIn = finalHandlingInRate * monthlyPallets * monthlyTurns;
   
-  const finalHandlingOutRate = handlingOutRateOverride !== null ? handlingOutRateOverride : recommendedHandlingOutRate;
+  // Handling Out: override first, then discount
+  const baseHandlingOutRate = handlingOutRateOverride !== null ? handlingOutRateOverride : recommendedHandlingOutRate;
+  const finalHandlingOutRate = baseHandlingOutRate * discountMultiplier;
   const actualHandlingOutMargin = handlingOutCost > 0 ? ((finalHandlingOutRate - handlingOutCost) / handlingOutCost) * 100 : 0;
   const finalMonthlyHandlingOut = finalHandlingOutRate * monthlyPallets * monthlyTurns;
   
@@ -1181,6 +1259,176 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                       </div>
                     </div>
                   )}
+                  
+                  {/* Contract Length Discount Configuration */}
+                  <div className="border-2 border-blue-500 rounded-lg p-4 bg-blue-50 dark:bg-blue-950">
+                    <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                      <Package className="h-5 w-5" />
+                      Contract Length Discounts
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-4">Configure tiered pricing based on commitment length. Discounts apply to all rates (after any manual overrides).</p>
+                    
+                    {/* Tier Configuration */}
+                    <div className="space-y-4 mb-4">
+                      {/* Tier 1 */}
+                      <div className="grid md:grid-cols-3 gap-4 p-3 border rounded-lg bg-background">
+                        <div className="space-y-2">
+                          <Label htmlFor="tier1-name">Tier 1 Name</Label>
+                          <Input
+                            id="tier1-name"
+                            value={tier1Name}
+                            onChange={(e) => setTier1Name(e.target.value)}
+                            placeholder="Standard"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="tier1-length">Contract Length</Label>
+                          <Input
+                            id="tier1-length"
+                            value={tier1Length}
+                            onChange={(e) => setTier1Length(e.target.value)}
+                            placeholder="0-60 days"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="tier1-discount">Discount %</Label>
+                          <Input
+                            id="tier1-discount"
+                            type="number"
+                            value={tier1Discount}
+                            onChange={(e) => setTier1Discount(Number(e.target.value))}
+                            step="1"
+                            min="0"
+                            max="100"
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Tier 2 */}
+                      <div className="grid md:grid-cols-3 gap-4 p-3 border rounded-lg bg-background">
+                        <div className="space-y-2">
+                          <Label htmlFor="tier2-name">Tier 2 Name</Label>
+                          <Input
+                            id="tier2-name"
+                            value={tier2Name}
+                            onChange={(e) => setTier2Name(e.target.value)}
+                            placeholder="Bronze"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="tier2-length">Contract Length</Label>
+                          <Input
+                            id="tier2-length"
+                            value={tier2Length}
+                            onChange={(e) => setTier2Length(e.target.value)}
+                            placeholder="12 months"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="tier2-discount">Discount %</Label>
+                          <Input
+                            id="tier2-discount"
+                            type="number"
+                            value={tier2Discount}
+                            onChange={(e) => setTier2Discount(Number(e.target.value))}
+                            step="1"
+                            min="0"
+                            max="100"
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Tier 3 */}
+                      <div className="grid md:grid-cols-3 gap-4 p-3 border rounded-lg bg-background">
+                        <div className="space-y-2">
+                          <Label htmlFor="tier3-name">Tier 3 Name</Label>
+                          <Input
+                            id="tier3-name"
+                            value={tier3Name}
+                            onChange={(e) => setTier3Name(e.target.value)}
+                            placeholder="Silver"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="tier3-length">Contract Length</Label>
+                          <Input
+                            id="tier3-length"
+                            value={tier3Length}
+                            onChange={(e) => setTier3Length(e.target.value)}
+                            placeholder="36 months"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="tier3-discount">Discount %</Label>
+                          <Input
+                            id="tier3-discount"
+                            type="number"
+                            value={tier3Discount}
+                            onChange={(e) => setTier3Discount(Number(e.target.value))}
+                            step="1"
+                            min="0"
+                            max="100"
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Tier 4 */}
+                      <div className="grid md:grid-cols-3 gap-4 p-3 border rounded-lg bg-background">
+                        <div className="space-y-2">
+                          <Label htmlFor="tier4-name">Tier 4 Name</Label>
+                          <Input
+                            id="tier4-name"
+                            value={tier4Name}
+                            onChange={(e) => setTier4Name(e.target.value)}
+                            placeholder="Gold"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="tier4-length">Contract Length</Label>
+                          <Input
+                            id="tier4-length"
+                            value={tier4Length}
+                            onChange={(e) => setTier4Length(e.target.value)}
+                            placeholder="60+ months"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="tier4-discount">Discount %</Label>
+                          <Input
+                            id="tier4-discount"
+                            type="number"
+                            value={tier4Discount}
+                            onChange={(e) => setTier4Discount(Number(e.target.value))}
+                            step="1"
+                            min="0"
+                            max="100"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Select Active Discount Tier */}
+                    <div className="space-y-2 pt-4 border-t">
+                      <Label htmlFor="selected-tier">Apply Discount Tier to This Quote</Label>
+                      <Select value={selectedDiscountTier} onValueChange={setSelectedDiscountTier}>
+                        <SelectTrigger id="selected-tier">
+                          <SelectValue placeholder="No discount" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">No Discount (0%)</SelectItem>
+                          <SelectItem value="tier1">{tier1Name} - {tier1Length} ({tier1Discount}% off)</SelectItem>
+                          <SelectItem value="tier2">{tier2Name} - {tier2Length} ({tier2Discount}% off)</SelectItem>
+                          <SelectItem value="tier3">{tier3Name} - {tier3Length} ({tier3Discount}% off)</SelectItem>
+                          <SelectItem value="tier4">{tier4Name} - {tier4Length} ({tier4Discount}% off)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {selectedDiscountTier !== "none" && (
+                        <p className="text-sm text-green-600 dark:text-green-400 font-medium">
+                          ✓ {selectedDiscountTier === "tier1" ? tier1Discount : selectedDiscountTier === "tier2" ? tier2Discount : selectedDiscountTier === "tier3" ? tier3Discount : tier4Discount}% discount applied to all rates
+                        </p>
+                      )}
+                    </div>
+                  </div>
                   
                   {/* Rate Override Section */}
                   <div className="border-2 border-amber-500 rounded-lg p-4 bg-amber-50 dark:bg-amber-950">
