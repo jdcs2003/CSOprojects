@@ -113,3 +113,6 @@
 - [x] Change VAS section in PDF to show rate card format (service name and rate only)
 - [x] Remove volume/quantity columns from VAS PDF export
 - [x] Show VAS as simple price list for both L&M and Peach
+- [x] Add disclosures/assumptions text input section to calculator
+- [x] Include disclosures in PDF export below monthly summary
+- [x] Apply to both L&M and Peach calculators

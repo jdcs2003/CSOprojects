@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -133,6 +134,12 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const [storageRateOverride, setStorageRateOverride] = useState<number | null>(null);
   const [handlingInRateOverride, setHandlingInRateOverride] = useState<number | null>(null);
   const [handlingOutRateOverride, setHandlingOutRateOverride] = useState<number | null>(null);
+  
+  // Disclosures & Assumptions
+  const [quoteValidDays, setQuoteValidDays] = useState<number>(90);
+  const [paymentTerms, setPaymentTerms] = useState<string>("Net 30");
+  const [minimumCommitment, setMinimumCommitment] = useState<string>("12 months");
+  const [customDisclosures, setCustomDisclosures] = useState<string>("");
 
   const availableFacilities = facilities;
   
@@ -324,16 +331,50 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       }
     });
     
-    // Footer
-    const footerY = pageHeight - 25;
-    doc.setFillColor(245, 247, 250);
-    doc.rect(0, footerY - 5, pageWidth, 30, "F");
+    // Terms & Disclosures Section (compact)
+    if (yPos < pageHeight - 80) {
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(30, 30, 30);
+      doc.text("Terms & Assumptions", 15, yPos);
+      yPos += 6;
+      
+      doc.setFontSize(8);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(60, 60, 60);
+      
+      const terms = [
+        `Quote valid for ${quoteValidDays} days from date above`,
+        `Payment terms: ${paymentTerms}`,
+        minimumCommitment ? `Minimum commitment: ${minimumCommitment}` : null,
+        "Storage billed monthly as minimum commitment",
+        "Handling billed per transaction"
+      ].filter(Boolean);
+      
+      terms.forEach(term => {
+        doc.text(`• ${term}`, 15, yPos);
+        yPos += 4;
+      });
+      
+      if (customDisclosures) {
+        yPos += 2;
+        const lines = doc.splitTextToSize(customDisclosures, pageWidth - 30);
+        lines.slice(0, 4).forEach((line: string) => {
+          doc.text(line, 15, yPos);
+          yPos += 4;
+        });
+      }
+    }
     
-    doc.setFontSize(9);
+    // Footer
+    const footerY = pageHeight - 15;
+    doc.setFillColor(245, 247, 250);
+    doc.rect(0, footerY - 5, pageWidth, 20, "F");
+    
+    doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(80, 80, 80);
-    doc.text("This quote is valid for 30 days from the date above.", pageWidth / 2, footerY + 2, { align: "center" });
-    doc.text("Storage is billed monthly as a minimum commitment. Handling is billed per transaction.", pageWidth / 2, footerY + 8, { align: "center" });
+    doc.text("Storage is billed monthly as a minimum commitment. Handling is billed per transaction.", pageWidth / 2, footerY + 2, { align: "center" });
     
     doc.setFontSize(8);
     doc.setTextColor(120, 120, 120);
@@ -764,6 +805,59 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                       />
                     </div>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Disclosures & Assumptions */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Quote Terms & Disclosures</CardTitle>
+                <CardDescription>Add contract terms and product specifications for PDF export</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="quote-valid-days">Quote Valid (days)</Label>
+                    <Input
+                      id="quote-valid-days"
+                      type="number"
+                      value={quoteValidDays}
+                      onChange={(e) => setQuoteValidDays(Number(e.target.value))}
+                      min="1"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="payment-terms">Payment Terms</Label>
+                    <Input
+                      id="payment-terms"
+                      type="text"
+                      value={paymentTerms}
+                      onChange={(e) => setPaymentTerms(e.target.value)}
+                      placeholder="Net 30"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="minimum-commitment">Minimum Commitment</Label>
+                    <Input
+                      id="minimum-commitment"
+                      type="text"
+                      value={minimumCommitment}
+                      onChange={(e) => setMinimumCommitment(e.target.value)}
+                      placeholder="12 months"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="custom-disclosures">Additional Disclosures (Optional)</Label>
+                  <Textarea
+                    id="custom-disclosures"
+                    value={customDisclosures}
+                    onChange={(e) => setCustomDisclosures(e.target.value)}
+                    placeholder="Standard Pallet Configurations:\n• 750ml / 12-pack: 56 cases/pallet\n• 1.5L / 6-pack: 60 cases/pallet\n• RTD 12oz sleek / 24ct trays: 104 trays/pallet\n• Mixed pallets: billed at case-pick rate"
+                    rows={6}
+                    className="font-mono text-sm"
+                  />
                 </div>
               </CardContent>
             </Card>
