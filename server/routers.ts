@@ -6,6 +6,7 @@ import { z } from "zod";
 import { getDb } from "./db";
 import { facilityCapacity } from "../drizzle/schema";
 import { eq, and } from "drizzle-orm";
+import { makeRequest, GeocodingResult } from "./_core/map";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -71,6 +72,41 @@ export const appRouter = router({
         }
         
         return { success: true };
+      }),
+  }),
+  
+  // ZIP code lookup router
+  zipLookup: router({
+    getLocation: publicProcedure
+      .input(z.object({ zipCode: z.string().length(5) }))
+      .query(async ({ input }) => {
+        try {
+          const result = await makeRequest<GeocodingResult>(
+            "/maps/api/geocode/json",
+            { address: input.zipCode }
+          );
+          
+          if (result.results && result.results.length > 0) {
+            const addressComponents = result.results[0].address_components;
+            
+            const cityComponent = addressComponents.find((c) => 
+              c.types.includes('locality') || c.types.includes('postal_town')
+            );
+            const stateComponent = addressComponents.find((c) => 
+              c.types.includes('administrative_area_level_1')
+            );
+            
+            return {
+              city: cityComponent?.long_name || "",
+              state: stateComponent?.short_name || "",
+            };
+          }
+          
+          return { city: "", state: "" };
+        } catch (error) {
+          console.error('ZIP lookup failed:', error);
+          return { city: "", state: "" };
+        }
       }),
   }),
 });

@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calculator as CalcIcon, Building2, DollarSign, Users, FileDown, Package, Layers, Box } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { trpc } from "@/lib/trpc";
 
 interface Facility {
   id: string;
@@ -173,42 +174,21 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
 
   const availableFacilities = facilities;
   
-  // ZIP code auto-lookup using Google Geocoding API via Manus proxy
+  // ZIP code auto-lookup using backend tRPC
+  const zipLookupQuery = trpc.zipLookup.getLocation.useQuery(
+    { zipCode: clientZip },
+    { 
+      enabled: clientZip.length === 5 && /^\d{5}$/.test(clientZip),
+      retry: false,
+    }
+  );
+  
   useEffect(() => {
-    const lookupZipCode = async () => {
-      if (clientZip.length === 5 && /^\d{5}$/.test(clientZip)) {
-        try {
-          const response = await fetch(
-            `https://maps-proxy.manus.im/maps/api/geocode/json?address=${clientZip}`
-          );
-          const data = await response.json();
-          
-          if (data.results && data.results.length > 0) {
-            const addressComponents = data.results[0].address_components;
-            
-            // Extract city and state
-            const cityComponent = addressComponents.find((c: any) => 
-              c.types.includes('locality') || c.types.includes('postal_town')
-            );
-            const stateComponent = addressComponents.find((c: any) => 
-              c.types.includes('administrative_area_level_1')
-            );
-            
-            if (cityComponent) {
-              setClientCity(cityComponent.long_name);
-            }
-            if (stateComponent) {
-              setClientState(stateComponent.short_name);
-            }
-          }
-        } catch (error) {
-          console.error('ZIP lookup failed:', error);
-        }
-      }
-    };
-    
-    lookupZipCode();
-  }, [clientZip]);
+    if (zipLookupQuery.data) {
+      if (zipLookupQuery.data.city) setClientCity(zipLookupQuery.data.city);
+      if (zipLookupQuery.data.state) setClientState(zipLookupQuery.data.state);
+    }
+  }, [zipLookupQuery.data]);
   
   // Export quote to PDF
   const exportQuotePDF = () => {

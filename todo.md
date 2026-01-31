@@ -133,3 +133,4 @@
 - [x] Display contract length discount table in PDF export
 - [x] Show discounted rates in quote calculations
 - [x] Apply to both L&M and Peach calculators
+- [x] Fix ZIP code lookup to use backend tRPC endpoint instead of direct API call
