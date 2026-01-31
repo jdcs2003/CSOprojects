@@ -197,9 +197,11 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   }, [zipLookupQuery.data]);
   
   // Save quote mutation
+  const utils = trpc.useUtils();
   const saveQuoteMutation = trpc.quotes.create.useMutation({
     onSuccess: (data: any) => {
       setCurrentQuoteId(data.id);
+      utils.quotes.getAll.invalidate(); // Refresh the dropdown list
       alert(`Quote "${quoteName}" saved successfully!`);
     },
     onError: (error: any) => {
@@ -234,6 +236,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       storageMargin,
       handlingInMargin,
       handlingOutMargin,
+      monthlyStorageMinimum: storageMinimum,
       casePickRate,
       layerPickRate,
       palletSupplyFee,
@@ -311,6 +314,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     setStorageMargin(quote.storageMargin);
     setHandlingInMargin(quote.handlingInMargin);
     setHandlingOutMargin(quote.handlingOutMargin);
+    setStorageMinimum(quote.monthlyStorageMinimum || 0);
     setCasePickRate(quote.casePickRate);
     setLayerPickRate(quote.layerPickRate);
     setPalletSupplyFee(quote.palletSupplyFee);
@@ -457,40 +461,9 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       yPos += 5;
     }
     
-    // Contract Length Discounts Table (if discount is applied)
+    // Contract Length Discounts Table - REMOVED (internal use only, not shown to clients)
+    // Discounts are applied to rates but table is not displayed in PDF
     yPos = Math.max(yPos, infoBoxY + 30);
-    if (selectedDiscountTier !== "none") {
-      doc.setFontSize(13);
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(30, 30, 30);
-      doc.text("Contract Length Discounts", 15, yPos);
-      yPos += 8;
-      
-      autoTable(doc, {
-        startY: yPos,
-        head: [["Contract Length", "Discount", "Notes"]],
-        body: [
-          [tier1Length, `${tier1Discount}%`, tier1Name],
-          [tier2Length, `${tier2Discount}%`, tier2Name],
-          [tier3Length, `${tier3Discount}%`, tier3Name],
-          [tier4Length, `${tier4Discount}%`, tier4Name],
-        ],
-        theme: "grid",
-        headStyles: { fillColor: companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99], textColor: 255, fontStyle: "bold" },
-        styles: { fontSize: 9, cellPadding: 3 },
-        didParseCell: (data) => {
-          // Highlight selected tier
-          const rowIndex = data.row.index;
-          const selectedIndex = selectedDiscountTier === "tier1" ? 0 : selectedDiscountTier === "tier2" ? 1 : selectedDiscountTier === "tier3" ? 2 : 3;
-          if (data.section === "body" && rowIndex === selectedIndex) {
-            data.cell.styles.fillColor = [255, 248, 220]; // Light yellow highlight
-            data.cell.styles.fontStyle = "bold";
-          }
-        },
-      });
-      
-      yPos = (doc as any).lastAutoTable.finalY + 10;
-    }
     
     // Monthly Storage Minimum Section
     doc.setFontSize(13);
@@ -843,7 +816,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                     <Button onClick={() => { setCurrentQuoteId(null); setQuoteName(""); }} variant="outline" size="sm">
                       Start New Quote
                     </Button>
-                                  </div>
+                  </div>
                 )}
                 
                 {/* Client Information */}

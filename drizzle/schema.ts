@@ -82,6 +82,7 @@ export const savedQuotes = mysqlTable("savedQuotes", {
   storageMargin: int("storageMargin").notNull(),
   handlingInMargin: int("handlingInMargin").notNull(),
   handlingOutMargin: int("handlingOutMargin").notNull(),
+  monthlyStorageMinimum: int("monthlyStorageMinimum"), // Store as cents
   
   // Value-Added Services
   pickType: mysqlEnum("pickType", ["full", "layer", "case"]).notNull(),

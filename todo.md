@@ -168,3 +168,10 @@
 - [x] Est. Handling Out: Show "XX pallets" instead of dollar amount
 - [x] Value-Added Services: Show "As needed" instead of dollar amount
 - [x] Total Estimated Monthly: Keep dollar amount
+[x] Fix save/load dropdown not showing after saving quote
+- [x] Ensure saved quotes list populates in dropdown
+- [x] Add monthlyStorageMinimum field to database schema
+- [x] Add monthlyStorageMinimum to save/load quote functions
+- [x] Remove contract discount table from PDF export (internal use only)
+- [ ] Test PDF export to verify discount table removed
+- [ ] Test quote save and load end-to-end
