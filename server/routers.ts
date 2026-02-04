@@ -208,6 +208,7 @@ export const appRouter = router({
         paymentTerms: z.string().optional(),
         minimumCommitment: z.string().optional(),
         customDisclosures: z.string().optional(),
+        freightLanes: z.string().optional(), // JSON string of freight lane objects
         createdBy: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
@@ -285,6 +286,7 @@ export const appRouter = router({
         paymentTerms: z.string().optional(),
         minimumCommitment: z.string().optional(),
         customDisclosures: z.string().optional(),
+        freightLanes: z.string().optional(), // JSON string of freight lane objects
       }))
       .mutation(async ({ input }) => {
         const db = await getDb();

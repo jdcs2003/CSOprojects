@@ -1,0 +1,13 @@
+{
+  "query": "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'savedQuotes' AND COLUMN_NAME = 'freightLanes';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'savedQuotes' AND COLUMN_NAME = 'freightLanes';",
+  "rows": [
+    {
+      "COLUMN_NAME": "freightLanes"
+    }
+  ],
+  "messages": [],
+  "stdout": "COLUMN_NAME\nfreightLanes\n",
+  "stderr": "",
+  "execution_time_ms": 370
+}

@@ -1,0 +1,13 @@
+{
+  "query": "SELECT id FROM savedQuotes WHERE quoteName LIKE '%Sangria%' ORDER BY createdAt DESC LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT id FROM savedQuotes WHERE quoteName LIKE '%Sangria%' ORDER BY createdAt DESC LIMIT 1;",
+  "rows": [
+    {
+      "id": "3"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\n3\n",
+  "stderr": "",
+  "execution_time_ms": 354
+}

@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calculator as CalcIcon, Building2, DollarSign, Users, FileDown, Package, Layers, Box } from "lucide-react";
+import { Calculator as CalcIcon, Building2, DollarSign, Users, FileDown, Package, Layers, Box, Truck } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { trpc } from "@/lib/trpc";
@@ -19,6 +19,17 @@ interface Facility {
   totalCost: number;
   company: "L&M" | "Peach";
   notes?: string;
+}
+
+interface FreightLane {
+  id: string;
+  type: "inbound" | "outbound";
+  origin: string;
+  destination: string;
+  rate: number;
+  pallets: number;
+  weight: number;
+  notes: string;
 }
 
 const defaultFacilities: Facility[] = [
@@ -177,6 +188,9 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const [paymentTerms, setPaymentTerms] = useState<string>("Net 30");
   const [minimumCommitment, setMinimumCommitment] = useState<string>("12 months");
   const [customDisclosures, setCustomDisclosures] = useState<string>("");
+  
+  // Transportation / Freight Lanes
+  const [freightLanes, setFreightLanes] = useState<FreightLane[]>([]);
 
   const availableFacilities = facilities;
   
@@ -282,7 +296,8 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       quoteValidDays,
       paymentTerms,
       minimumCommitment,
-      customDisclosures
+      customDisclosures,
+      freightLanes: JSON.stringify(freightLanes)
     };
     
     if (currentQuoteId) {
@@ -361,6 +376,16 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     setPaymentTerms(quote.paymentTerms || "Net 30");
     setMinimumCommitment(quote.minimumCommitment || "");
     setCustomDisclosures(quote.customDisclosures || "");
+    // Load freight lanes
+    if (quote.freightLanes) {
+      try {
+        setFreightLanes(JSON.parse(quote.freightLanes));
+      } catch (e) {
+        setFreightLanes([]);
+      }
+    } else {
+      setFreightLanes([]);
+    }
     setCurrentQuoteId(quote.id);
     
     alert(`Quote "${quote.quoteName}" loaded successfully!`);
@@ -608,6 +633,86 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     });
     
     yPos = (doc as any).lastAutoTable.finalY + 15;
+    
+    // Transportation / Freight Lanes Section (if any)
+    if (freightLanes.length > 0) {
+      // Check if we need a new page
+      if (yPos > pageHeight - 80) {
+        doc.addPage();
+        yPos = 20;
+      }
+      
+      doc.setFontSize(13);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(30, 30, 30);
+      doc.text("Transportation Services", 15, yPos);
+      yPos += 8;
+      
+      const inboundLanes = freightLanes.filter(l => l.type === "inbound");
+      const outboundLanes = freightLanes.filter(l => l.type === "outbound");
+      
+      if (outboundLanes.length > 0) {
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text("Outbound (Delivery from Warehouse)", 15, yPos);
+        yPos += 6;
+        
+        const outboundBody = outboundLanes.map(lane => [
+          lane.destination,
+          `${lane.pallets} pallets`,
+          `${lane.weight.toLocaleString()} lbs`,
+          `$${lane.rate.toFixed(2)}`
+        ]);
+        
+        autoTable(doc, {
+          startY: yPos,
+          head: [["Destination", "Load Size", "Weight", "Rate/Load"]],
+          body: outboundBody,
+          theme: "grid",
+          headStyles: { fillColor: companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99], textColor: 255, fontStyle: "bold" },
+          styles: { fontSize: 9, cellPadding: 4 },
+          columnStyles: {
+            0: { cellWidth: 80 },
+            1: { cellWidth: 35, halign: "center" },
+            2: { cellWidth: 35, halign: "center" },
+            3: { cellWidth: 40, halign: "right", fontStyle: "bold" }
+          }
+        });
+        yPos = (doc as any).lastAutoTable.finalY + 8;
+      }
+      
+      if (inboundLanes.length > 0) {
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text("Inbound (Pickup to Warehouse)", 15, yPos);
+        yPos += 6;
+        
+        const inboundBody = inboundLanes.map(lane => [
+          lane.origin,
+          `${lane.pallets} pallets`,
+          `${lane.weight.toLocaleString()} lbs`,
+          `$${lane.rate.toFixed(2)}`
+        ]);
+        
+        autoTable(doc, {
+          startY: yPos,
+          head: [["Pickup Location", "Load Size", "Weight", "Rate/Load"]],
+          body: inboundBody,
+          theme: "grid",
+          headStyles: { fillColor: companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99], textColor: 255, fontStyle: "bold" },
+          styles: { fontSize: 9, cellPadding: 4 },
+          columnStyles: {
+            0: { cellWidth: 80 },
+            1: { cellWidth: 35, halign: "center" },
+            2: { cellWidth: 35, halign: "center" },
+            3: { cellWidth: 40, halign: "right", fontStyle: "bold" }
+          }
+        });
+        yPos = (doc as any).lastAutoTable.finalY + 8;
+      }
+      
+      yPos += 7;
+    }
     
     // Terms & Disclosures Section (compact)
     if (yPos < pageHeight - 80) {
@@ -1316,6 +1421,162 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                     className="font-mono text-sm"
                   />
                 </div>
+              </CardContent>
+            </Card>
+            
+            {/* Transportation / Freight Lanes */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Truck className="h-5 w-5" />
+                  Transportation Services
+                </CardTitle>
+                <CardDescription>Add freight lanes for inbound/outbound shipping quotes</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Add New Lane */}
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const newLane: FreightLane = {
+                        id: Date.now().toString(),
+                        type: "outbound",
+                        origin: selectedFacilityData?.name || "",
+                        destination: "",
+                        rate: 0,
+                        pallets: 21,
+                        weight: 40000,
+                        notes: ""
+                      };
+                      setFreightLanes([...freightLanes, newLane]);
+                    }}
+                  >
+                    + Add Outbound Lane
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const newLane: FreightLane = {
+                        id: Date.now().toString(),
+                        type: "inbound",
+                        origin: "",
+                        destination: selectedFacilityData?.name || "",
+                        rate: 0,
+                        pallets: 21,
+                        weight: 40000,
+                        notes: ""
+                      };
+                      setFreightLanes([...freightLanes, newLane]);
+                    }}
+                  >
+                    + Add Inbound Lane
+                  </Button>
+                </div>
+                
+                {/* Freight Lanes List */}
+                {freightLanes.length === 0 ? (
+                  <p className="text-sm text-muted-foreground italic">No freight lanes added. Click above to add transportation quotes.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {freightLanes.map((lane, index) => (
+                      <div key={lane.id} className={`border rounded-lg p-3 ${lane.type === "inbound" ? "bg-green-50 dark:bg-green-950" : "bg-blue-50 dark:bg-blue-950"}`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className={`text-xs font-semibold uppercase ${lane.type === "inbound" ? "text-green-600" : "text-blue-600"}`}>
+                            {lane.type === "inbound" ? "Inbound (Pickup)" : "Outbound (Delivery)"}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 w-6 p-0 text-red-500 hover:text-red-700"
+                            onClick={() => setFreightLanes(freightLanes.filter(l => l.id !== lane.id))}
+                          >
+                            ×
+                          </Button>
+                        </div>
+                        <div className="grid md:grid-cols-5 gap-2">
+                          <div className="md:col-span-2">
+                            <Label className="text-xs">{lane.type === "inbound" ? "Pickup Address" : "Delivery Address"}</Label>
+                            <Input
+                              value={lane.type === "inbound" ? lane.origin : lane.destination}
+                              onChange={(e) => {
+                                const updated = [...freightLanes];
+                                if (lane.type === "inbound") {
+                                  updated[index].origin = e.target.value;
+                                } else {
+                                  updated[index].destination = e.target.value;
+                                }
+                                setFreightLanes(updated);
+                              }}
+                              placeholder="Full address"
+                              className="text-sm"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Pallets</Label>
+                            <Input
+                              type="number"
+                              value={lane.pallets}
+                              onChange={(e) => {
+                                const updated = [...freightLanes];
+                                updated[index].pallets = Number(e.target.value);
+                                setFreightLanes(updated);
+                              }}
+                              className="text-sm"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Weight (lbs)</Label>
+                            <Input
+                              type="number"
+                              value={lane.weight}
+                              onChange={(e) => {
+                                const updated = [...freightLanes];
+                                updated[index].weight = Number(e.target.value);
+                                setFreightLanes(updated);
+                              }}
+                              className="text-sm"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Rate ($)</Label>
+                            <Input
+                              type="number"
+                              value={lane.rate}
+                              onChange={(e) => {
+                                const updated = [...freightLanes];
+                                updated[index].rate = Number(e.target.value);
+                                setFreightLanes(updated);
+                              }}
+                              step="25"
+                              className="text-sm font-semibold"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    
+                    {/* Freight Summary */}
+                    {freightLanes.length > 0 && (
+                      <div className="border-t pt-3 mt-3">
+                        <div className="flex justify-between text-sm">
+                          <span className="font-semibold">Total Freight Lanes:</span>
+                          <span>{freightLanes.length}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Outbound:</span>
+                          <span>{freightLanes.filter(l => l.type === "outbound").length} lanes - ${freightLanes.filter(l => l.type === "outbound").reduce((sum, l) => sum + l.rate, 0).toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Inbound:</span>
+                          <span>{freightLanes.filter(l => l.type === "inbound").length} lanes - ${freightLanes.filter(l => l.type === "inbound").reduce((sum, l) => sum + l.rate, 0).toFixed(2)}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </CardContent>
             </Card>
 

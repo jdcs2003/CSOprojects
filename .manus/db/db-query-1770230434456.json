@@ -1,0 +1,25 @@
+{
+  "query": "SELECT id, quoteName, freightLanes FROM savedQuotes WHERE quoteName LIKE '%Sangria%' LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT id, quoteName, freightLanes FROM savedQuotes WHERE quoteName LIKE '%Sangria%' LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "quoteName": "Señor Sangria",
+      "freightLanes": "NULL"
+    },
+    {
+      "id": "2",
+      "quoteName": "Señor Sangria",
+      "freightLanes": "NULL"
+    },
+    {
+      "id": "3",
+      "quoteName": "Señor Sangria",
+      "freightLanes": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tquoteName\tfreightLanes\n1\tSeñor Sangria\tNULL\n2\tSeñor Sangria\tNULL\n3\tSeñor Sangria\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 405
+}

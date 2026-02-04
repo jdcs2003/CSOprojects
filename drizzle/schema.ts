@@ -123,6 +123,9 @@ export const savedQuotes = mysqlTable("savedQuotes", {
   handlingInRateOverride: int("handlingInRateOverride"),
   handlingOutRateOverride: int("handlingOutRateOverride"),
   
+  // Transportation/Freight Lanes (JSON stored as text)
+  freightLanes: text("freightLanes"), // JSON array of freight lane objects
+  
   // Terms & Disclosures
   quoteValidDays: int("quoteValidDays"),
   paymentTerms: varchar("paymentTerms", { length: 100 }),

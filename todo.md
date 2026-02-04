@@ -175,3 +175,11 @@
 - [x] Remove contract discount table from PDF export (internal use only)
 - [ ] Test PDF export to verify discount table removed
 - [ ] Test quote save and load end-to-end
+
+- [x] Add transportation/freight section to calculator UI
+- [x] Add freightLanes field to database schema
+- [x] Add freight lanes to save/load quote functions
+- [x] Add freight section to PDF export
+- [x] Include outbound rates: Union NJ ($700), Freehold NJ ($615), Bronx NY ($975)
+- [x] Include inbound rate: Washingtonville NY pickup ($1,050)
+- [ ] Update Señor Sangria saved quote with freight data via UI

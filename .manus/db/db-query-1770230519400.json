@@ -1,0 +1,38 @@
+{
+  "query": "SELECT id, quoteName FROM savedQuotes;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT id, quoteName FROM savedQuotes;",
+  "rows": [
+    {
+      "id": "1",
+      "quoteName": "Señor Sangria"
+    },
+    {
+      "id": "2",
+      "quoteName": "Señor Sangria"
+    },
+    {
+      "id": "3",
+      "quoteName": "Señor Sangria"
+    },
+    {
+      "id": "30001",
+      "quoteName": "LMS Reserve"
+    },
+    {
+      "id": "30002",
+      "quoteName": "LMS Reserve"
+    },
+    {
+      "id": "30003",
+      "quoteName": "LMS Reserve 020226"
+    },
+    {
+      "id": "60001",
+      "quoteName": "LMS Reserve 020226"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tquoteName\n1\tSeñor Sangria\n2\tSeñor Sangria\n3\tSeñor Sangria\n30001\tLMS Reserve\n30002\tLMS Reserve\n30003\tLMS Reserve 020226\n60001\tLMS Reserve 020226\n",
+  "stderr": "",
+  "execution_time_ms": 355
+}

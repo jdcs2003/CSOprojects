@@ -1,0 +1,554 @@
+{
+  "query": "DESCRIBE savedQuotes;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute DESCRIBE savedQuotes;",
+  "rows": [
+    {
+      "Field": "id",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "PRI",
+      "Default": "NULL",
+      "Extra": "auto_increment"
+    },
+    {
+      "Field": "quoteName",
+      "Type": "varchar(200)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "company",
+      "Type": "enum('L&M','Peach')",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "clientCompany",
+      "Type": "varchar(200)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "clientContact",
+      "Type": "varchar(100)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "clientAddress1",
+      "Type": "varchar(200)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "clientAddress2",
+      "Type": "varchar(100)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "clientCity",
+      "Type": "varchar(100)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "clientState",
+      "Type": "varchar(2)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "clientZip",
+      "Type": "varchar(10)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "clientPhone",
+      "Type": "varchar(20)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "clientEmail",
+      "Type": "varchar(320)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "facilityId",
+      "Type": "varchar(50)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "monthlyPallets",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "monthlyTurns",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "sqFtPerPallet",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "stackHeight",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "fullyLoadedLaborRate",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "inboundMinutes",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "outboundMinutes",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "storageMargin",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "handlingInMargin",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "handlingOutMargin",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "pickType",
+      "Type": "enum('full','layer','case')",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "monthlyOrders",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "casesPerOrder",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "labelsPerOrder",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "casePickRate",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "layerPickRate",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "palletSupplyFee",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "shrinkWrapFee",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "labelingFee",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "orderProcessingFee",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "cancellationFee",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "casePickMargin",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "palletSupplyMargin",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "shrinkWrapMargin",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "labelingMargin",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "orderProcessingMargin",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "tier1Name",
+      "Type": "varchar(50)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "tier1Length",
+      "Type": "varchar(50)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "tier1Discount",
+      "Type": "int(11)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "tier2Name",
+      "Type": "varchar(50)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "tier2Length",
+      "Type": "varchar(50)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "tier2Discount",
+      "Type": "int(11)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "tier3Name",
+      "Type": "varchar(50)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "tier3Length",
+      "Type": "varchar(50)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "tier3Discount",
+      "Type": "int(11)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "tier4Name",
+      "Type": "varchar(50)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "tier4Length",
+      "Type": "varchar(50)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "tier4Discount",
+      "Type": "int(11)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "selectedDiscountTier",
+      "Type": "varchar(20)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "storageRateOverride",
+      "Type": "int(11)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "handlingInRateOverride",
+      "Type": "int(11)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "handlingOutRateOverride",
+      "Type": "int(11)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "quoteValidDays",
+      "Type": "int(11)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "paymentTerms",
+      "Type": "varchar(100)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "minimumCommitment",
+      "Type": "varchar(100)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "customDisclosures",
+      "Type": "text",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "createdBy",
+      "Type": "varchar(100)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "createdAt",
+      "Type": "timestamp",
+      "Null": "NO",
+      "Key": "",
+      "Default": "CURRENT_TIMESTAMP",
+      "Extra": ""
+    },
+    {
+      "Field": "updatedAt",
+      "Type": "timestamp",
+      "Null": "NO",
+      "Key": "",
+      "Default": "CURRENT_TIMESTAMP",
+      "Extra": "DEFAULT_GENERATED on update CURRENT_TIMESTAMP"
+    },
+    {
+      "Field": "selectedFacility",
+      "Type": "varchar(50)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "laborRate",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "taxRate",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "cancellationMargin",
+      "Type": "int(11)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "monthlyStorageMinimum",
+      "Type": "int(11)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "freightLanes",
+      "Type": "text",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    }
+  ],
+  "messages": [],
+  "stdout": "Field\tType\tNull\tKey\tDefault\tExtra\nid\tint(11)\tNO\tPRI\tNULL\tauto_increment\nquoteName\tvarchar(200)\tNO\t\tNULL\t\ncompany\tenum('L&M','Peach')\tNO\t\tNULL\t\nclientCompany\tvarchar(200)\tYES\t\tNULL\t\nclientContact\tvarchar(100)\tYES\t\tNULL\t\nclientAddress1\tvarchar(200)\tYES\t\tNULL\t\nclientAddress2\tvarchar(100)\tYES\t\tNULL\t\nclientCity\tvarchar(100)\tYES\t\tNULL\t\nclientState\tvarchar(2)\tYES\t\tNULL\t\nclientZip\tvarchar(10)\tYES\t\tNULL\t\nclientPhone\tvarchar(20)\tYES\t\tNULL\t\nclientEmail\tvarchar(320)\tYES\t\tNULL\t\nfacilityId\tvarchar(50)\tNO\t\tNULL\t\nmonthlyPallets\tint(11)\tNO\t\tNULL\t\nmonthlyTurns\tint(11)\tNO\t\tNULL\t\nsqFtPerPallet\tint(11)\tNO\t\tNULL\t\nstackHeight\tint(11)\tNO\t\tNULL\t\nfullyLoadedLaborRate\tint(11)\tNO\t\tNULL\t\ninboundMinutes\tint(11)\tNO\t\tNULL\t\noutboundMinutes\tint(11)\tNO\t\tNULL\t\nstorageMargin\tint(11)\tNO\t\tNULL\t\nhandlingInMargin\tint(11)\tNO\t\tNULL\t\nhandlingOutMargin\tint(11)\tNO\t\tNULL\t\npickType\tenum('full','layer','case')\tNO\t\tNULL\t\nmonthlyOrders\tint(11)\tNO\t\tNULL\t\ncasesPerOrder\tint(11)\tNO\t\tNULL\t\nlabelsPerOrder\tint(11)\tNO\t\tNULL\t\ncasePickRate\tint(11)\tNO\t\tNULL\t\nlayerPickRate\tint(11)\tNO\t\tNULL\t\npalletSupplyFee\tint(11)\tNO\t\tNULL\t\nshrinkWrapFee\tint(11)\tNO\t\tNULL\t\nlabelingFee\tint(11)\tNO\t\tNULL\t\norderProcessingFee\tint(11)\tNO\t\tNULL\t\ncancellationFee\tint(11)\tNO\t\tNULL\t\ncasePickMargin\tint(11)\tNO\t\tNULL\t\npalletSupplyMargin\tint(11)\tNO\t\tNULL\t\nshrinkWrapMargin\tint(11)\tNO\t\tNULL\t\nlabelingMargin\tint(11)\tNO\t\tNULL\t\norderProcessingMargin\tint(11)\tNO\t\tNULL\t\ntier1Name\tvarchar(50)\tYES\t\tNULL\t\ntier1Length\tvarchar(50)\tYES\t\tNULL\t\ntier1Discount\tint(11)\tYES\t\tNULL\t\ntier2Name\tvarchar(50)\tYES\t\tNULL\t\ntier2Length\tvarchar(50)\tYES\t\tNULL\t\ntier2Discount\tint(11)\tYES\t\tNULL\t\ntier3Name\tvarchar(50)\tYES\t\tNULL\t\ntier3Length\tvarchar(50)\tYES\t\tNULL\t\ntier3Discount\tint(11)\tYES\t\tNULL\t\ntier4Name\tvarchar(50)\tYES\t\tNULL\t\ntier4Length\tvarchar(50)\tYES\t\tNULL\t\ntier4Discount\tint(11)\tYES\t\tNULL\t\nselectedDiscountTier\tvarchar(20)\tYES\t\tNULL\t\nstorageRateOverride\tint(11)\tYES\t\tNULL\t\nhandlingInRateOverride\tint(11)\tYES\t\tNULL\t\nhandlingOutRateOverride\tint(11)\tYES\t\tNULL\t\nquoteValidDays\tint(11)\tYES\t\tNULL\t\npaymentTerms\tvarchar(100)\tYES\t\tNULL\t\nminimumCommitment\tvarchar(100)\tYES\t\tNULL\t\ncustomDisclosures\ttext\tYES\t\tNULL\t\ncreatedBy\tvarchar(100)\tYES\t\tNULL\t\ncreatedAt\ttimestamp\tNO\t\tCURRENT_TIMESTAMP\t\nupdatedAt\ttimestamp\tNO\t\tCURRENT_TIMESTAMP\tDEFAULT_GENERATED on update CURRENT_TIMESTAMP\nselectedFacility\tvarchar(50)\tNO\t\tNULL\t\nlaborRate\tint(11)\tNO\t\tNULL\t\ntaxRate\tint(11)\tNO\t\tNULL\t\ncancellationMargin\tint(11)\tNO\t\tNULL\t\nmonthlyStorageMinimum\tint(11)\tYES\t\tNULL\t\nfreightLanes\ttext\tYES\t\tNULL\t\n",
+  "stderr": "",
+  "execution_time_ms": 348
+}
