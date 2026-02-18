@@ -202,3 +202,4 @@
 - [x] Update Cornerstone deal notes to reflect high profitability
 - [ ] Save checkpoint with updated pipeline
 - [x] Update Southern Glazer's pipeline value to $1.6M with zone breakdown details
+- [x] Add FBA Cross-Dock deal to pipeline (150 containers/mo, $400K/yr, Bristol PA)

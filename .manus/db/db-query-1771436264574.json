@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO pipelineDeals \n  (clientName, clientContact, clientEmail, clientPhone, dealName, serviceType, facility, company, stage, \n   estimatedMonthlyRevenue, estimatedAnnualRevenue, estimatedPallets, estimatedLoads, \n   keyServices, notes, probability, proposalDate)\nVALUES \n  ('FBA Cross-Dock', NULL, NULL, NULL, \n   'Container Cross-Dock & Straight Ship', 'crossdock', 'PA-1151', 'L&M', 'proposal_sent',\n   3333300, 40000000, NULL, 150,\n   '150 containers/month, cross-dock operations, straight ship to Amazon FBA fulfillment centers',\n   'FBA cross-dock opportunity at Bristol PA (PA-1151). 150 containers per month, straight ship model. $400K annual estimated revenue. Pitched to client.',\n   55, NOW());",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute INSERT INTO pipelineDeals \n  (clientName, clientContact, clientEmail, clientPhone, dealName, serviceType, facility, company, stage, \n   estimatedMonthlyRevenue, estimatedAnnualRevenue, estimatedPallets, estimatedLoads, \n   keyServices, notes, probability, proposalDate)\nVALUES \n  ('FBA Cross-Dock', NULL, NULL, NULL, \n   'Container Cross-Dock & Straight Ship', 'crossdock', 'PA-1151', 'L&M', 'proposal_sent',\n   3333300, 40000000, NULL, 150,\n   '150 containers/month, cross-dock operations, straight ship to Amazon FBA fulfillment centers',\n   'FBA cross-dock opportunity at Bristol PA (PA-1151). 150 containers per month, straight ship model. $400K annual estimated revenue. Pitched to client.',\n   55, NOW());",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 65
+}
