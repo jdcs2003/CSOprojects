@@ -195,5 +195,10 @@
 - [x] Add pipeline link to internal home page
 - [x] Add /pipeline route to App.tsx
 - [x] Test pipeline dashboard
-- [ ] Save checkpoint with pipeline feature
+- [x] Save checkpoint with pipeline feature
 - [x] Pre-populate pipeline with Southern Glazer's Wine & Spirits deal (~$588K/yr, 1,254 cases/week, 5 zones PA)
+- [x] Review Wine Group co-pack Excel file and proposal site for deal details
+- [x] Add Wine Group Co-Packing as new pipeline deal (~$100K)
+- [x] Update Cornerstone deal notes to reflect high profitability
+- [ ] Save checkpoint with updated pipeline
+- [x] Update Southern Glazer's pipeline value to $1.6M with zone breakdown details
