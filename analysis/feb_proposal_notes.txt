@@ -1,0 +1,46 @@
+L&M Cornerstone Proposal February PDF - Key Details:
+
+Page 1:
+- L&M Distribution and Logistics logo with "WE CONNECT YOU" tagline
+- Title: "Comprehensive Pricing Proposal"
+- To: Cornerstone | From: L&M Distribution and Logistics | Date: February 17, 2026
+- Section 1: Transportation Services
+  - All-Inclusive Rate: $769.65 per load
+  - Fuel Considerations: Current DOE PADD 1B diesel: $3.886/gallon (Feb 2026). A 15%+ spike or reduction may trigger rate adjustment.
+  - Operational Details: Pickup within 1-4 days from Edison, NJ. Yard staging or warehouse unload available. Up to 2 trailers can be dropped at destination. Based on 68 boxcars (272 loads) historical volume
+- Section 2: Cross-Dock Services
+  - MGX Edison to L&M Facilities Transfer: $16.00 per pallet
+
+Page 2:
+- Section 3: PLCB Rework Services (PA-510 Bensalem Facility)
+  - Repack (case, labels, seal): $20.00/case
+  - Shrink Wrap: $4.00/pallet
+  - Unload (refused): $0.60/case
+  - Case Destruction: $3.50/case
+- Section 4: Ad-Hoc Services
+  - Unplanned/Refused PLCB Rates:
+  - Slipsheet Unload: $0.20/case | Pallet Supply Fee: $12.00/pallet
+  - Handling In: $8.00/pallet | Handling Out: $8.00/pallet
+  - PLCB Delivery: $650.00 all-in | LTL Redelivery: $400.00
+  - Out-of-Scope Labor: Standard: $50.00/hour | Weekend: $75.00/hour
+  - Note: Ad-hoc rates may include premiums for weekend unloads and short notice dispatch
+- Section 5: L&M Warehouse Locations
+  - SC-577: 577 Celriver Rd, Rock Hill, SC 29730
+  - PA-1151: 1151 Beaver St, Bristol, PA 19007
+  - PA-510 (PLCB Re-work): 510 Station Ave, Bensalem, PA 19020
+- Section 6: Service Commitment
+  - On-time delivery rate of 98.5% or greater
+
+Page 3:
+- Contact: cornerstonesupport@lmwarehousing.com
+- Section 7: Agreement and Authorization
+  - Signature blocks for both Cornerstone and L&M Distribution and Logistics
+  - Fields: Signature, Name & Title, Date
+
+DIFFERENCES FROM MY GENERATED VERSION:
+- This version has a cleaner, more modern layout
+- Uses the L&M logo with "WE CONNECT YOU" tagline
+- Ad-hoc section includes PLCB Delivery ($650 all-in) and LTL Redelivery ($400)
+- Has Out-of-Scope Labor rates ($50/hr standard, $75/hr weekend)
+- Fuel language is softer: "may trigger rate adjustment" vs my "initiate rate review discussion"
+- No insurance or payment terms mentioned in this version

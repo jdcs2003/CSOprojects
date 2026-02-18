@@ -139,3 +139,52 @@ export const savedQuotes = mysqlTable("savedQuotes", {
 
 export type SavedQuote = typeof savedQuotes.$inferSelect;
 export type InsertSavedQuote = typeof savedQuotes.$inferInsert;
+
+/**
+ * Pipeline deals table
+ * Tracks all proposals/deals through sales pipeline stages
+ */
+export const pipelineDeals = mysqlTable("pipelineDeals", {
+  id: int("id").autoincrement().primaryKey(),
+  
+  // Client info
+  clientName: varchar("clientName", { length: 200 }).notNull(),
+  clientContact: varchar("clientContact", { length: 200 }),
+  clientEmail: varchar("clientEmail", { length: 320 }),
+  clientPhone: varchar("clientPhone", { length: 20 }),
+  
+  // Deal info
+  dealName: varchar("dealName", { length: 300 }).notNull(),
+  serviceType: mysqlEnum("serviceType", ["warehousing", "transportation", "ecommerce", "crossdock", "rework", "mixed"]).notNull(),
+  facility: varchar("facility", { length: 100 }),
+  company: mysqlEnum("company", ["L&M", "Peach"]).default("L&M").notNull(),
+  
+  // Pipeline stage
+  stage: mysqlEnum("stage", ["lead", "proposal_sent", "under_review", "negotiating", "signed", "active", "lost"]).default("lead").notNull(),
+  
+  // Financials
+  estimatedMonthlyRevenue: int("estimatedMonthlyRevenue"), // Store as cents
+  estimatedAnnualRevenue: int("estimatedAnnualRevenue"), // Store as cents
+  estimatedPallets: int("estimatedPallets"),
+  estimatedLoads: int("estimatedLoads"), // For transportation deals
+  
+  // Dates
+  proposalDate: timestamp("proposalDate"),
+  expectedCloseDate: timestamp("expectedCloseDate"),
+  actualCloseDate: timestamp("actualCloseDate"),
+  
+  // Linked quote (optional)
+  savedQuoteId: int("savedQuoteId"),
+  
+  // Notes & details
+  keyServices: text("keyServices"), // JSON array of service descriptions
+  notes: text("notes"),
+  probability: int("probability"), // 0-100 percent
+  
+  createdBy: varchar("createdBy", { length: 100 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type PipelineDeal = typeof pipelineDeals.$inferSelect;
+export type InsertPipelineDeal = typeof pipelineDeals.$inferInsert;

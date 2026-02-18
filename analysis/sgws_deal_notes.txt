@@ -1,0 +1,40 @@
+Southern Glazer's Wine & Spirits - Direct Delivery Deal Summary
+================================================================
+
+Client: Southern Glazer's Wine & Spirits (SGWS)
+Service Type: Transportation / Direct Delivery
+Proposal Date: January 14, 2026
+
+Coverage: 244 locations across Pennsylvania
+Weekly Volume: 1,254 cases
+Service Zones: 5 zones (Pittsburgh Metro, Pittsburgh Surrounding, Central PA, Northern PA, Premium)
+
+Rate Card (per case):
+- Zone 1 Pittsburgh Metro: $5.50 (long-term) / $6.00 (with 10% surcharge)
+- Zone 2 Pittsburgh Surrounding: $7.75 / $8.525
+- Zone 3 Central PA: $10.70 / $11.77
+- Zone 4 Northern PA: $12.00 / $13.20
+- Zone 5 Premium: $18.00 / $19.80
+- Transfer surcharge (Limerick to Pittsburgh): $2.25 / $2.475
+
+Weekly Volume by Zone:
+- Zone 1: 66.4 cases (6 locations)
+- Zone 2: 828.9 cases (111 locations)
+- Zone 3: 91.4 cases (58 locations)
+- Zone 4: 210.3 cases (33 locations)
+- Zone 5: 56.6 cases (36 locations)
+
+Estimated Weekly Revenue (long-term rates):
+- Zone 1: 66.4 * $5.50 = $365.20
+- Zone 2: 828.9 * $7.75 = $6,423.98
+- Zone 3: 91.4 * $10.70 = $977.98
+- Zone 4: 210.3 * $12.00 = $2,523.60
+- Zone 5: 56.6 * $18.00 = $1,018.80
+Total Weekly: ~$11,309.56
+Total Monthly: ~$49,041 (4.33 weeks)
+Total Annual: ~$588,497
+
+Contract: 3 years, CPI up to 5% annually
+Start: Q1 2026
+Payment: Net 30
+10% surcharge until L&M awarded >90% of Zone 1 & 2 volume

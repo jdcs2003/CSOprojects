@@ -43,6 +43,13 @@
       "when": 1770230137646,
       "tag": "0005_rapid_the_spike",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1771433274509,
+      "tag": "0006_adorable_pandemic",
+      "breakpoints": true
     }
   ]
 }

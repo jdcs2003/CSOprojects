@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calculator, Building2, ArrowRight } from "lucide-react";
+import { Calculator, Building2, ArrowRight, TrendingUp } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function InternalHome() {
@@ -34,7 +34,7 @@ export default function InternalHome() {
           </div>
 
           {/* Tools Grid */}
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             {/* Pricing Calculator Card */}
             <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setLocation("/calculator")}>
               <CardHeader>
@@ -65,6 +65,41 @@ export default function InternalHome() {
 
                 <Button className="w-full" onClick={() => setLocation("/calculator")}>
                   Open Calculator
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Pipeline Card */}
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-l-4 border-l-purple-500" onClick={() => setLocation("/pipeline")}>
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="h-12 w-12 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                    <TrendingUp className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <CardTitle>Sales Pipeline</CardTitle>
+                    <CardDescription>Deal tracking & forecasting</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Track all proposals and deals through the sales pipeline. Monitor revenue forecasts and deal stages.
+                </p>
+                
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold">Features:</p>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Kanban board & table views</li>
+                    <li>• Revenue forecasting & probability</li>
+                    <li>• Deal stage management</li>
+                    <li>• Pipeline value rollup</li>
+                  </ul>
+                </div>
+
+                <Button className="w-full" onClick={() => setLocation("/pipeline")}>
+                  Open Pipeline
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </CardContent>
@@ -139,7 +174,7 @@ export default function InternalHome() {
                 <CardTitle className="text-sm font-medium text-muted-foreground">Tools Available</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold">2</p>
+                <p className="text-2xl font-bold">3</p>
               </CardContent>
             </Card>
           </div>

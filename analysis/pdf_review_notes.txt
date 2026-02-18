@@ -1,0 +1,26 @@
+PDF Review - Updated Cornerstone Proposal (2 pages)
+
+Page 1: Header, contact info, Sections 1-4 (Transportation, Cross-dock, PLCB Rework, Ad-Hoc starts)
+- All 3 transport lanes with all-in rates
+- Fuel clause with 15% DOE trigger
+- Cross-dock $16/pallet
+- PLCB rework table (4 items)
+- Ad-hoc starts with Slipsheet Unload visible at bottom
+
+Page 2: Ad-hoc continues, Sections 5-7
+- Remaining ad-hoc items: Pallet Supply $12, Handling In/Out $8, PLCB Delivery $650, LTL Redelivery $400
+- Out-of-Scope Labor: $50/hr standard, $75/hr weekend
+- Facility Network (no sq ft - removed as requested)
+- Service Commitment: Net 30, 90 days validity, $100K cargo (per contract minimum)
+- Authorization & Acceptance with signature blocks
+- Footer on both pages
+
+All requested changes verified:
+- Cargo: $100K (per contract minimum) ✓
+- Payment Terms: Net 30 ✓
+- Quote Validity: 90 days ✓
+- No square footage ✓
+- PLCB Delivery $650 ✓
+- LTL Redelivery $400 ✓
+- Out-of-Scope Labor $50/$75 ✓
+- Clean 2-page format ✓

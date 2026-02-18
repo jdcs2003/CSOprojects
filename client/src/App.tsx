@@ -9,6 +9,7 @@ import Calculator from "@/pages/Calculator";
 import PeachCalculator from "@/pages/PeachCalculator";
 import CapacityTracking from "./pages/CapacityTracking";
 import InternalHome from "./pages/InternalHome";
+import Pipeline from "./pages/Pipeline";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -19,6 +20,7 @@ function Router() {
       <Route path={"/calculator"} component={Calculator} />
         <Route path="/capacity" component={CapacityTracking} />
         <Route path="/peachcalculator" component={PeachCalculator} />
+        <Route path="/pipeline" component={Pipeline} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

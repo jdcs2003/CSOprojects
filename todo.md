@@ -183,3 +183,17 @@
 - [x] Include outbound rates: Union NJ ($700), Freehold NJ ($615), Bronx NY ($975)
 - [x] Include inbound rate: Washingtonville NY pickup ($1,050)
 - [ ] Update Señor Sangria saved quote with freight data via UI
+- [ ] Create standalone Cornerstone transportation proposal PDF
+- [ ] Add Transportation Quote mode to pricing calculator (separate from warehouse mode)
+
+- [x] Create pipeline deals database table (schema)
+- [x] Add pipeline backend procedures (CRUD)
+- [x] Build pipeline dashboard page with kanban/table view
+- [x] Pre-populate pipeline with Third Deck Brewing deal
+- [x] Pre-populate pipeline with Cornerstone Systems (Wine Group) deal
+- [x] Pre-populate pipeline with Señor Sangria deal
+- [x] Add pipeline link to internal home page
+- [x] Add /pipeline route to App.tsx
+- [x] Test pipeline dashboard
+- [ ] Save checkpoint with pipeline feature
+- [x] Pre-populate pipeline with Southern Glazer's Wine & Spirits deal (~$588K/yr, 1,254 cases/week, 5 zones PA)

@@ -4,7 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { getDb } from "./db";
-import { facilityCapacity, savedQuotes } from "../drizzle/schema";
+import { facilityCapacity, savedQuotes, pipelineDeals } from "../drizzle/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { makeRequest, GeocodingResult } from "./_core/map";
 
@@ -305,6 +305,110 @@ export const appRouter = router({
         if (!db) throw new Error("Database not available");
         
         await db.delete(savedQuotes).where(eq(savedQuotes.id, input.id));
+        return { success: true };
+      }),
+  }),
+
+  // Pipeline deals router
+  pipeline: router({
+    getAll: publicProcedure
+      .query(async () => {
+        const db = await getDb();
+        if (!db) return [];
+        return await db.select().from(pipelineDeals).orderBy(desc(pipelineDeals.updatedAt));
+      }),
+
+    getById: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return null;
+        const results = await db.select().from(pipelineDeals).where(eq(pipelineDeals.id, input.id));
+        return results[0] || null;
+      }),
+
+    create: publicProcedure
+      .input(z.object({
+        clientName: z.string(),
+        clientContact: z.string().optional(),
+        clientEmail: z.string().optional(),
+        clientPhone: z.string().optional(),
+        dealName: z.string(),
+        serviceType: z.enum(["warehousing", "transportation", "ecommerce", "crossdock", "rework", "mixed"]),
+        facility: z.string().optional(),
+        company: z.enum(["L&M", "Peach"]),
+        stage: z.enum(["lead", "proposal_sent", "under_review", "negotiating", "signed", "active", "lost"]),
+        estimatedMonthlyRevenue: z.number().optional(),
+        estimatedAnnualRevenue: z.number().optional(),
+        estimatedPallets: z.number().optional(),
+        estimatedLoads: z.number().optional(),
+        proposalDate: z.date().optional(),
+        expectedCloseDate: z.date().optional(),
+        actualCloseDate: z.date().optional(),
+        savedQuoteId: z.number().optional(),
+        keyServices: z.string().optional(),
+        notes: z.string().optional(),
+        probability: z.number().optional(),
+        createdBy: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const result = await db.insert(pipelineDeals).values(input);
+        return { success: true, id: Number((result as any).insertId) };
+      }),
+
+    update: publicProcedure
+      .input(z.object({
+        id: z.number(),
+        clientName: z.string().optional(),
+        clientContact: z.string().optional(),
+        clientEmail: z.string().optional(),
+        clientPhone: z.string().optional(),
+        dealName: z.string().optional(),
+        serviceType: z.enum(["warehousing", "transportation", "ecommerce", "crossdock", "rework", "mixed"]).optional(),
+        facility: z.string().optional(),
+        company: z.enum(["L&M", "Peach"]).optional(),
+        stage: z.enum(["lead", "proposal_sent", "under_review", "negotiating", "signed", "active", "lost"]).optional(),
+        estimatedMonthlyRevenue: z.number().optional(),
+        estimatedAnnualRevenue: z.number().optional(),
+        estimatedPallets: z.number().optional(),
+        estimatedLoads: z.number().optional(),
+        proposalDate: z.date().optional(),
+        expectedCloseDate: z.date().optional(),
+        actualCloseDate: z.date().optional(),
+        savedQuoteId: z.number().optional(),
+        keyServices: z.string().optional(),
+        notes: z.string().optional(),
+        probability: z.number().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const { id, ...updateData } = input;
+        await db.update(pipelineDeals).set(updateData).where(eq(pipelineDeals.id, id));
+        return { success: true };
+      }),
+
+    delete: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        await db.delete(pipelineDeals).where(eq(pipelineDeals.id, input.id));
+        return { success: true };
+      }),
+
+    // Update just the stage (for drag-and-drop)
+    updateStage: publicProcedure
+      .input(z.object({
+        id: z.number(),
+        stage: z.enum(["lead", "proposal_sent", "under_review", "negotiating", "signed", "active", "lost"]),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        await db.update(pipelineDeals).set({ stage: input.stage }).where(eq(pipelineDeals.id, input.id));
         return { success: true };
       }),
   }),
