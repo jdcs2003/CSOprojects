@@ -1,8 +1,20 @@
+import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, Clock, Building2 } from "lucide-react";
+import { getLoginUrl } from "@/const";
+import { Building2, LogIn, Loader2, BarChart3, Calculator, TrendingUp } from "lucide-react";
+import { useLocation } from "wouter";
 
 export default function Home() {
+  const { user, loading, isAuthenticated } = useAuth();
+  const [, navigate] = useLocation();
+
+  // If authenticated, redirect to internal home
+  if (isAuthenticated && user) {
+    navigate("/internal");
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col">
       {/* Header */}
@@ -17,73 +29,61 @@ export default function Home() {
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center p-4">
         <div className="max-w-2xl w-full space-y-8">
-          {/* Expiration Notice Card */}
           <Card className="border-2 shadow-xl">
             <CardHeader className="text-center space-y-4 pb-4">
-              <div className="mx-auto h-16 w-16 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-                <Clock className="h-8 w-8" />
+              <div className="mx-auto h-16 w-16 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                <Building2 className="h-8 w-8" />
               </div>
               <div>
-                <CardTitle className="text-2xl md:text-3xl">Quote Has Expired</CardTitle>
+                <CardTitle className="text-2xl md:text-3xl">L&M Distribution & Logistics</CardTitle>
                 <CardDescription className="text-base mt-2">
-                  This proposal is no longer active
+                  Pricing Calculator & Sales Pipeline
                 </CardDescription>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="text-center space-y-4">
-                <p className="text-muted-foreground">
-                  Thank you for your interest in L&M Distribution and Logistics warehousing services. 
-                  This specific proposal has expired and is no longer available.
-                </p>
-                
-                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg space-y-3">
-                  <p className="font-semibold text-lg">Interested in our services?</p>
-                  <p className="text-sm text-muted-foreground">
-                    Our team is ready to create a new custom proposal tailored to your current needs.
-                  </p>
+              {/* Features Overview */}
+              <div className="grid sm:grid-cols-3 gap-4">
+                <div className="text-center p-4 rounded-lg bg-slate-100 dark:bg-slate-800 space-y-2">
+                  <Calculator className="h-6 w-6 mx-auto text-primary" />
+                  <p className="text-sm font-medium">Pricing Calculator</p>
+                  <p className="text-xs text-muted-foreground">Warehouse & logistics quotes</p>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-slate-100 dark:bg-slate-800 space-y-2">
+                  <BarChart3 className="h-6 w-6 mx-auto text-primary" />
+                  <p className="text-sm font-medium">Sales Pipeline</p>
+                  <p className="text-xs text-muted-foreground">Deal tracking & forecasting</p>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-slate-100 dark:bg-slate-800 space-y-2">
+                  <TrendingUp className="h-6 w-6 mx-auto text-primary" />
+                  <p className="text-sm font-medium">Capacity Tracking</p>
+                  <p className="text-xs text-muted-foreground">Facility utilization</p>
                 </div>
               </div>
 
-              {/* Contact Section */}
-              <div className="pt-4 border-t">
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Mail className="h-5 w-5" />
-                    <span className="text-sm">Contact our sales team:</span>
-                  </div>
-                  <Button 
-                    size="lg"
-                    onClick={() => window.location.href = 'mailto:sales@lmwarehousing.com'}
-                    className="font-semibold"
-                  >
-                    sales@lmwarehousing.com
+              {/* Login Button */}
+              <div className="pt-4">
+                {loading ? (
+                  <Button size="lg" className="w-full font-semibold" disabled>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Checking authentication...
                   </Button>
-                </div>
+                ) : (
+                  <Button 
+                    size="lg" 
+                    className="w-full font-semibold"
+                    onClick={() => window.location.href = getLoginUrl()}
+                  >
+                    <LogIn className="mr-2 h-5 w-5" />
+                    Sign In to Continue
+                  </Button>
+                )}
               </div>
 
-              {/* Services Overview */}
-              <div className="pt-6 border-t">
-                <p className="text-sm font-semibold mb-3 text-center">Our Warehousing Services Include:</p>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <div className="flex items-start gap-2 text-sm">
-                    <Building2 className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                    <span>Climate-controlled storage</span>
-                  </div>
-                  <div className="flex items-start gap-2 text-sm">
-                    <Building2 className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                    <span>Bonded warehouse options</span>
-                  </div>
-                  <div className="flex items-start gap-2 text-sm">
-                    <Building2 className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                    <span>Multi-state distribution</span>
-                  </div>
-                  <div className="flex items-start gap-2 text-sm">
-                    <Building2 className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                    <span>WMS technology integration</span>
-                  </div>
-                </div>
-              </div>
+              {/* Footer Info */}
+              <p className="text-center text-xs text-muted-foreground pt-2">
+                Internal tool for L&M team members. Contact your administrator for access.
+              </p>
             </CardContent>
           </Card>
 
