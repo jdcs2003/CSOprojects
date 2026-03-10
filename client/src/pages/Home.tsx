@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLoginUrl } from "@/const";
 import { Building2, LogIn, Loader2, BarChart3, Calculator, TrendingUp } from "lucide-react";
+import { useEffect } from "react";
 import { useLocation } from "wouter";
 
 export default function Home() {
@@ -10,8 +11,13 @@ export default function Home() {
   const [, navigate] = useLocation();
 
   // If authenticated, redirect to internal home
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      navigate("/internal");
+    }
+  }, [isAuthenticated, user, navigate]);
+
   if (isAuthenticated && user) {
-    navigate("/internal");
     return null;
   }
 
