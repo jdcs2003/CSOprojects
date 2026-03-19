@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { Calculator as CalcIcon, Building2, DollarSign, Users, FileDown, Package, Layers, Box, Truck } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -40,16 +41,16 @@ const defaultFacilities: Facility[] = [
     ticam: 1.20,
     totalCost: 10.48,
     company: "L&M",
-    notes: "Climate controlled + Bonded storage available"
+    notes: "Climate-controlled + Bonded storage available"
   },
   {
     id: "pa-1151",
     name: "PA-1151 (Bristol - 226,000 sq ft)",
     baseRent: 5.00,
-    ticam: 0,
-    totalCost: 5.00,
+    ticam: 2.00,
+    totalCost: 7.00,
     company: "L&M",
-    notes: "NNN included"
+    notes: "Ambient | $5.00 + $2.00 NNN"
   },
   {
     id: "pa-13200",
@@ -58,7 +59,7 @@ const defaultFacilities: Facility[] = [
     ticam: 2.00,
     totalCost: 9.16,
     company: "L&M",
-    notes: "Philadelphia location"
+    notes: "Climate-controlled | Philadelphia location"
   },
   {
     id: "nj-2279",
@@ -67,7 +68,7 @@ const defaultFacilities: Facility[] = [
     ticam: 0,
     totalCost: 9.28,
     company: "L&M",
-    notes: "TICAM TBD"
+    notes: "Ambient | TICAM TBD"
   },
   {
     id: "sc-577",
@@ -76,7 +77,7 @@ const defaultFacilities: Facility[] = [
     ticam: 2.00,
     totalCost: 9.50,
     company: "L&M",
-    notes: ""
+    notes: "Ambient"
   },
 
 ];
@@ -114,6 +115,21 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const [labelingFee, setLabelingFee] = useState<number>(0.50);
   const [orderProcessingFee, setOrderProcessingFee] = useState<number>(10.00);
   const [cancellationFee, setCancellationFee] = useState<number>(25.00);
+  
+  // VAS Toggle switches (on/off per service)
+  const [vasToggles, setVasToggles] = useState<Record<string, boolean>>({
+    casePick: false,
+    layerPick: false,
+    palletSupply: true,
+    shrinkWrap: true,
+    labeling: true,
+    orderProcessing: true,
+    cancellation: true,
+  });
+  
+  const toggleVas = (key: string) => {
+    setVasToggles(prev => ({ ...prev, [key]: !prev[key] }));
+  };
   const [pickType, setPickType] = useState<string>("full");
   const [casesPerOrder, setCasesPerOrder] = useState<number>(0);
   const [labelsPerOrder, setLabelsPerOrder] = useState<number>(1);
@@ -533,12 +549,18 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     let rightY = yInfoStart + 7;
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8.5);
+    // Determine climate type from facility notes
+    const facilityNotes = selectedFacilityData.notes || "";
+    const isClimateControlled = facilityNotes.toLowerCase().includes("climate");
+    const storageType = isClimateControlled ? "Climate-controlled" : "Ambient";
+    
     const rightLines = [
       companyName,
       "sales@lmwarehousing.com",
       "",
       "Primary Facility:",
       selectedFacilityData.name,
+      `${storageType} Storage`,
     ];
     rightLines.forEach(line => {
       doc.text(`  ${line}`, rightX + 1, rightY);
@@ -594,15 +616,15 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     const col2Widths = [contentWidth * 0.55, contentWidth * 0.45];
     yPos = tableHeader(["Service", "Rate"], col2Widths, yPos);
     
-    const vasItems: [string, string][] = [
-      ["Case Pick", `$${casePickRate.toFixed(2)}/case`],
-      ["Layer Pick", `$${layerPickRate.toFixed(2)}/case`],
-      ["Pallet Supply", `$${palletSupplyFee.toFixed(2)}/pallet`],
-      ["Shrink Wrap", `$${shrinkWrapFee.toFixed(2)}/pallet`],
-      ["Labeling", `$${labelingFee.toFixed(2)}/label`],
-      ["Order Processing", `$${orderProcessingFee.toFixed(2)}/order`],
-      ["Cancellation/Restock", `$${cancellationFee.toFixed(2)}/order`]
-    ];
+    // Only include toggled-on VAS items in the PDF
+    const vasItems: [string, string][] = [];
+    if (vasToggles.casePick && pickType === "case") vasItems.push(["Case Pick", `$${casePickRate.toFixed(2)}/case`]);
+    if (vasToggles.layerPick && pickType === "layer") vasItems.push(["Layer Pick", `$${layerPickRate.toFixed(2)}/case`]);
+    if (vasToggles.palletSupply) vasItems.push(["Pallet Supply", `$${palletSupplyFee.toFixed(2)}/pallet`]);
+    if (vasToggles.shrinkWrap) vasItems.push(["Shrink Wrap", `$${shrinkWrapFee.toFixed(2)}/pallet`]);
+    if (vasToggles.labeling) vasItems.push(["Labeling", `$${labelingFee.toFixed(2)}/label`]);
+    if (vasToggles.orderProcessing) vasItems.push(["Order Processing", `$${orderProcessingFee.toFixed(2)}/order`]);
+    if (vasToggles.cancellation) vasItems.push(["Cancellation/Restock", `$${cancellationFee.toFixed(2)}/order`]);
     
     vasItems.forEach(item => {
       yPos = tableRow(item, col2Widths, yPos);
@@ -827,21 +849,22 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const recommendedHandlingOutRate = handlingOutCost * (1 + handlingOutMargin / 100);
   const estimatedMonthlyHandlingOut = recommendedHandlingOutRate * monthlyPallets * monthlyTurns;
   
-  // Value-Added Services Calculations
+  // Value-Added Services Calculations (respecting toggle switches)
+  const isPickEnabled = (pickType === "layer" && vasToggles.layerPick) || (pickType === "case" && vasToggles.casePick);
   const pickRatePerCase = pickType === "layer" ? layerPickRate : pickType === "case" ? casePickRate : 0;
-  const monthlyCasePickCost = pickRatePerCase * casesPerOrder * monthlyOrders;
+  const monthlyCasePickCost = isPickEnabled ? pickRatePerCase * casesPerOrder * monthlyOrders : 0;
   const monthlyCasePickRate = monthlyCasePickCost * (1 + casePickMargin / 100);
   
-  const monthlyPalletSupplyCost = palletSupplyFee * monthlyOrders;
+  const monthlyPalletSupplyCost = vasToggles.palletSupply ? palletSupplyFee * monthlyOrders : 0;
   const monthlyPalletSupplyRate = monthlyPalletSupplyCost * (1 + palletSupplyMargin / 100);
   
-  const monthlyShrinkWrapCost = shrinkWrapFee * monthlyOrders;
+  const monthlyShrinkWrapCost = vasToggles.shrinkWrap ? shrinkWrapFee * monthlyOrders : 0;
   const monthlyShrinkWrapRate = monthlyShrinkWrapCost * (1 + shrinkWrapMargin / 100);
   
-  const monthlyLabelingCost = labelingFee * labelsPerOrder * monthlyOrders;
+  const monthlyLabelingCost = vasToggles.labeling ? labelingFee * labelsPerOrder * monthlyOrders : 0;
   const monthlyLabelingRate = monthlyLabelingCost * (1 + labelingMargin / 100);
   
-  const monthlyOrderProcessingCost = orderProcessingFee * monthlyOrders;
+  const monthlyOrderProcessingCost = vasToggles.orderProcessing ? orderProcessingFee * monthlyOrders : 0;
   const monthlyOrderProcessingRate = monthlyOrderProcessingCost * (1 + orderProcessingMargin / 100);
   
   const totalValueAddedServices = monthlyCasePickRate + monthlyPalletSupplyRate + monthlyShrinkWrapRate + monthlyLabelingRate + monthlyOrderProcessingRate;
@@ -1246,7 +1269,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
             <Card>
               <CardHeader>
                 <CardTitle>Value-Added Services</CardTitle>
-                <CardDescription>Configure pick type, order volume, and service fees</CardDescription>
+                <CardDescription>Toggle services on/off per quote. Only enabled services appear on the PDF proposal.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Pick Type Selection */}
@@ -1266,7 +1289,10 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                     </Button>
                     <Button
                       variant={pickType === "layer" ? "default" : "outline"}
-                      onClick={() => setPickType("layer")}
+                      onClick={() => {
+                        setPickType("layer");
+                        setVasToggles(prev => ({ ...prev, layerPick: true, casePick: false }));
+                      }}
                       className="h-auto py-3 flex flex-col items-center gap-2"
                     >
                       <Layers className="h-5 w-5" />
@@ -1277,7 +1303,10 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                     </Button>
                     <Button
                       variant={pickType === "case" ? "default" : "outline"}
-                      onClick={() => setPickType("case")}
+                      onClick={() => {
+                        setPickType("case");
+                        setVasToggles(prev => ({ ...prev, casePick: true, layerPick: false }));
+                      }}
                       className="h-auto py-3 flex flex-col items-center gap-2"
                     >
                       <Box className="h-5 w-5" />
@@ -1325,71 +1354,168 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                   </div>
                 </div>
                 
-                {/* Service Rates */}
+                {/* VAS Toggle Switches with Editable Rates */}
                 <div className="space-y-4">
-                  <h4 className="font-semibold">Service Rates & Margins</h4>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {pickType !== "full" && (
-                      <div className="space-y-2">
-                        <Label htmlFor="case-pick-rate">{pickType === "layer" ? "Layer" : "Case"} Pick Rate ($/case)</Label>
-                        <Input
-                          id="case-pick-rate"
-                          type="number"
-                          value={pickType === "layer" ? layerPickRate : casePickRate}
-                          onChange={(e) => pickType === "layer" ? setLayerPickRate(Number(e.target.value)) : setCasePickRate(Number(e.target.value))}
-                          step="0.05"
-                        />
+                  <h4 className="font-semibold">Service Toggles & Rates</h4>
+                  <p className="text-xs text-muted-foreground">Toggle each service on/off. Only enabled services will appear on the client-facing PDF proposal.</p>
+                  
+                  <div className="space-y-3">
+                    {/* Case Pick Toggle */}
+                    {pickType === "case" && (
+                      <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.casePick ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
+                        <div className="flex items-center gap-3">
+                          <Switch checked={vasToggles.casePick} onCheckedChange={() => toggleVas('casePick')} />
+                          <div>
+                            <div className="font-medium text-sm">Case Pick</div>
+                            <div className="text-xs text-muted-foreground">Per case picking fee</div>
+                          </div>
+                        </div>
+                        <div className="w-28">
+                          <Input
+                            type="number"
+                            value={casePickRate}
+                            onChange={(e) => setCasePickRate(Number(e.target.value))}
+                            step="0.05"
+                            className="h-8 text-sm text-right"
+                            disabled={!vasToggles.casePick}
+                          />
+                          <div className="text-xs text-muted-foreground text-right mt-0.5">$/case</div>
+                        </div>
                       </div>
                     )}
-                    <div className="space-y-2">
-                      <Label htmlFor="pallet-supply">Pallet Supply ($/pallet)</Label>
-                      <Input
-                        id="pallet-supply"
-                        type="number"
-                        value={palletSupplyFee}
-                        onChange={(e) => setPalletSupplyFee(Number(e.target.value))}
-                        step="0.50"
-                      />
+                    
+                    {/* Layer Pick Toggle */}
+                    {pickType === "layer" && (
+                      <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.layerPick ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
+                        <div className="flex items-center gap-3">
+                          <Switch checked={vasToggles.layerPick} onCheckedChange={() => toggleVas('layerPick')} />
+                          <div>
+                            <div className="font-medium text-sm">Layer Pick</div>
+                            <div className="text-xs text-muted-foreground">Per case layer picking fee</div>
+                          </div>
+                        </div>
+                        <div className="w-28">
+                          <Input
+                            type="number"
+                            value={layerPickRate}
+                            onChange={(e) => setLayerPickRate(Number(e.target.value))}
+                            step="0.05"
+                            className="h-8 text-sm text-right"
+                            disabled={!vasToggles.layerPick}
+                          />
+                          <div className="text-xs text-muted-foreground text-right mt-0.5">$/case</div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Pallet Supply Toggle */}
+                    <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.palletSupply ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
+                      <div className="flex items-center gap-3">
+                        <Switch checked={vasToggles.palletSupply} onCheckedChange={() => toggleVas('palletSupply')} />
+                        <div>
+                          <div className="font-medium text-sm">Pallet Supply</div>
+                          <div className="text-xs text-muted-foreground">Pallet exchange / supply fee</div>
+                        </div>
+                      </div>
+                      <div className="w-28">
+                        <Input
+                          type="number"
+                          value={palletSupplyFee}
+                          onChange={(e) => setPalletSupplyFee(Number(e.target.value))}
+                          step="0.50"
+                          className="h-8 text-sm text-right"
+                          disabled={!vasToggles.palletSupply}
+                        />
+                        <div className="text-xs text-muted-foreground text-right mt-0.5">$/pallet</div>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="shrink-wrap">Shrink Wrap ($/pallet)</Label>
-                      <Input
-                        id="shrink-wrap"
-                        type="number"
-                        value={shrinkWrapFee}
-                        onChange={(e) => setShrinkWrapFee(Number(e.target.value))}
-                        step="0.50"
-                      />
+                    
+                    {/* Shrink Wrap Toggle */}
+                    <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.shrinkWrap ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
+                      <div className="flex items-center gap-3">
+                        <Switch checked={vasToggles.shrinkWrap} onCheckedChange={() => toggleVas('shrinkWrap')} />
+                        <div>
+                          <div className="font-medium text-sm">Shrink Wrap</div>
+                          <div className="text-xs text-muted-foreground">Pallet wrapping service</div>
+                        </div>
+                      </div>
+                      <div className="w-28">
+                        <Input
+                          type="number"
+                          value={shrinkWrapFee}
+                          onChange={(e) => setShrinkWrapFee(Number(e.target.value))}
+                          step="0.50"
+                          className="h-8 text-sm text-right"
+                          disabled={!vasToggles.shrinkWrap}
+                        />
+                        <div className="text-xs text-muted-foreground text-right mt-0.5">$/pallet</div>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="labeling">Labeling ($/label)</Label>
-                      <Input
-                        id="labeling"
-                        type="number"
-                        value={labelingFee}
-                        onChange={(e) => setLabelingFee(Number(e.target.value))}
-                        step="0.05"
-                      />
+                    
+                    {/* Labeling Toggle */}
+                    <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.labeling ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
+                      <div className="flex items-center gap-3">
+                        <Switch checked={vasToggles.labeling} onCheckedChange={() => toggleVas('labeling')} />
+                        <div>
+                          <div className="font-medium text-sm">Labeling</div>
+                          <div className="text-xs text-muted-foreground">Per label application fee</div>
+                        </div>
+                      </div>
+                      <div className="w-28">
+                        <Input
+                          type="number"
+                          value={labelingFee}
+                          onChange={(e) => setLabelingFee(Number(e.target.value))}
+                          step="0.05"
+                          className="h-8 text-sm text-right"
+                          disabled={!vasToggles.labeling}
+                        />
+                        <div className="text-xs text-muted-foreground text-right mt-0.5">$/label</div>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="order-processing">Order Processing ($/order)</Label>
-                      <Input
-                        id="order-processing"
-                        type="number"
-                        value={orderProcessingFee}
-                        onChange={(e) => setOrderProcessingFee(Number(e.target.value))}
-                        step="1.00"
-                      />
+                    
+                    {/* Order Processing Toggle */}
+                    <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.orderProcessing ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
+                      <div className="flex items-center gap-3">
+                        <Switch checked={vasToggles.orderProcessing} onCheckedChange={() => toggleVas('orderProcessing')} />
+                        <div>
+                          <div className="font-medium text-sm">Order Processing</div>
+                          <div className="text-xs text-muted-foreground">Per order processing fee</div>
+                        </div>
+                      </div>
+                      <div className="w-28">
+                        <Input
+                          type="number"
+                          value={orderProcessingFee}
+                          onChange={(e) => setOrderProcessingFee(Number(e.target.value))}
+                          step="1.00"
+                          className="h-8 text-sm text-right"
+                          disabled={!vasToggles.orderProcessing}
+                        />
+                        <div className="text-xs text-muted-foreground text-right mt-0.5">$/order</div>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="cancellation">Cancellation/Restock ($/order)</Label>
-                      <Input
-                        id="cancellation"
-                        type="number"
-                        value={cancellationFee}
-                        onChange={(e) => setCancellationFee(Number(e.target.value))}
-                        step="5.00"
-                      />
+                    
+                    {/* Cancellation/Restock Toggle */}
+                    <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.cancellation ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
+                      <div className="flex items-center gap-3">
+                        <Switch checked={vasToggles.cancellation} onCheckedChange={() => toggleVas('cancellation')} />
+                        <div>
+                          <div className="font-medium text-sm">Cancellation / Restock</div>
+                          <div className="text-xs text-muted-foreground">Per cancelled order fee</div>
+                        </div>
+                      </div>
+                      <div className="w-28">
+                        <Input
+                          type="number"
+                          value={cancellationFee}
+                          onChange={(e) => setCancellationFee(Number(e.target.value))}
+                          step="5.00"
+                          className="h-8 text-sm text-right"
+                          disabled={!vasToggles.cancellation}
+                        />
+                        <div className="text-xs text-muted-foreground text-right mt-0.5">$/order</div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1679,36 +1805,36 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                     </div>
                   </div>
                   
-                  {/* Value-Added Services Display */}
-                  {monthlyOrders > 0 && (
+                  {/* Value-Added Services Display - only show toggled-on services */}
+                  {(totalValueAddedServices > 0 || Object.values(vasToggles).some(v => v)) && (
                     <div className="border rounded-lg p-4 bg-amber-50 dark:bg-amber-950">
                       <h3 className="font-semibold text-lg mb-3">Value-Added Services</h3>
                       <div className="grid gap-2 text-sm">
-                        {pickType !== "full" && monthlyCasePickRate > 0 && (
+                        {isPickEnabled && monthlyCasePickRate > 0 && (
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">{pickType === "layer" ? "Layer" : "Case"} Pick ({casesPerOrder} cases × {monthlyOrders} orders):</span>
                             <span className="font-mono">${monthlyCasePickRate.toFixed(2)}</span>
                           </div>
                         )}
-                        {monthlyPalletSupplyRate > 0 && (
+                        {vasToggles.palletSupply && monthlyPalletSupplyRate > 0 && (
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">Pallet Supply ({monthlyOrders} orders):</span>
                             <span className="font-mono">${monthlyPalletSupplyRate.toFixed(2)}</span>
                           </div>
                         )}
-                        {monthlyShrinkWrapRate > 0 && (
+                        {vasToggles.shrinkWrap && monthlyShrinkWrapRate > 0 && (
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">Shrink Wrap ({monthlyOrders} orders):</span>
                             <span className="font-mono">${monthlyShrinkWrapRate.toFixed(2)}</span>
                           </div>
                         )}
-                        {monthlyLabelingRate > 0 && (
+                        {vasToggles.labeling && monthlyLabelingRate > 0 && (
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">Labeling ({labelsPerOrder} labels × {monthlyOrders} orders):</span>
                             <span className="font-mono">${monthlyLabelingRate.toFixed(2)}</span>
                           </div>
                         )}
-                        {monthlyOrderProcessingRate > 0 && (
+                        {vasToggles.orderProcessing && monthlyOrderProcessingRate > 0 && (
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">Order Processing ({monthlyOrders} orders):</span>
                             <span className="font-mono">${monthlyOrderProcessingRate.toFixed(2)}</span>
@@ -1719,9 +1845,11 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                           <span className="font-mono text-lg font-bold">${totalValueAddedServices.toFixed(2)}</span>
                         </div>
                       </div>
-                      <div className="mt-3 pt-3 border-t text-xs text-muted-foreground">
-                        <p>Note: Cancellation/Restock fee (${cancellationFee.toFixed(2)}) is charged per cancelled order and not included in monthly estimates.</p>
-                      </div>
+                      {vasToggles.cancellation && (
+                        <div className="mt-3 pt-3 border-t text-xs text-muted-foreground">
+                          <p>Note: Cancellation/Restock fee (${cancellationFee.toFixed(2)}) is charged per cancelled order and not included in monthly estimates.</p>
+                        </div>
+                      )}
                     </div>
                   )}
                   

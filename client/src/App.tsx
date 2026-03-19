@@ -4,21 +4,36 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { EmailAccessProvider } from "./contexts/EmailAccessContext";
+import AccessGate from "./components/AccessGate";
 import Home from "./pages/Home";
+import HoldingPage from "./pages/HoldingPage";
 import Calculator from "@/pages/Calculator";
 import CapacityTracking from "./pages/CapacityTracking";
 import InternalHome from "./pages/InternalHome";
 import Pipeline from "./pages/Pipeline";
 
 function Router() {
-  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
+      {/* Public routes */}
       <Route path={"/"} component={Home} />
-      <Route path={"/internal"} component={InternalHome} />
-      <Route path={"/calculator"} component={Calculator} />
-        <Route path="/capacity" component={CapacityTracking} />
-        <Route path="/pipeline" component={Pipeline} />
+      <Route path={"/access-pending"} component={HoldingPage} />
+      
+      {/* Protected routes - require email whitelist approval */}
+      <Route path={"/internal"}>
+        <AccessGate><InternalHome /></AccessGate>
+      </Route>
+      <Route path={"/calculator"}>
+        <AccessGate><Calculator /></AccessGate>
+      </Route>
+      <Route path="/capacity">
+        <AccessGate><CapacityTracking /></AccessGate>
+      </Route>
+      <Route path="/pipeline">
+        <AccessGate><Pipeline /></AccessGate>
+      </Route>
+      
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
@@ -38,10 +53,12 @@ function App() {
         defaultTheme="light"
         // switchable
       >
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+        <EmailAccessProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </EmailAccessProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

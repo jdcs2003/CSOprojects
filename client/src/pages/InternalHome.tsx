@@ -1,10 +1,17 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calculator, Building2, ArrowRight, TrendingUp } from "lucide-react";
+import { Calculator, Building2, ArrowRight, TrendingUp, LogOut } from "lucide-react";
 import { useLocation } from "wouter";
+import { useEmailAccess } from "@/contexts/EmailAccessContext";
 
 export default function InternalHome() {
   const [, setLocation] = useLocation();
+  const { email, clearAccess } = useEmailAccess();
+
+  const handleSignOut = () => {
+    clearAccess();
+    setLocation("/");
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -17,7 +24,14 @@ export default function InternalHome() {
               <p className="text-xs text-muted-foreground">Pricing & Capacity Management</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
+            {email && (
+              <span className="text-xs text-muted-foreground hidden sm:block">{email}</span>
+            )}
+            <Button variant="ghost" size="sm" onClick={handleSignOut}>
+              <LogOut className="h-4 w-4 mr-1" />
+              Sign Out
+            </Button>
             <img src="/images/lm-logo.jpg" alt="L&M Distribution" className="h-10 w-auto" />
           </div>
         </div>

@@ -206,16 +206,22 @@
 - [x] Change default landing page from "Quote Has Expired" to login page
 - [x] Generate Good Boy Vodka (Banville) warehousing PDF proposal
 - [x] Add Good Boy Vodka / Banville deal to pipeline
-- [ ] Build email whitelist access control (no Manus OAuth)
-- [ ] Pre-approve j.stenson@summitskiesinc.com and amoore@lmwarehousing.com
-- [ ] Add holding page for unapproved users with sales@lmwarehousing.com contact
+- [x] Build email whitelist access control (no Manus OAuth)
+- [x] Pre-approve j.stenson@summitskiesinc.com and amoore@lmwarehousing.com
+- [x] Add holding page for unapproved users with sales@lmwarehousing.com contact
 - [x] Remove ALL Peach branding references — L&M only throughout
 - [x] Audit entire project for Peach/peach references
 - [x] Rework calculator PDF export to match GBV proposal style (blue header bars, two-column layout, clean tables, signature blocks)
 - [x] Test PDF export with Spiked Ade data
 - [x] Generate Spiked Ade proposal PDF (PA-1151, $16 storage, $10 handling, $4 shrink wrap)
-- [ ] Update PA-1151 facility cost basis to $5.00 + $2.00 NNN = $7.00/sq ft/year
-- [ ] Add VAS toggle on/off switches for each line item in calculator
-- [ ] Make VAS rates editable per quote in calculator
-- [ ] Fix PDF export to only show toggled-on VAS items (no case lines when no case volume)
+- [x] Update PA-1151 facility cost basis to $5.00 + $2.00 NNN = $7.00/sq ft/year (already correct)
+- [x] Add VAS toggle on/off switches for each line item in calculator
+- [x] Make VAS rates editable per quote in calculator
+- [x] Fix PDF export to only show toggled-on VAS items (no case lines when no case volume)
 - [x] Add Spiked Ade deal to pipeline
+- [x] Update Spiked Ade proposal: 30-day quote validity, 500 pallet minimum, 48-hour processing
+- [x] Add SOJO transfer lane ($250+FSC) to Spiked Ade proposal
+- [x] Fix facility climate types: only PA-2101, PA-13200, PA-510 are climate-controlled; all others (PA-1151, SC-577, etc.) are Ambient
+- [x] Remove all Third Deck references from the app (login page, site title, etc.)
+- [x] Ensure calculator PDF export matches the GBV/Spiked Ade proposal format
+- [x] Regenerate Spiked Ade proposal with Ambient designation for PA-1151 (PA-1151 already marked Ambient)

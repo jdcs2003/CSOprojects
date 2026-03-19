@@ -8,6 +8,12 @@ import { facilityCapacity, savedQuotes, pipelineDeals } from "../drizzle/schema"
 import { eq, and, desc } from "drizzle-orm";
 import { makeRequest, GeocodingResult } from "./_core/map";
 
+// Email whitelist for access control
+const WHITELISTED_EMAILS = [
+  "j.stenson@summitskiesinc.com",
+  "amoore@lmwarehousing.com",
+];
+
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
@@ -20,6 +26,19 @@ export const appRouter = router({
         success: true,
       } as const;
     }),
+  }),
+
+  // Email whitelist access control
+  access: router({
+    checkEmail: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(({ input }) => {
+        const normalizedEmail = input.email.toLowerCase().trim();
+        const isApproved = WHITELISTED_EMAILS.some(
+          (e) => e.toLowerCase() === normalizedEmail
+        );
+        return { approved: isApproved, email: normalizedEmail };
+      }),
   }),
 
   // Capacity tracking router

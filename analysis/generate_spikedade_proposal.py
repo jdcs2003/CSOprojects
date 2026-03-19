@@ -78,7 +78,7 @@ pdf.set_text_color(80, 80, 80)
 pdf.cell(0, 6, "Prepared for Spiked Ade")
 pdf.set_xy(60, 27)
 pdf.set_font("Helvetica", "", 8.5)
-pdf.cell(0, 5, f"{today}  |  Quote Valid for 90 Days")
+pdf.cell(0, 5, f"{today}  |  Quote Valid for 30 Days")
 pdf.set_text_color(0, 0, 0)
 
 pdf.ln(25)
@@ -150,7 +150,7 @@ pdf.set_font("Helvetica", "B", 8.5)
 box_w = w / 4
 
 pdf.set_x(10)
-pdf.cell(box_w, 5, "  Pallet Capacity", fill=True)
+pdf.cell(box_w, 5, "  Min. Pallet Commitment", fill=True)
 pdf.cell(box_w, 5, "  Storage Rate", fill=True)
 pdf.cell(box_w, 5, "  Handling Rate", fill=True)
 pdf.cell(box_w, 5, "  Pallet Stacking", fill=True, new_x="LMARGIN", new_y="NEXT")
@@ -158,7 +158,7 @@ pdf.cell(box_w, 5, "  Pallet Stacking", fill=True, new_x="LMARGIN", new_y="NEXT"
 pdf.set_font("Helvetica", "B", 11)
 pdf.set_text_color(30, 62, 99)
 pdf.set_x(10)
-pdf.cell(box_w, 7, "  2,000 pallets")
+pdf.cell(box_w, 7, "  500 pallets")
 pdf.cell(box_w, 7, "  $16.00/mo")
 pdf.cell(box_w, 7, "  $10.00 in/out")
 pdf.cell(box_w, 7, "  2-3 high", new_x="LMARGIN", new_y="NEXT")
@@ -166,7 +166,7 @@ pdf.cell(box_w, 7, "  2-3 high", new_x="LMARGIN", new_y="NEXT")
 pdf.set_font("Helvetica", "", 7.5)
 pdf.set_text_color(100, 100, 100)
 pdf.set_x(10)
-pdf.cell(box_w, 4, "  Monthly minimum")
+pdf.cell(box_w, 4, "  Minimum commitment")
 pdf.cell(box_w, 4, "  Per pallet/month")
 pdf.cell(box_w, 4, "  Per pallet")
 pdf.cell(box_w, 4, "  Prefer 2 high", new_x="LMARGIN", new_y="NEXT")
@@ -185,7 +185,8 @@ pdf.add_table_header(cols3, widths3)
 
 storage_items = [
     ("Pallet Storage", "$16.00", "Per pallet / month"),
-    ("Monthly Storage Minimum", "$32,000.00", "2,000 pallet positions"),
+    ("Monthly Storage Minimum", "$8,000.00", "500 pallet positions"),
+    ("Order Processing Time", "48 hours", "From order receipt"),
 ]
 for item in storage_items:
     pdf.add_table_row(item, widths3)
@@ -247,13 +248,34 @@ for item in vas_items:
 pdf.ln(3)
 
 # ============================================================
+# SECTION 3B - TRANSPORTATION
+# ============================================================
+pdf.header_bar("4. TRANSPORTATION")
+
+pdf.add_table_header(cols3, widths3)
+
+transport_items = [
+    ("SOJO Transfer (Truckload)", "$250.00 + FSC", "L&M to/from SOJO Bristol"),
+]
+for item in transport_items:
+    pdf.add_table_row(item, widths3)
+
+pdf.ln(1)
+pdf.set_font("Helvetica", "I", 7.5)
+pdf.set_text_color(100, 100, 100)
+pdf.multi_cell(0, 3.5, "Truckload transfer rate for product movement between L&M facility and SOJO Bristol for pick-up or cartoning operations. FSC (Fuel Surcharge) applied at current DOE index rate.")
+pdf.set_text_color(0, 0, 0)
+
+pdf.ln(3)
+
+# ============================================================
 # SECTION 4 - TERMS & CONDITIONS
 # ============================================================
-pdf.header_bar("4. SERVICE COMMITMENT & TERMS")
+pdf.header_bar("5. SERVICE COMMITMENT & TERMS")
 
 terms = [
     ("Payment Terms", "Net 30 from receipt of invoice"),
-    ("Quote Validity", "90 days from date of proposal"),
+    ("Quote Validity", "30 days from date of proposal"),
     ("Insurance", "Comprehensive GL: $1M | Cargo: $250K"),
     ("Minimum Commitment", "12 months"),
     ("Support", "sales@lmwarehousing.com"),
@@ -278,7 +300,7 @@ pdf.ln(3)
 # ============================================================
 # SECTION 5 - AUTHORIZATION
 # ============================================================
-pdf.header_bar("5. AUTHORIZATION & ACCEPTANCE")
+pdf.header_bar("6. AUTHORIZATION & ACCEPTANCE")
 
 pdf.set_font("Helvetica", "", 8.5)
 pdf.multi_cell(0, 4.5, "By signing below, both parties agree to the rates and terms outlined in this proposal.")
