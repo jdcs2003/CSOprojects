@@ -1,0 +1,25 @@
+New PDF Export Review - Spiked Ade Test
+========================================
+
+Page 1:
+- L&M logo with "WAREHOUSING SERVICES PROPOSAL" header - GOOD
+- "Prepared for Spiked Ade" subtitle - GOOD
+- Two-column info box (Prepared For / Prepared By) - GOOD
+- Facility shown as "PA-510 (Bensalem - 85,602 sq ft)" - CLEAN
+- Section 1: Storage Rates - $54.50/pallet/month - GOOD
+- Section 2: Handling & Labor - $2.44 in/out, labor rates shown - GOOD
+- Section 3: Value-Added Services - all rates listed cleanly - GOOD
+- Section 4: Service Commitment & Terms - payment, validity, insurance, commitment - GOOD
+- Section 5: Contract Tier Pricing - Standard/Bronze/Silver/Gold with discounts - GOOD
+- Footer: "L&M Distribution & Logistics | Confidential" - GOOD
+
+Page 2:
+- Section 5 (continued): Authorization & Acceptance - GOOD
+- Two-column signature block (Client / L&M) - GOOD
+- Lots of empty space on page 2 - could add disclosures here
+- Footer consistent - GOOD
+
+MUCH better than the old export. Matches GBV proposal style.
+Minor improvements possible:
+- Could add disclosures section to fill page 2 space
+- Page 2 is mostly empty after signature block

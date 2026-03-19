@@ -1,0 +1,26 @@
+PDF Export Review - New GBV-style layout
+==========================================
+Page 1:
+- L&M logo top-left with "WAREHOUSING SERVICES PROPOSAL" header - GOOD
+- "Prepared for Spiked Ade" subtitle - GOOD
+- Two-column PREPARED FOR / PREPARED BY info box - GOOD
+- Facility shows "pa-510: PA-510 (Bensalem - 85,602 sq ft)" - needs cleanup, redundant "pa-510:"
+- Section 1: Storage Rates - blue header bar, clean table - GOOD
+- Section 2: Handling & Labor Rates - blue header bar, clean table - GOOD
+- Out-of-Scope Labor line - GOOD
+- Section 3: Value-Added Services - all items listed cleanly - GOOD
+- Section 4: Service Commitment & Terms - Payment, Quote Validity, Insurance, Commitment, Support - GOOD
+- Footer: "L&M Distribution & Logistics | Confidential" + email - GOOD
+
+Page 2:
+- Section 5: Authorization & Acceptance - signature blocks - GOOD
+- Two-column signature layout (client / L&M) - GOOD
+- Footer present - GOOD
+
+Issues:
+1. Facility display: "pa-510: PA-510 (Bensalem - 85,602 sq ft)" - the "pa-510:" prefix is redundant
+2. No disclosures/pallet config section on the PDF
+3. No tiered pricing section
+4. Lots of empty space on page 2 - could fit disclosures there
+
+Overall: MASSIVE improvement over old layout. Matches GBV style well.

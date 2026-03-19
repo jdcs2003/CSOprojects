@@ -6,7 +6,6 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Calculator from "@/pages/Calculator";
-import PeachCalculator from "@/pages/PeachCalculator";
 import CapacityTracking from "./pages/CapacityTracking";
 import InternalHome from "./pages/InternalHome";
 import Pipeline from "./pages/Pipeline";
@@ -19,7 +18,6 @@ function Router() {
       <Route path={"/internal"} component={InternalHome} />
       <Route path={"/calculator"} component={Calculator} />
         <Route path="/capacity" component={CapacityTracking} />
-        <Route path="/peachcalculator" component={PeachCalculator} />
         <Route path="/pipeline" component={Pipeline} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

@@ -28,7 +28,7 @@ export default function CapacityTracking() {
   const [availableSqFt, setAvailableSqFt] = useState("");
   const [notes, setNotes] = useState("");
   const [updatedBy, setUpdatedBy] = useState("");
-  const [selectedCompany, setSelectedCompany] = useState<"L&M" | "Peach">("L&M");
+  const [selectedCompany] = useState<"L&M">("L&M");
   const [metabaseUrl, setMetabaseUrl] = useState(""); // Will be provided by user
 
   // Get next 6 months for forecasting
@@ -302,18 +302,7 @@ export default function CapacityTracking() {
               <CardContent>
                 <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
                   <div className="flex gap-4">
-                    <div>
-                      <Label htmlFor="overview-company">Company</Label>
-                      <Select value={selectedCompany} onValueChange={(v) => setSelectedCompany(v as "L&M" | "Peach")}>
-                        <SelectTrigger id="overview-company" className="w-32">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="L&M">L&M</SelectItem>
-                          <SelectItem value="Peach">Peach</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+
                     <div>
                       <Label htmlFor="overview-month">Month</Label>
                       <Select value={selectedMonth} onValueChange={setSelectedMonth}>

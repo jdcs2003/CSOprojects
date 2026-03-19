@@ -1,0 +1,20 @@
+Current Calculator PDF Export Review (Spiked Ade example):
+- Page 1: Logo + title, facility info box, client contact, Monthly Storage table, Handling Services table, Value-Added Services table
+- Page 2: VAS continued (shrink wrap, labeling, order processing, cancellation), Monthly Investment Summary, Terms & Assumptions, footer
+- Issues vs GBV proposal style:
+  - Tables are too spread out with lots of whitespace/padding
+  - No section header bars (blue bars like GBV)
+  - No two-column info layout (Prepared For / Prepared By)
+  - No account overview section
+  - No signature blocks
+  - Monthly Investment Summary is basic
+  - Terms section is bullet list, not formatted like GBV
+  - Notes at bottom look informal (Brad used to work for one of the guys...)
+  - Overall much more generic/spreadsheet-like vs the polished GBV proposal format
+- Client: SPIKED ADE (SPKED INC, UNION, NJ)
+- Contact: Brad Moose, Fairfield NJ, bmoose@spikedade.com
+- Facility: PA-13200 (Townsend - 65,856 sq ft)
+- Storage: 2000 pallets @ $16/pallet = $32K/mo
+- Handling: $10 in/$10 out
+- VAS: Case Pick $0.40, Layer Pick $0.30, Pallet Supply $9, Shrink Wrap $3, Labeling $0.50, Order Processing $10, Cancellation $25
+- Total Est Monthly: $42,675

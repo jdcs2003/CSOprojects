@@ -204,3 +204,12 @@
 - [x] Update Southern Glazer's pipeline value to $1.6M with zone breakdown details
 - [x] Add FBA Cross-Dock deal to pipeline (150 containers/mo, $400K/yr, Bristol PA)
 - [x] Change default landing page from "Quote Has Expired" to login page
+- [x] Generate Good Boy Vodka (Banville) warehousing PDF proposal
+- [x] Add Good Boy Vodka / Banville deal to pipeline
+- [ ] Build email whitelist access control (no Manus OAuth)
+- [ ] Pre-approve j.stenson@summitskiesinc.com and amoore@lmwarehousing.com
+- [ ] Add holding page for unapproved users with sales@lmwarehousing.com contact
+- [x] Remove ALL Peach branding references — L&M only throughout
+- [x] Audit entire project for Peach/peach references
+- [x] Rework calculator PDF export to match GBV proposal style (blue header bars, two-column layout, clean tables, signature blocks)
+- [x] Test PDF export with Spiked Ade data

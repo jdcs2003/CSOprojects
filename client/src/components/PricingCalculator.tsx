@@ -17,7 +17,7 @@ interface Facility {
   baseRent: number;
   ticam: number;
   totalCost: number;
-  company: "L&M" | "Peach";
+  company: "L&M";
   notes?: string;
 }
 
@@ -78,28 +78,11 @@ const defaultFacilities: Facility[] = [
     company: "L&M",
     notes: ""
   },
-  {
-    id: "pa-2101",
-    name: "PA-2101 (Peach Warehouse - 85,716 sq ft)",
-    baseRent: 9.50,
-    ticam: 2.00,
-    totalCost: 11.50,
-    company: "Peach",
-    notes: "Climate Control"
-  },
-  {
-    id: "sc-144",
-    name: "SC-144 (144 Old Elloree Road - 150,000 sq ft)",
-    baseRent: 5.00,
-    ticam: 0,
-    totalCost: 5.00,
-    company: "Peach",
-    notes: "All-in rate"
-  }
+
 ];
 
 interface PricingCalculatorProps {
-  companyFilter: "L&M" | "Peach";
+  companyFilter: "L&M";
   title: string;
   logoPath: string;
   companyName: string;
@@ -391,181 +374,227 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     alert(`Quote "${quote.quoteName}" loaded successfully!`);
   };
   
-  // Export quote to PDF
+  // Export quote to PDF - Professional proposal style matching GBV format
   const exportQuotePDF = () => {
     if (!selectedFacilityData) return;
     
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 10;
+    const contentWidth = pageWidth - margin * 2;
+    const blue = [30, 62, 99] as const;
+    const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     
-    // Add logo with background for visibility
+    // Helper: section header bar
+    const sectionBar = (text: string, y: number) => {
+      doc.setFillColor(...blue);
+      doc.rect(margin, y, contentWidth, 7, "F");
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+      doc.text(`  ${text}`, margin + 2, y + 5);
+      doc.setTextColor(0, 0, 0);
+      return y + 9;
+    };
+    
+    // Helper: table header row
+    const tableHeader = (cols: string[], widths: number[], y: number) => {
+      doc.setFillColor(...blue);
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8);
+      let x = margin;
+      for (let i = 0; i < cols.length; i++) {
+        const align = i === 0 ? "L" : "R";
+        doc.rect(x, y, widths[i], 6, "F");
+        if (align === "L") {
+          doc.text(`  ${cols[i]}`, x + 1, y + 4);
+        } else {
+          doc.text(cols[i], x + widths[i] - 2, y + 4, { align: "right" });
+        }
+        x += widths[i];
+      }
+      doc.setTextColor(0, 0, 0);
+      return y + 6;
+    };
+    
+    // Helper: table data row
+    const tableRow = (values: string[], widths: number[], y: number, boldCol: number = 1) => {
+      let x = margin;
+      for (let i = 0; i < values.length; i++) {
+        const isBold = i === boldCol;
+        doc.setFont("helvetica", isBold ? "bold" : "normal");
+        doc.setFontSize(isBold ? 8.5 : 8.5);
+        if (i > 1 && i !== boldCol) {
+          doc.setTextColor(100, 100, 100);
+        } else {
+          doc.setTextColor(0, 0, 0);
+        }
+        const align = i === 0 ? "L" : "R";
+        // Draw bottom border
+        doc.setDrawColor(220, 220, 220);
+        doc.line(x, y + 5.5, x + widths[i], y + 5.5);
+        if (align === "L") {
+          doc.text(`  ${values[i]}`, x + 1, y + 4);
+        } else {
+          doc.text(values[i], x + widths[i] - 2, y + 4, { align: "right" });
+        }
+        x += widths[i];
+      }
+      doc.setTextColor(0, 0, 0);
+      return y + 5.5;
+    };
+    
+    // Helper: footer on every page
+    const addFooter = () => {
+      const totalPages = doc.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        doc.setFontSize(7);
+        doc.setFont("helvetica", "italic");
+        doc.setTextColor(150, 150, 150);
+        doc.text(`${companyName} | Confidential`, pageWidth / 2, pageHeight - 10, { align: "center" });
+        doc.text("sales@lmwarehousing.com", pageWidth / 2, pageHeight - 6, { align: "center" });
+      }
+    };
+    
+    // ============================================================
+    // PAGE 1 - HEADER
+    // ============================================================
+    
+    // Logo
     try {
-      // Add light background behind logo for white logos
-      doc.setFillColor(240, 245, 250);
-      doc.roundedRect(12, 8, 30, 20, 2, 2, "F");
-      // Use PNG format and maintain aspect ratio (square logo)
-      doc.addImage(logoPath, "PNG", 15, 10, 24, 16);
+      doc.addImage(logoPath, "PNG", margin, 10, 45, 18);
     } catch (e) {
       console.warn("Logo not loaded");
     }
     
-    // Header
-    doc.setFontSize(22);
+    // Title block (right of logo)
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(40, 40, 40);
-    doc.text(companyName, pageWidth / 2, 20, { align: "center" });
+    doc.setFontSize(16);
+    doc.setTextColor(...blue);
+    doc.text("WAREHOUSING SERVICES PROPOSAL", 60, 16);
     
-    doc.setFontSize(14);
-    doc.setTextColor(100, 100, 100);
-    doc.text("Warehousing Services Quote", pageWidth / 2, 28, { align: "center" });
-    
-    // Prepared For (if provided)
-    const hasClientInfo = clientCompany || clientContact;
-    if (hasClientInfo) {
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(60, 60, 60);
-      const preparedForText = clientCompany || clientContact || "";
-      doc.text(`PREPARED FOR: ${preparedForText.toUpperCase()}`, pageWidth / 2, 35, { align: "center" });
-    }
-    
-    // Facility & Date Info Box (adjust position if client info is present)
-    const infoBoxY = hasClientInfo ? 42 : 35;
-    doc.setFillColor(245, 247, 250);
-    doc.rect(15, infoBoxY, pageWidth - 30, 20, "F");
-    
+    doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
-    doc.setTextColor(60, 60, 60);
-    doc.setFont("helvetica", "bold");
-    doc.text("Facility:", 20, infoBoxY + 8);
-    doc.setFont("helvetica", "normal");
-    doc.text(selectedFacilityData.name, 20, infoBoxY + 13);
+    doc.setTextColor(80, 80, 80);
+    const preparedForName = clientCompany || clientContact || "Prospective Client";
+    doc.text(`Prepared for ${preparedForName}`, 60, 23);
     
-    doc.setFont("helvetica", "bold");
-    doc.text("Quote Date:", pageWidth - 60, infoBoxY + 8);
-    doc.setFont("helvetica", "normal");
-    doc.text(new Date().toLocaleDateString(), pageWidth - 60, infoBoxY + 13);
+    doc.setFontSize(8.5);
+    doc.text(`${today}  |  Quote Valid for ${quoteValidDays} Days`, 60, 29);
+    doc.setTextColor(0, 0, 0);
     
-    // Client Contact Details (if provided)
-    let yPos = infoBoxY + 25;
-    if (clientContact || clientAddress1 || clientPhone || clientEmail) {
-      doc.setFontSize(9);
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(60, 60, 60);
-      doc.text("Client Contact:", 15, yPos);
-      yPos += 5;
-      
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(8);
-      if (clientContact) {
-        doc.text(clientContact, 15, yPos);
-        yPos += 4;
-      }
-      if (clientAddress1) {
-        doc.text(clientAddress1, 15, yPos);
-        yPos += 4;
-      }
-      if (clientAddress2) {
-        doc.text(clientAddress2, 15, yPos);
-        yPos += 4;
-      }
-      if (clientCity || clientState || clientZip) {
-        const cityStateZip = [clientCity, clientState, clientZip].filter(Boolean).join(", ");
-        doc.text(cityStateZip, 15, yPos);
-        yPos += 4;
-      }
-      if (clientPhone) {
-        doc.text(clientPhone, 15, yPos);
-        yPos += 4;
-      }
-      if (clientEmail) {
-        doc.text(clientEmail, 15, yPos);
-        yPos += 4;
-      }
-      yPos += 5;
+    // Divider line
+    let yPos = 34;
+    doc.setDrawColor(...blue);
+    doc.setLineWidth(0.5);
+    doc.line(margin, yPos, pageWidth - margin, yPos);
+    yPos += 4;
+    
+    // Two-column info boxes
+    const colW = 88;
+    const yInfoStart = yPos;
+    
+    // Left: Prepared For
+    doc.setFillColor(245, 247, 250);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8.5);
+    doc.rect(margin, yInfoStart, colW, 5.5, "F");
+    doc.text("  PREPARED FOR", margin + 1, yInfoStart + 4);
+    
+    let leftY = yInfoStart + 7;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.5);
+    const leftLines = [
+      clientCompany || "",
+      clientContact || "",
+      clientAddress1 || "",
+      clientAddress2 || "",
+      [clientCity, clientState, clientZip].filter(Boolean).join(", "),
+      clientPhone || "",
+      clientEmail || ""
+    ].filter(Boolean);
+    
+    leftLines.forEach(line => {
+      doc.text(`  ${line}`, margin + 1, leftY);
+      leftY += 4.5;
+    });
+    
+    // Right: Prepared By
+    const rightX = 110;
+    doc.setFillColor(245, 247, 250);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8.5);
+    doc.rect(rightX, yInfoStart, colW, 5.5, "F");
+    doc.text("  PREPARED BY", rightX + 1, yInfoStart + 4);
+    
+    let rightY = yInfoStart + 7;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.5);
+    const rightLines = [
+      companyName,
+      "sales@lmwarehousing.com",
+      "",
+      "Primary Facility:",
+      selectedFacilityData.name,
+    ];
+    rightLines.forEach(line => {
+      doc.text(`  ${line}`, rightX + 1, rightY);
+      rightY += 4.5;
+    });
+    
+    yPos = Math.max(leftY, rightY) + 4;
+    
+    // ============================================================
+    // SECTION 1 - STORAGE RATES
+    // ============================================================
+    yPos = sectionBar(`1. STORAGE RATES`, yPos);
+    
+    const col3Widths = [contentWidth * 0.45, contentWidth * 0.25, contentWidth * 0.30];
+    yPos = tableHeader(["Service", "Rate", "Notes"], col3Widths, yPos);
+    
+    yPos = tableRow(["Pallet Storage", `$${finalStorageRate.toFixed(2)}`, "Per pallet / month"], col3Widths, yPos);
+    
+    if (storageMinimum > 0) {
+      yPos += 2;
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(7.5);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Monthly storage minimum: $${storageMinimum.toFixed(2)}. Storage billed monthly based on pallet positions occupied.`, margin + 2, yPos + 3);
+      doc.setTextColor(0, 0, 0);
+      yPos += 6;
+    } else {
+      yPos += 4;
     }
     
-    // Contract Length Discounts Table - REMOVED (internal use only, not shown to clients)
-    // Discounts are applied to rates but table is not displayed in PDF
-    yPos = Math.max(yPos, infoBoxY + 30);
+    // ============================================================
+    // SECTION 2 - HANDLING & LABOR
+    // ============================================================
+    yPos = sectionBar("2. HANDLING & LABOR RATES", yPos);
     
-    // Monthly Storage Minimum Section
-    doc.setFontSize(13);
+    yPos = tableHeader(["Service", "Rate", "Notes"], col3Widths, yPos);
+    yPos = tableRow(["Handling In (Receiving)", `$${finalHandlingInRate.toFixed(2)}`, "Per pallet"], col3Widths, yPos);
+    yPos = tableRow(["Handling Out (Shipping)", `$${finalHandlingOutRate.toFixed(2)}`, "Per pallet"], col3Widths, yPos);
+    
+    yPos += 2;
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(30, 30, 30);
-    doc.text("Monthly Storage Minimum (Recurring)", 15, yPos);
+    doc.setFontSize(8.5);
+    doc.text("  Out-of-Scope Labor:", margin + 1, yPos + 3);
+    doc.setFont("helvetica", "normal");
+    doc.text("Standard: $50.00/hour  |  Weekend: $75.00/hour", margin + 50, yPos + 3);
     yPos += 8;
     
-    autoTable(doc, {
-      startY: yPos,
-      head: [["Description", "Quantity", "Rate", "Monthly Total"]],
-      body: [[
-        "Pallet Positions",
-        monthlyPallets.toString(),
-        `$${finalStorageRate.toFixed(2)}/pallet/month`,
-        `$${finalMonthlyStorage.toFixed(2)}`
-      ]],
-      theme: "grid",
-      headStyles: { fillColor: companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99], textColor: 255, fontStyle: "bold" },
-      styles: { fontSize: 10, cellPadding: 5 },
-      columnStyles: {
-        0: { cellWidth: 70 },
-        1: { cellWidth: 30, halign: "center" },
-        2: { cellWidth: 50, halign: "right" },
-        3: { cellWidth: 40, halign: "right", fontStyle: "bold" }
-      }
-    });
+    // ============================================================
+    // SECTION 3 - VALUE-ADDED SERVICES
+    // ============================================================
+    yPos = sectionBar("3. VALUE-ADDED SERVICES", yPos);
     
-    yPos = (doc as any).lastAutoTable.finalY + 15;
+    const col2Widths = [contentWidth * 0.55, contentWidth * 0.45];
+    yPos = tableHeader(["Service", "Rate"], col2Widths, yPos);
     
-    // Handling Services Section
-    doc.setFontSize(13);
-    doc.setFont("helvetica", "bold");
-    doc.text("Handling Services (Activity-Based)", 15, yPos);
-    yPos += 8;
-    
-    autoTable(doc, {
-      startY: yPos,
-      head: [["Service", "Rate per Pallet", "Est. Monthly"]],
-      body: [
-        [
-          "Handling In",
-          `$${finalHandlingInRate.toFixed(2)}`,
-          `$${finalMonthlyHandlingIn.toFixed(2)}`
-        ],
-        [
-          "Handling Out",
-          `$${finalHandlingOutRate.toFixed(2)}`,
-          `$${finalMonthlyHandlingOut.toFixed(2)}`
-        ]
-      ],
-      theme: "grid",
-      headStyles: { fillColor: companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99], textColor: 255, fontStyle: "bold" },
-      styles: { fontSize: 10, cellPadding: 5 },
-      columnStyles: {
-        0: { cellWidth: 70 },
-        1: { cellWidth: 60, halign: "right" },
-        2: { cellWidth: 60, halign: "right", fontStyle: "bold" }
-      }
-    });
-    
-    yPos = (doc as any).lastAutoTable.finalY + 5;
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(100, 100, 100);
-    doc.text(`* Based on ${monthlyPallets} pallets × ${monthlyTurns} turns per month`, 15, yPos);
-    
-    yPos += 15;
-    
-    // Value-Added Services Section (Rate Card Format)
-    doc.setFontSize(13);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(30, 30, 30);
-    doc.text("Value-Added Services Rate Card", 15, yPos);
-    yPos += 8;
-    
-    const vasBody: string[][] = [
+    const vasItems: [string, string][] = [
       ["Case Pick", `$${casePickRate.toFixed(2)}/case`],
       ["Layer Pick", `$${layerPickRate.toFixed(2)}/case`],
       ["Pallet Supply", `$${palletSupplyFee.toFixed(2)}/pallet`],
@@ -575,197 +604,193 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       ["Cancellation/Restock", `$${cancellationFee.toFixed(2)}/order`]
     ];
     
-    autoTable(doc, {
-      startY: yPos,
-      head: [["Service", "Rate"]],
-      body: vasBody,
-      theme: "grid",
-      headStyles: { fillColor: companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99], textColor: 255, fontStyle: "bold" },
-      styles: { fontSize: 10, cellPadding: 5 },
-      columnStyles: {
-        0: { cellWidth: 100 },
-        1: { cellWidth: 90, halign: "right", fontStyle: "bold" }
-      }
+    vasItems.forEach(item => {
+      yPos = tableRow(item, col2Widths, yPos);
     });
+    yPos += 6;
     
-    yPos = (doc as any).lastAutoTable.finalY + 15;
-    
-    // Monthly Summary Section
-    doc.setFontSize(13);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(30, 30, 30);
-    doc.text("Monthly Investment Summary", 15, yPos);
-    yPos += 8;
-    
-    const summaryBody: string[][] = [
-      ["Storage Minimum (Recurring)", `$${finalMonthlyStorage.toFixed(2)}`],
-      ["Est. Handling In", `${Math.round(monthlyPallets * monthlyTurns)} pallets`],
-      ["Est. Handling Out", `${Math.round(monthlyPallets * monthlyTurns)} pallets`]
-    ];
-    
-    if (totalValueAddedServices > 0 || monthlyOrders > 0) {
-      summaryBody.push(["Value-Added Services", "As needed"]);
-    }
-    
-    summaryBody.push(["Total Estimated Monthly", `$${totalEstimatedMonthlyBilling.toFixed(2)}`]);
-    
-    const totalRowIndex = summaryBody.length - 1;
-    
-    autoTable(doc, {
-      startY: yPos,
-      head: [["Component", "Amount"]],
-      body: summaryBody,
-      theme: "grid",
-      headStyles: { fillColor: companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99], textColor: 255, fontStyle: "bold" },
-      bodyStyles: { fontSize: 10 },
-      styles: { cellPadding: 5 },
-      columnStyles: {
-        0: { cellWidth: 130 },
-        1: { cellWidth: 60, halign: "right", fontStyle: "bold" }
-      },
-      didParseCell: (data) => {
-        if (data.row.index === totalRowIndex && data.section === "body") {
-          data.cell.styles.fillColor = companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99];
-          data.cell.styles.textColor = [255, 255, 255];
-          data.cell.styles.fontSize = 12;
-        }
-      }
-    });
-    
-    yPos = (doc as any).lastAutoTable.finalY + 15;
-    
-    // Transportation / Freight Lanes Section (if any)
+    // ============================================================
+    // SECTION 4 - TRANSPORTATION (if freight lanes exist)
+    // ============================================================
     if (freightLanes.length > 0) {
-      // Check if we need a new page
-      if (yPos > pageHeight - 80) {
+      if (yPos > pageHeight - 60) {
         doc.addPage();
-        yPos = 20;
+        yPos = 15;
       }
       
-      doc.setFontSize(13);
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(30, 30, 30);
-      doc.text("Transportation Services", 15, yPos);
-      yPos += 8;
+      yPos = sectionBar("4. TRANSPORTATION SERVICES", yPos);
       
-      const inboundLanes = freightLanes.filter(l => l.type === "inbound");
+      const freightWidths = [contentWidth * 0.40, contentWidth * 0.20, contentWidth * 0.20, contentWidth * 0.20];
+      
       const outboundLanes = freightLanes.filter(l => l.type === "outbound");
+      const inboundLanes = freightLanes.filter(l => l.type === "inbound");
       
       if (outboundLanes.length > 0) {
-        doc.setFontSize(10);
         doc.setFont("helvetica", "bold");
-        doc.text("Outbound (Delivery from Warehouse)", 15, yPos);
+        doc.setFontSize(8.5);
+        doc.text("  Outbound (Delivery from Warehouse)", margin + 1, yPos + 3);
         yPos += 6;
-        
-        const outboundBody = outboundLanes.map(lane => [
-          lane.destination,
-          `${lane.pallets} pallets`,
-          `${lane.weight.toLocaleString()} lbs`,
-          `$${lane.rate.toFixed(2)}`
-        ]);
-        
-        autoTable(doc, {
-          startY: yPos,
-          head: [["Destination", "Load Size", "Weight", "Rate/Load"]],
-          body: outboundBody,
-          theme: "grid",
-          headStyles: { fillColor: companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99], textColor: 255, fontStyle: "bold" },
-          styles: { fontSize: 9, cellPadding: 4 },
-          columnStyles: {
-            0: { cellWidth: 80 },
-            1: { cellWidth: 35, halign: "center" },
-            2: { cellWidth: 35, halign: "center" },
-            3: { cellWidth: 40, halign: "right", fontStyle: "bold" }
-          }
+        yPos = tableHeader(["Destination", "Load Size", "Weight", "Rate/Load"], freightWidths, yPos);
+        outboundLanes.forEach(lane => {
+          yPos = tableRow([lane.destination, `${lane.pallets} pallets`, `${lane.weight.toLocaleString()} lbs`, `$${lane.rate.toFixed(2)}`], freightWidths, yPos);
         });
-        yPos = (doc as any).lastAutoTable.finalY + 8;
+        yPos += 4;
       }
       
       if (inboundLanes.length > 0) {
-        doc.setFontSize(10);
         doc.setFont("helvetica", "bold");
-        doc.text("Inbound (Pickup to Warehouse)", 15, yPos);
+        doc.setFontSize(8.5);
+        doc.text("  Inbound (Pickup to Warehouse)", margin + 1, yPos + 3);
         yPos += 6;
-        
-        const inboundBody = inboundLanes.map(lane => [
-          lane.origin,
-          `${lane.pallets} pallets`,
-          `${lane.weight.toLocaleString()} lbs`,
-          `$${lane.rate.toFixed(2)}`
-        ]);
-        
-        autoTable(doc, {
-          startY: yPos,
-          head: [["Pickup Location", "Load Size", "Weight", "Rate/Load"]],
-          body: inboundBody,
-          theme: "grid",
-          headStyles: { fillColor: companyName.includes("Peach") ? [255, 165, 79] : [30, 62, 99], textColor: 255, fontStyle: "bold" },
-          styles: { fontSize: 9, cellPadding: 4 },
-          columnStyles: {
-            0: { cellWidth: 80 },
-            1: { cellWidth: 35, halign: "center" },
-            2: { cellWidth: 35, halign: "center" },
-            3: { cellWidth: 40, halign: "right", fontStyle: "bold" }
-          }
+        yPos = tableHeader(["Origin", "Load Size", "Weight", "Rate/Load"], freightWidths, yPos);
+        inboundLanes.forEach(lane => {
+          yPos = tableRow([lane.origin, `${lane.pallets} pallets`, `${lane.weight.toLocaleString()} lbs`, `$${lane.rate.toFixed(2)}`], freightWidths, yPos);
         });
-        yPos = (doc as any).lastAutoTable.finalY + 8;
+        yPos += 4;
       }
-      
-      yPos += 7;
+      yPos += 4;
     }
     
-    // Terms & Disclosures Section (compact)
-    if (yPos < pageHeight - 80) {
-      doc.setFontSize(10);
+    // ============================================================
+    // TERMS & CONDITIONS
+    // ============================================================
+    const termsSection = freightLanes.length > 0 ? 5 : 4;
+    if (yPos > pageHeight - 70) {
+      doc.addPage();
+      yPos = 15;
+    }
+    
+    yPos = sectionBar(`${termsSection}. SERVICE COMMITMENT & TERMS`, yPos);
+    
+    const termsData = [
+      ["Payment Terms", paymentTerms || "Net 30"],
+      ["Quote Validity", `${quoteValidDays} days from date of proposal`],
+      ["Insurance", "Comprehensive GL: $1M | Cargo: $250K"],
+      minimumCommitment ? ["Minimum Commitment", minimumCommitment] : null,
+      ["Support", "sales@lmwarehousing.com"]
+    ].filter(Boolean) as string[][];
+    
+    termsData.forEach(term => {
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(30, 30, 30);
-      doc.text("Terms & Assumptions", 15, yPos);
-      yPos += 6;
-      
-      doc.setFontSize(8);
+      doc.setFontSize(8.5);
+      doc.text(`  ${term[0]}:`, margin + 1, yPos + 3);
       doc.setFont("helvetica", "normal");
+      doc.text(term[1], margin + 52, yPos + 3);
+      yPos += 5.5;
+    });
+    
+    yPos += 6;
+    
+    // ============================================================
+    // TIERED PRICING (if any tiers have discounts)
+    // ============================================================
+    const tiers = [
+      { name: tier1Name, length: tier1Length, discount: tier1Discount },
+      { name: tier2Name, length: tier2Length, discount: tier2Discount },
+      { name: tier3Name, length: tier3Length, discount: tier3Discount },
+      { name: tier4Name, length: tier4Length, discount: tier4Discount },
+    ].filter(t => t.name && t.length);
+    
+    if (tiers.length > 1) {
+      const tierSection = termsSection + 1;
+      if (yPos > pageHeight - 60) {
+        doc.addPage();
+        yPos = 15;
+      }
+      
+      yPos = sectionBar(`${tierSection}. CONTRACT TIER PRICING`, yPos);
+      
+      const tierWidths = [contentWidth * 0.25, contentWidth * 0.25, contentWidth * 0.25, contentWidth * 0.25];
+      yPos = tableHeader(["Tier", "Commitment", "Storage Rate", "Discount"], tierWidths, yPos);
+      
+      tiers.forEach(tier => {
+        const discountedRate = finalStorageRate * (1 - tier.discount / 100);
+        yPos = tableRow(
+          [tier.name, tier.length, `$${discountedRate.toFixed(2)}/pallet`, tier.discount > 0 ? `${tier.discount}% off` : "Base rate"],
+          tierWidths, yPos, 2
+        );
+      });
+      yPos += 6;
+    }
+    
+    // ============================================================
+    // DISCLOSURES / PALLET CONFIGURATIONS
+    // ============================================================
+    if (customDisclosures) {
+      if (yPos > pageHeight - 50) {
+        doc.addPage();
+        yPos = 15;
+      }
+      
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8.5);
+      doc.text("  Additional Disclosures:", margin + 1, yPos + 3);
+      yPos += 6;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
       doc.setTextColor(60, 60, 60);
-      
-      const terms = [
-        `Quote valid for ${quoteValidDays} days from date above`,
-        `Payment terms: ${paymentTerms}`,
-        minimumCommitment ? `Minimum commitment: ${minimumCommitment}` : null,
-        "Storage billed monthly as minimum commitment",
-        "Handling billed per transaction"
-      ].filter(Boolean);
-      
-      terms.forEach(term => {
-        doc.text(`• ${term}`, 15, yPos);
+      const discLines = doc.splitTextToSize(customDisclosures, contentWidth - 4);
+      discLines.slice(0, 8).forEach((line: string) => {
+        doc.text(line, margin + 2, yPos + 3);
         yPos += 4;
       });
-      
-      if (customDisclosures) {
-        yPos += 2;
-        const lines = doc.splitTextToSize(customDisclosures, pageWidth - 30);
-        lines.slice(0, 4).forEach((line: string) => {
-          doc.text(line, 15, yPos);
-          yPos += 4;
-        });
-      }
+      doc.setTextColor(0, 0, 0);
+      yPos += 4;
     }
     
-    // Footer
-    const footerY = pageHeight - 15;
-    doc.setFillColor(245, 247, 250);
-    doc.rect(0, footerY - 5, pageWidth, 20, "F");
+    // ============================================================
+    // AUTHORIZATION & SIGNATURE BLOCKS
+    // ============================================================
+    const sigSection = termsSection + 1;
+    if (yPos > pageHeight - 65) {
+      doc.addPage();
+      yPos = 15;
+    }
     
-    doc.setFontSize(8);
+    yPos = sectionBar(`${sigSection}. AUTHORIZATION & ACCEPTANCE`, yPos);
+    
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(80, 80, 80);
-    doc.text("Storage is billed monthly as a minimum commitment. Handling is billed per transaction.", pageWidth / 2, footerY + 2, { align: "center" });
+    doc.setFontSize(8.5);
+    doc.text("By signing below, both parties agree to the rates and terms outlined in this proposal.", margin + 2, yPos + 3);
+    yPos += 10;
     
-    doc.setFontSize(8);
-    doc.setTextColor(120, 120, 120);
-    const contactEmail = companyFilter === "Peach" ? "info@peachwarehousing.com" : "sales@lmwarehousing.com";
-    doc.text(`${companyName} | ${contactEmail}`, pageWidth / 2, footerY + 14, { align: "center" });
+    // Two signature columns
+    const clientSigName = (clientCompany || clientContact || "CLIENT").toUpperCase();
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8.5);
+    doc.text(clientSigName, margin + 2, yPos);
+    doc.text(companyName.toUpperCase(), rightX + 2, yPos);
+    yPos += 12;
+    
+    doc.setDrawColor(150, 150, 150);
+    doc.line(margin, yPos, margin + 85, yPos);
+    doc.line(rightX, yPos, rightX + 85, yPos);
+    yPos += 2;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7.5);
+    doc.text("Signature", margin + 2, yPos + 2);
+    doc.text("Signature", rightX + 2, yPos + 2);
+    yPos += 10;
+    
+    doc.line(margin, yPos, margin + 85, yPos);
+    doc.line(rightX, yPos, rightX + 85, yPos);
+    yPos += 2;
+    doc.text("Printed Name & Title", margin + 2, yPos + 2);
+    doc.text("Printed Name & Title", rightX + 2, yPos + 2);
+    yPos += 10;
+    
+    doc.line(margin, yPos, margin + 85, yPos);
+    doc.line(rightX, yPos, rightX + 85, yPos);
+    yPos += 2;
+    doc.text("Date", margin + 2, yPos + 2);
+    doc.text("Date", rightX + 2, yPos + 2);
+    
+    // Add footer to all pages
+    addFooter();
     
     // Save
-    const filename = `${companyFilter}_Quote_${selectedFacilityData.id}_${new Date().toISOString().split('T')[0]}.pdf`;
+    const clientSlug = (clientCompany || clientContact || "Quote").replace(/[^a-zA-Z0-9]/g, "_");
+    const filename = `L&M_Proposal_${clientSlug}_${new Date().toISOString().split('T')[0]}.pdf`;
     doc.save(filename);
   };
   
