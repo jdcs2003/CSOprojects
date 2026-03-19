@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO pipelineDeals (client_name, contact_name, contact_email, service_type, estimated_annual_revenue, stage, probability, facility, notes, created_at, updated_at)\nVALUES ('Spiked Ade (SPKED Inc)', 'Brad Moose', 'bmoose@spikedade.com', 'Warehousing & Distribution', 384000, 'proposal_sent', 50, 'PA-1151 Bristol', '2,000 pallets | $16/pallet storage | $10 in/$10 out | 12oz Sleek Can RTD 4.5% ABV | Producing in Southern VT & Buffalo NY | SOJO Bristol for cartoning | Pallet stack 2-3 high | $4 shrink wrap | $0.50/label', NOW(), NOW());",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute INSERT INTO pipelineDeals (client_name, contact_name, contact_email, service_type, estimated_annual_revenue, stage, probability, facility, notes, created_at, updated_at)\nVALUES ('Spiked Ade (SPKED Inc)', 'Brad Moose', 'bmoose@spikedade.com', 'Warehousing & Distribution', 384000, 'proposal_sent', 50, 'PA-1151 Bristol', '2,000 pallets | $16/pallet storage | $10 in/$10 out | 12oz Sleek Can RTD 4.5% ABV | Producing in Southern VT & Buffalo NY | SOJO Bristol for cartoning | Pallet stack 2-3 high | $4 shrink wrap | $0.50/label', NOW(), NOW());",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'client_name' in 'field list'"
+  ]
+}

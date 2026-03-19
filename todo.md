@@ -213,3 +213,9 @@
 - [x] Audit entire project for Peach/peach references
 - [x] Rework calculator PDF export to match GBV proposal style (blue header bars, two-column layout, clean tables, signature blocks)
 - [x] Test PDF export with Spiked Ade data
+- [x] Generate Spiked Ade proposal PDF (PA-1151, $16 storage, $10 handling, $4 shrink wrap)
+- [ ] Update PA-1151 facility cost basis to $5.00 + $2.00 NNN = $7.00/sq ft/year
+- [ ] Add VAS toggle on/off switches for each line item in calculator
+- [ ] Make VAS rates editable per quote in calculator
+- [ ] Fix PDF export to only show toggled-on VAS items (no case lines when no case volume)
+- [x] Add Spiked Ade deal to pipeline

@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO pipelineDeals (clientName, clientContact, clientEmail, dealName, serviceType, facility, company, stage, estimatedAnnualRevenue, estimatedPallets, probability, keyServices, notes, proposalDate, createdAt, updatedAt)\nVALUES ('Spiked Ade (SPKED Inc)', 'Brad Moose', 'bmoose@spikedade.com', 'Spiked Ade - Warehousing & Distribution', 'warehousing', 'PA-1151 Bristol', 'L&M', 'proposal_sent', 384000, 2000, 50, '[\"Pallet Storage ($16/mo)\",\"Handling In/Out ($10)\",\"Shrink Wrap ($4/pallet)\",\"Labeling ($0.50/label)\",\"Case Pick ($0.40)\",\"Order Processing ($10)\"]', '12oz Sleek Can RTD 4.5% ABV | Producing in Southern VT & Buffalo NY | SOJO Bristol for cartoning | Pallet stack 2-3 high | $32K/mo storage minimum', NOW(), NOW(), NOW());",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute INSERT INTO pipelineDeals (clientName, clientContact, clientEmail, dealName, serviceType, facility, company, stage, estimatedAnnualRevenue, estimatedPallets, probability, keyServices, notes, proposalDate, createdAt, updatedAt)\nVALUES ('Spiked Ade (SPKED Inc)', 'Brad Moose', 'bmoose@spikedade.com', 'Spiked Ade - Warehousing & Distribution', 'warehousing', 'PA-1151 Bristol', 'L&M', 'proposal_sent', 384000, 2000, 50, '[\"Pallet Storage ($16/mo)\",\"Handling In/Out ($10)\",\"Shrink Wrap ($4/pallet)\",\"Labeling ($0.50/label)\",\"Case Pick ($0.40)\",\"Order Processing ($10)\"]', '12oz Sleek Can RTD 4.5% ABV | Producing in Southern VT & Buffalo NY | SOJO Bristol for cartoning | Pallet stack 2-3 high | $32K/mo storage minimum', NOW(), NOW(), NOW());",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 395
+}

@@ -1,0 +1,32 @@
+Spiked Ade Quote Details (from PDF export)
+============================================
+Company: SPIKED ADE (SPKED INC, UNION, NJ.)
+Contact: Brad Moose, Fairfield NJ 07004, 9732225227, bmoose@spikedade.com
+Facility: PA-13200 (Townsend - 65,856 sq ft) -- BUT should be PA-1151 Bristol
+Product: 12oz sleek can, 4.5% ABV RTD
+
+Storage: $16.00/pallet/month x 2,000 pallets = $32,000/mo
+Handling In: $10.00/pallet
+Handling Out: $10.00/pallet
+Est. Handling: 500 pallets in + 500 pallets out (0.25 turns)
+
+VAS:
+- Case Pick: $0.40/case
+- Layer Pick: $0.30/case
+- Pallet Supply: $9.00/pallet
+- Shrink Wrap: $3.00/pallet
+- Labeling: $0.50/label
+- Order Processing: $10.00/order
+- Cancellation/Restock: $25.00/order
+
+Total Estimated Monthly: $42,675.00
+
+Notes from disclosures:
+- Currently producing in Southern VT and Buffalo, NY
+- SOJO (Bristol) currently handles their variety pack cartoning and is also their main storage facility
+- Brad used to work for one of the guys that runs SOJO - happy with their service
+- Pallet stackability: prefer 2 high but 3 high works
+
+UPDATE NEEDED:
+- Facility should be PA-1151 Bristol (not PA-13200)
+- PA-1151 cost basis: $5.00 + $2.00 NNN = $7.00/sq ft/year
