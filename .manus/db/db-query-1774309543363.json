@@ -1,0 +1,13 @@
+{
+  "query": "SELECT COUNT(*) as cnt FROM savedQuotes;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT COUNT(*) as cnt FROM savedQuotes;",
+  "rows": [
+    {
+      "cnt": "8"
+    }
+  ],
+  "messages": [],
+  "stdout": "cnt\n8\n",
+  "stderr": "",
+  "execution_time_ms": 365
+}

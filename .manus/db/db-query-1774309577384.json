@@ -1,0 +1,13 @@
+{
+  "query": "SELECT GROUP_CONCAT(COLUMN_NAME ORDER BY ORDINAL_POSITION SEPARATOR ', ') as cols FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'savedQuotes';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT GROUP_CONCAT(COLUMN_NAME ORDER BY ORDINAL_POSITION SEPARATOR ', ') as cols FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'savedQuotes';",
+  "rows": [
+    {
+      "cols": "id, quoteName, company, clientCompany, clientContact, clientAddress1, clientAddress2, clientCity, clientState, clientZip, clientPhone, clientEmail, facilityId, monthlyPallets, monthlyTurns, sqFtPerPallet, stackHeight, fullyLoadedLaborRate, inboundMinutes, outboundMinutes, storageMargin, handlingInMargin, handlingOutMargin, pickType, monthlyOrders, casesPerOrder, labelsPerOrder, casePickRate, layerPickRate, palletSupplyFee, shrinkWrapFee, labelingFee, orderProcessingFee, cancellationFee, casePickMargin, palletSupplyMargin, shrinkWrapMargin, labelingMargin, orderProcessingMargin, tier1Name, tier1Length, tier1Discount, tier2Name, tier2Length, tier2Discount, tier3Name, tier3Length, tier3Discount, tier4Name, tier4Length, tier4Discount, selectedDiscountTier, storageRateOverride, handlingInRateOverride, handlingOutRateOverride, quoteValidDays, paymentTerms, minimumCommitment, customDisclosures, createdBy, createdAt, updatedAt, selectedFacility, laborRate, taxRate, cancellationMargin, monthlyStorageMinimum, freightLa"
+    }
+  ],
+  "messages": [],
+  "stdout": "cols\nid, quoteName, company, clientCompany, clientContact, clientAddress1, clientAddress2, clientCity, clientState, clientZip, clientPhone, clientEmail, facilityId, monthlyPallets, monthlyTurns, sqFtPerPallet, stackHeight, fullyLoadedLaborRate, inboundMinutes, outboundMinutes, storageMargin, handlingInMargin, handlingOutMargin, pickType, monthlyOrders, casesPerOrder, labelsPerOrder, casePickRate, layerPickRate, palletSupplyFee, shrinkWrapFee, labelingFee, orderProcessingFee, cancellationFee, casePickMargin, palletSupplyMargin, shrinkWrapMargin, labelingMargin, orderProcessingMargin, tier1Name, tier1Length, tier1Discount, tier2Name, tier2Length, tier2Discount, tier3Name, tier3Length, tier3Discount, tier4Name, tier4Length, tier4Discount, selectedDiscountTier, storageRateOverride, handlingInRateOverride, handlingOutRateOverride, quoteValidDays, paymentTerms, minimumCommitment, customDisclosures, createdBy, createdAt, updatedAt, selectedFacility, laborRate, taxRate, cancellationMargin, monthlyStorageMinimum, freightLa\n",
+  "stderr": "",
+  "execution_time_ms": 371
+}

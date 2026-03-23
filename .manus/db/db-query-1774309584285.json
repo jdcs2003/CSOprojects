@@ -1,0 +1,61 @@
+{
+  "query": "SELECT quoteName, company, facilityId, selectedFacility, monthlyPallets, monthlyTurns, laborRate, taxRate, storageMargin, handlingInMargin, handlingOutMargin, storageRateOverride, handlingInRateOverride, handlingOutRateOverride, monthlyStorageMinimum FROM savedQuotes LIMIT 3;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT quoteName, company, facilityId, selectedFacility, monthlyPallets, monthlyTurns, laborRate, taxRate, storageMargin, handlingInMargin, handlingOutMargin, storageRateOverride, handlingInRateOverride, handlingOutRateOverride, monthlyStorageMinimum FROM savedQuotes LIMIT 3;",
+  "rows": [
+    {
+      "quoteName": "Señor Sangria",
+      "company": "L&M",
+      "facilityId": "",
+      "selectedFacility": "",
+      "monthlyPallets": "35",
+      "monthlyTurns": "1",
+      "laborRate": "18",
+      "taxRate": "25",
+      "storageMargin": "30",
+      "handlingInMargin": "30",
+      "handlingOutMargin": "30",
+      "storageRateOverride": "NULL",
+      "handlingInRateOverride": "NULL",
+      "handlingOutRateOverride": "NULL",
+      "monthlyStorageMinimum": "NULL"
+    },
+    {
+      "quoteName": "Señor Sangria",
+      "company": "L&M",
+      "facilityId": "pa-510",
+      "selectedFacility": "pa-510",
+      "monthlyPallets": "60",
+      "monthlyTurns": "1",
+      "laborRate": "21",
+      "taxRate": "25",
+      "storageMargin": "30",
+      "handlingInMargin": "30",
+      "handlingOutMargin": "30",
+      "storageRateOverride": "16",
+      "handlingInRateOverride": "12",
+      "handlingOutRateOverride": "9",
+      "monthlyStorageMinimum": "NULL"
+    },
+    {
+      "quoteName": "Señor Sangria",
+      "company": "L&M",
+      "facilityId": "pa-510",
+      "selectedFacility": "pa-510",
+      "monthlyPallets": "60",
+      "monthlyTurns": "1",
+      "laborRate": "21",
+      "taxRate": "25",
+      "storageMargin": "30",
+      "handlingInMargin": "30",
+      "handlingOutMargin": "30",
+      "storageRateOverride": "16",
+      "handlingInRateOverride": "12",
+      "handlingOutRateOverride": "9",
+      "monthlyStorageMinimum": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "quoteName\tcompany\tfacilityId\tselectedFacility\tmonthlyPallets\tmonthlyTurns\tlaborRate\ttaxRate\tstorageMargin\thandlingInMargin\thandlingOutMargin\tstorageRateOverride\thandlingInRateOverride\thandlingOutRateOverride\tmonthlyStorageMinimum\nSeñor Sangria\tL&M\t\t\t35\t1\t18\t25\t30\t30\t30\tNULL\tNULL\tNULL\tNULL\nSeñor Sangria\tL&M\tpa-510\tpa-510\t60\t1\t21\t25\t30\t30\t30\t16\t12\t9\tNULL\nSeñor Sangria\tL&M\tpa-510\tpa-510\t60\t1\t21\t25\t30\t30\t30\t16\t12\t9\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 349
+}

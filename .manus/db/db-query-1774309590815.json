@@ -1,0 +1,9 @@
+{
+  "query": "SELECT quoteName, pickType, palletSupplyFee, shrinkWrapFee, labelingFee, orderProcessingFee, cancellationFee, casePickRate, layerPickRate, freightLanes, quoteValidDays, paymentTerms, minimumCommitment, customDisclosures FROM savedQuotes WHERE quoteName = 'Cornerstone Systems - Warehouse Services - 2/17/2026';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT quoteName, pickType, palletSupplyFee, shrinkWrapFee, labelingFee, orderProcessingFee, cancellationFee, casePickRate, layerPickRate, freightLanes, quoteValidDays, paymentTerms, minimumCommitment, customDisclosures FROM savedQuotes WHERE quoteName = 'Cornerstone Systems - Warehouse Services - 2/17/2026';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 365
+}

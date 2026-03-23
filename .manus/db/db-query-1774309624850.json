@@ -1,0 +1,24 @@
+{
+  "query": "SELECT storageMargin, handlingInMargin, handlingOutMargin, casePickMargin, palletSupplyMargin, shrinkWrapMargin, labelingMargin, orderProcessingMargin, cancellationMargin, storageRateOverride, handlingInRateOverride, handlingOutRateOverride FROM savedQuotes WHERE id = 90001;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT storageMargin, handlingInMargin, handlingOutMargin, casePickMargin, palletSupplyMargin, shrinkWrapMargin, labelingMargin, orderProcessingMargin, cancellationMargin, storageRateOverride, handlingInRateOverride, handlingOutRateOverride FROM savedQuotes WHERE id = 90001;",
+  "rows": [
+    {
+      "storageMargin": "35",
+      "handlingInMargin": "30",
+      "handlingOutMargin": "30",
+      "casePickMargin": "30",
+      "palletSupplyMargin": "30",
+      "shrinkWrapMargin": "30",
+      "labelingMargin": "30",
+      "orderProcessingMargin": "30",
+      "cancellationMargin": "30",
+      "storageRateOverride": "3500",
+      "handlingInRateOverride": "800",
+      "handlingOutRateOverride": "800"
+    }
+  ],
+  "messages": [],
+  "stdout": "storageMargin\thandlingInMargin\thandlingOutMargin\tcasePickMargin\tpalletSupplyMargin\tshrinkWrapMargin\tlabelingMargin\torderProcessingMargin\tcancellationMargin\tstorageRateOverride\thandlingInRateOverride\thandlingOutRateOverride\n35\t30\t30\t30\t30\t30\t30\t30\t30\t3500\t800\t800\n",
+  "stderr": "",
+  "execution_time_ms": 355
+}

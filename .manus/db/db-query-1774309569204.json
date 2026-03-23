@@ -1,0 +1,214 @@
+{
+  "query": "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'savedQuotes' ORDER BY ORDINAL_POSITION;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'savedQuotes' ORDER BY ORDINAL_POSITION;",
+  "rows": [
+    {
+      "COLUMN_NAME": "id"
+    },
+    {
+      "COLUMN_NAME": "quoteName"
+    },
+    {
+      "COLUMN_NAME": "company"
+    },
+    {
+      "COLUMN_NAME": "clientCompany"
+    },
+    {
+      "COLUMN_NAME": "clientContact"
+    },
+    {
+      "COLUMN_NAME": "clientAddress1"
+    },
+    {
+      "COLUMN_NAME": "clientAddress2"
+    },
+    {
+      "COLUMN_NAME": "clientCity"
+    },
+    {
+      "COLUMN_NAME": "clientState"
+    },
+    {
+      "COLUMN_NAME": "clientZip"
+    },
+    {
+      "COLUMN_NAME": "clientPhone"
+    },
+    {
+      "COLUMN_NAME": "clientEmail"
+    },
+    {
+      "COLUMN_NAME": "facilityId"
+    },
+    {
+      "COLUMN_NAME": "monthlyPallets"
+    },
+    {
+      "COLUMN_NAME": "monthlyTurns"
+    },
+    {
+      "COLUMN_NAME": "sqFtPerPallet"
+    },
+    {
+      "COLUMN_NAME": "stackHeight"
+    },
+    {
+      "COLUMN_NAME": "fullyLoadedLaborRate"
+    },
+    {
+      "COLUMN_NAME": "inboundMinutes"
+    },
+    {
+      "COLUMN_NAME": "outboundMinutes"
+    },
+    {
+      "COLUMN_NAME": "storageMargin"
+    },
+    {
+      "COLUMN_NAME": "handlingInMargin"
+    },
+    {
+      "COLUMN_NAME": "handlingOutMargin"
+    },
+    {
+      "COLUMN_NAME": "pickType"
+    },
+    {
+      "COLUMN_NAME": "monthlyOrders"
+    },
+    {
+      "COLUMN_NAME": "casesPerOrder"
+    },
+    {
+      "COLUMN_NAME": "labelsPerOrder"
+    },
+    {
+      "COLUMN_NAME": "casePickRate"
+    },
+    {
+      "COLUMN_NAME": "layerPickRate"
+    },
+    {
+      "COLUMN_NAME": "palletSupplyFee"
+    },
+    {
+      "COLUMN_NAME": "shrinkWrapFee"
+    },
+    {
+      "COLUMN_NAME": "labelingFee"
+    },
+    {
+      "COLUMN_NAME": "orderProcessingFee"
+    },
+    {
+      "COLUMN_NAME": "cancellationFee"
+    },
+    {
+      "COLUMN_NAME": "casePickMargin"
+    },
+    {
+      "COLUMN_NAME": "palletSupplyMargin"
+    },
+    {
+      "COLUMN_NAME": "shrinkWrapMargin"
+    },
+    {
+      "COLUMN_NAME": "labelingMargin"
+    },
+    {
+      "COLUMN_NAME": "orderProcessingMargin"
+    },
+    {
+      "COLUMN_NAME": "tier1Name"
+    },
+    {
+      "COLUMN_NAME": "tier1Length"
+    },
+    {
+      "COLUMN_NAME": "tier1Discount"
+    },
+    {
+      "COLUMN_NAME": "tier2Name"
+    },
+    {
+      "COLUMN_NAME": "tier2Length"
+    },
+    {
+      "COLUMN_NAME": "tier2Discount"
+    },
+    {
+      "COLUMN_NAME": "tier3Name"
+    },
+    {
+      "COLUMN_NAME": "tier3Length"
+    },
+    {
+      "COLUMN_NAME": "tier3Discount"
+    },
+    {
+      "COLUMN_NAME": "tier4Name"
+    },
+    {
+      "COLUMN_NAME": "tier4Length"
+    },
+    {
+      "COLUMN_NAME": "tier4Discount"
+    },
+    {
+      "COLUMN_NAME": "selectedDiscountTier"
+    },
+    {
+      "COLUMN_NAME": "storageRateOverride"
+    },
+    {
+      "COLUMN_NAME": "handlingInRateOverride"
+    },
+    {
+      "COLUMN_NAME": "handlingOutRateOverride"
+    },
+    {
+      "COLUMN_NAME": "quoteValidDays"
+    },
+    {
+      "COLUMN_NAME": "paymentTerms"
+    },
+    {
+      "COLUMN_NAME": "minimumCommitment"
+    },
+    {
+      "COLUMN_NAME": "customDisclosures"
+    },
+    {
+      "COLUMN_NAME": "createdBy"
+    },
+    {
+      "COLUMN_NAME": "createdAt"
+    },
+    {
+      "COLUMN_NAME": "updatedAt"
+    },
+    {
+      "COLUMN_NAME": "selectedFacility"
+    },
+    {
+      "COLUMN_NAME": "laborRate"
+    },
+    {
+      "COLUMN_NAME": "taxRate"
+    },
+    {
+      "COLUMN_NAME": "cancellationMargin"
+    },
+    {
+      "COLUMN_NAME": "monthlyStorageMinimum"
+    },
+    {
+      "COLUMN_NAME": "freightLanes"
+    }
+  ],
+  "messages": [],
+  "stdout": "COLUMN_NAME\nid\nquoteName\ncompany\nclientCompany\nclientContact\nclientAddress1\nclientAddress2\nclientCity\nclientState\nclientZip\nclientPhone\nclientEmail\nfacilityId\nmonthlyPallets\nmonthlyTurns\nsqFtPerPallet\nstackHeight\nfullyLoadedLaborRate\ninboundMinutes\noutboundMinutes\nstorageMargin\nhandlingInMargin\nhandlingOutMargin\npickType\nmonthlyOrders\ncasesPerOrder\nlabelsPerOrder\ncasePickRate\nlayerPickRate\npalletSupplyFee\nshrinkWrapFee\nlabelingFee\norderProcessingFee\ncancellationFee\ncasePickMargin\npalletSupplyMargin\nshrinkWrapMargin\nlabelingMargin\norderProcessingMargin\ntier1Name\ntier1Length\ntier1Discount\ntier2Name\ntier2Length\ntier2Discount\ntier3Name\ntier3Length\ntier3Discount\ntier4Name\ntier4Length\ntier4Discount\nselectedDiscountTier\nstorageRateOverride\nhandlingInRateOverride\nhandlingOutRateOverride\nquoteValidDays\npaymentTerms\nminimumCommitment\ncustomDisclosures\ncreatedBy\ncreatedAt\nupdatedAt\nselectedFacility\nlaborRate\ntaxRate\ncancellationMargin\nmonthlyStorageMinimum\nfreightLanes\n",
+  "stderr": "",
+  "execution_time_ms": 346
+}

@@ -1,0 +1,21 @@
+{
+  "query": "SELECT id, quoteName, clientCompany, monthlyPallets, monthlyStorageMinimum, storageRateOverride, handlingInRateOverride, handlingOutRateOverride, minimumCommitment FROM savedQuotes WHERE quoteName LIKE '%Spiked%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT id, quoteName, clientCompany, monthlyPallets, monthlyStorageMinimum, storageRateOverride, handlingInRateOverride, handlingOutRateOverride, minimumCommitment FROM savedQuotes WHERE quoteName LIKE '%Spiked%';",
+  "rows": [
+    {
+      "id": "120001",
+      "quoteName": "Spiked Ade - Warehousing Proposal",
+      "clientCompany": "Spiked Ade (SPKED Inc)",
+      "monthlyPallets": "500",
+      "monthlyStorageMinimum": "8000",
+      "storageRateOverride": "16",
+      "handlingInRateOverride": "10",
+      "handlingOutRateOverride": "10",
+      "minimumCommitment": "12 months"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tquoteName\tclientCompany\tmonthlyPallets\tmonthlyStorageMinimum\tstorageRateOverride\thandlingInRateOverride\thandlingOutRateOverride\tminimumCommitment\n120001\tSpiked Ade - Warehousing Proposal\tSpiked Ade (SPKED Inc)\t500\t8000\t16\t10\t10\t12 months\n",
+  "stderr": "",
+  "execution_time_ms": 364
+}

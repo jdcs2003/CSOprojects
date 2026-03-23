@@ -1,0 +1,13 @@
+{
+  "query": "SELECT freightLanes FROM savedQuotes WHERE id = 90001;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT freightLanes FROM savedQuotes WHERE id = 90001;",
+  "rows": [
+    {
+      "freightLanes": "[{\"type\":\"outbound\",\"origin\":\"Edison NJ Rail Ramp\",\"destination\":\"KLS DC5, NE Philadelphia PA\",\"rate\":769.65,\"pallets\":21,\"weight\":40000},{\"type\":\"outbound\",\"origin\":\"PA-1151 Bristol PA\",\"destination\":\"PLCB Delivery (Expedited)\",\"rate\":750,\"pallets\":21,\"weight\":40000},{\"type\":\"outbound\",\"origin\":\"PA-1151 Bristol PA\",\"destination\":\"Delaware Delivery\",\"rate\":850,\"pallets\":21,\"weight\":40000},{\"type\":\"inbound\",\"origin\":\"Edison NJ Rail Ramp (MGX)\",\"destination\":\"PA-1151 Bristol PA\",\"rate\":16,\"pallets\":1,\"weight\":2000}]"
+    }
+  ],
+  "messages": [],
+  "stdout": "freightLanes\n[{\"type\":\"outbound\",\"origin\":\"Edison NJ Rail Ramp\",\"destination\":\"KLS DC5, NE Philadelphia PA\",\"rate\":769.65,\"pallets\":21,\"weight\":40000},{\"type\":\"outbound\",\"origin\":\"PA-1151 Bristol PA\",\"destination\":\"PLCB Delivery (Expedited)\",\"rate\":750,\"pallets\":21,\"weight\":40000},{\"type\":\"outbound\",\"origin\":\"PA-1151 Bristol PA\",\"destination\":\"Delaware Delivery\",\"rate\":850,\"pallets\":21,\"weight\":40000},{\"type\":\"inbound\",\"origin\":\"Edison NJ Rail Ramp (MGX)\",\"destination\":\"PA-1151 Bristol PA\",\"rate\":16,\"pallets\":1,\"weight\":2000}]\n",
+  "stderr": "",
+  "execution_time_ms": 370
+}

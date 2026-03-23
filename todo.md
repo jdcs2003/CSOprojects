@@ -225,3 +225,10 @@
 - [x] Remove all Third Deck references from the app (login page, site title, etc.)
 - [x] Ensure calculator PDF export matches the GBV/Spiked Ade proposal format
 - [x] Regenerate Spiked Ade proposal with Ambient designation for PA-1151 (PA-1151 already marked Ambient)
+- [x] Fix browser tab title still showing "Third Deck Brewing" — change to L&M branding (user fixed from Settings)
+- [x] Add Spiked Ade as a pre-loaded saved quote in the calculator dropdown
+- [x] Verify amoore@lmwarehousing.com is in the email whitelist
+- [x] Fix Spiked Ade minimum commitment to 500 pallets (not 2000)
+- [x] Show capacity up to 3,500 pallets for Spiked Ade at these rates
+- [x] Fix PA-1151 showing as Climate-controlled in PDF — should be Ambient
+- [x] Ensure PDF export matches the exact Spiked Ade proposal format

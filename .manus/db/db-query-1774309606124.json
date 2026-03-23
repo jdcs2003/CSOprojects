@@ -1,0 +1,28 @@
+{
+  "query": "SELECT pickType, palletSupplyFee, shrinkWrapFee, labelingFee, orderProcessingFee, cancellationFee, casePickRate, layerPickRate, quoteValidDays, paymentTerms, minimumCommitment, monthlyStorageMinimum, sqFtPerPallet, stackHeight, inboundMinutes, outboundMinutes FROM savedQuotes WHERE id = 90001;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT pickType, palletSupplyFee, shrinkWrapFee, labelingFee, orderProcessingFee, cancellationFee, casePickRate, layerPickRate, quoteValidDays, paymentTerms, minimumCommitment, monthlyStorageMinimum, sqFtPerPallet, stackHeight, inboundMinutes, outboundMinutes FROM savedQuotes WHERE id = 90001;",
+  "rows": [
+    {
+      "pickType": "full",
+      "palletSupplyFee": "1200",
+      "shrinkWrapFee": "400",
+      "labelingFee": "20",
+      "orderProcessingFee": "0",
+      "cancellationFee": "0",
+      "casePickRate": "40",
+      "layerPickRate": "30",
+      "quoteValidDays": "30",
+      "paymentTerms": "Net 30",
+      "minimumCommitment": "68 boxcars (272 loads) Nov 2024 - Oct 2025",
+      "monthlyStorageMinimum": "0",
+      "sqFtPerPallet": "48",
+      "stackHeight": "1",
+      "inboundMinutes": "15",
+      "outboundMinutes": "15"
+    }
+  ],
+  "messages": [],
+  "stdout": "pickType\tpalletSupplyFee\tshrinkWrapFee\tlabelingFee\torderProcessingFee\tcancellationFee\tcasePickRate\tlayerPickRate\tquoteValidDays\tpaymentTerms\tminimumCommitment\tmonthlyStorageMinimum\tsqFtPerPallet\tstackHeight\tinboundMinutes\toutboundMinutes\nfull\t1200\t400\t20\t0\t0\t40\t30\t30\tNet 30\t68 boxcars (272 loads) Nov 2024 - Oct 2025\t0\t48\t1\t15\t15\n",
+  "stderr": "",
+  "execution_time_ms": 362
+}
