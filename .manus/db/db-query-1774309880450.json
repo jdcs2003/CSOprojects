@@ -1,0 +1,34 @@
+{
+  "query": "SELECT id, clientName, dealName, stage, serviceType, facility FROM pipelineDeals WHERE clientName LIKE '%Glazer%' OR clientName LIKE '%Cornerstone%' OR dealName LIKE '%Glazer%' OR dealName LIKE '%Cornerstone%' OR dealName LIKE '%PLCB%' OR dealName LIKE '%Southern%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT id, clientName, dealName, stage, serviceType, facility FROM pipelineDeals WHERE clientName LIKE '%Glazer%' OR clientName LIKE '%Cornerstone%' OR dealName LIKE '%Glazer%' OR dealName LIKE '%Cornerstone%' OR dealName LIKE '%PLCB%' OR dealName LIKE '%Southern%';",
+  "rows": [
+    {
+      "id": "2",
+      "clientName": "Cornerstone Systems (Wine Group)",
+      "dealName": "MGX Transportation & Cross-Dock Services",
+      "stage": "negotiating",
+      "serviceType": "transportation",
+      "facility": "PA-1151"
+    },
+    {
+      "id": "30001",
+      "clientName": "Southern Glazer's Wine & Spirits",
+      "dealName": "PA Direct Delivery - 5 Zone Coverage",
+      "stage": "proposal_sent",
+      "serviceType": "transportation",
+      "facility": "PA-1151"
+    },
+    {
+      "id": "60001",
+      "clientName": "Banville & Jones (Good Boy Vodka)",
+      "dealName": "Warehousing & PLCB Distribution",
+      "stage": "proposal_sent",
+      "serviceType": "warehousing",
+      "facility": "PA-510"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tclientName\tdealName\tstage\tserviceType\tfacility\n2\tCornerstone Systems (Wine Group)\tMGX Transportation & Cross-Dock Services\tnegotiating\ttransportation\tPA-1151\n30001\tSouthern Glazer's Wine & Spirits\tPA Direct Delivery - 5 Zone Coverage\tproposal_sent\ttransportation\tPA-1151\n60001\tBanville & Jones (Good Boy Vodka)\tWarehousing & PLCB Distribution\tproposal_sent\twarehousing\tPA-510\n",
+  "stderr": "",
+  "execution_time_ms": 375
+}

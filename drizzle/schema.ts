@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, double, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -89,13 +89,13 @@ export const savedQuotes = mysqlTable("savedQuotes", {
   monthlyOrders: int("monthlyOrders").notNull(),
   casesPerOrder: int("casesPerOrder").notNull(),
   labelsPerOrder: int("labelsPerOrder").notNull(),
-  casePickRate: int("casePickRate").notNull(), // Store as cents
-  layerPickRate: int("layerPickRate").notNull(),
-  palletSupplyFee: int("palletSupplyFee").notNull(),
-  shrinkWrapFee: int("shrinkWrapFee").notNull(),
-  labelingFee: int("labelingFee").notNull(),
-  orderProcessingFee: int("orderProcessingFee").notNull(),
-  cancellationFee: int("cancellationFee").notNull(),
+  casePickRate: double("casePickRate").notNull(), // Dollar amount (e.g., 0.40)
+  layerPickRate: double("layerPickRate").notNull(),
+  palletSupplyFee: double("palletSupplyFee").notNull(),
+  shrinkWrapFee: double("shrinkWrapFee").notNull(),
+  labelingFee: double("labelingFee").notNull(),
+  orderProcessingFee: double("orderProcessingFee").notNull(),
+  cancellationFee: double("cancellationFee").notNull(),
   casePickMargin: int("casePickMargin").notNull(),
   palletSupplyMargin: int("palletSupplyMargin").notNull(),
   shrinkWrapMargin: int("shrinkWrapMargin").notNull(),
@@ -107,15 +107,19 @@ export const savedQuotes = mysqlTable("savedQuotes", {
   tier1Name: varchar("tier1Name", { length: 50 }),
   tier1Length: varchar("tier1Length", { length: 50 }),
   tier1Discount: int("tier1Discount"),
+  tier1Enabled: int("tier1Enabled").default(1), // 1 = enabled, 0 = disabled
   tier2Name: varchar("tier2Name", { length: 50 }),
   tier2Length: varchar("tier2Length", { length: 50 }),
   tier2Discount: int("tier2Discount"),
+  tier2Enabled: int("tier2Enabled").default(1),
   tier3Name: varchar("tier3Name", { length: 50 }),
   tier3Length: varchar("tier3Length", { length: 50 }),
   tier3Discount: int("tier3Discount"),
+  tier3Enabled: int("tier3Enabled").default(1),
   tier4Name: varchar("tier4Name", { length: 50 }),
   tier4Length: varchar("tier4Length", { length: 50 }),
   tier4Discount: int("tier4Discount"),
+  tier4Enabled: int("tier4Enabled").default(1),
   selectedDiscountTier: varchar("selectedDiscountTier", { length: 20 }),
   
   // Rate Overrides (nullable, store as cents)
@@ -125,6 +129,15 @@ export const savedQuotes = mysqlTable("savedQuotes", {
   
   // Transportation/Freight Lanes (JSON stored as text)
   freightLanes: text("freightLanes"), // JSON array of freight lane objects
+  
+  // Proposal Details
+  productDescription: varchar("productDescription", { length: 500 }),
+  accountOverview: text("accountOverview"),
+  palletStacking: varchar("palletStacking", { length: 50 }),
+  orderProcessingTime: varchar("orderProcessingTime", { length: 50 }),
+  
+  // Locked PDF
+  lockedPdfUrl: text("lockedPdfUrl"),
   
   // Terms & Disclosures
   quoteValidDays: int("quoteValidDays"),

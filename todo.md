@@ -232,3 +232,24 @@
 - [x] Show capacity up to 3,500 pallets for Spiked Ade at these rates
 - [x] Fix PA-1151 showing as Climate-controlled in PDF — should be Ambient
 - [x] Ensure PDF export matches the exact Spiked Ade proposal format
+- [x] Update pipeline: close Southern Glazers direct delivery deal (stage → signed/active)
+- [x] Update pipeline: close PLCB deal with Cornerstone (stage → signed/active)
+- [x] Make PDF export match Spiked Ade reference exactly: Account Overview section, min pallet commitment, capacity, product info
+- [x] VAS toggles control what appears in PDF export
+- [x] Fix labeling rate display: stored as cents (50) but showing as $0.50 (fixed DB schema to double)
+- [x] Add Account Overview section to PDF (blue bar + paragraph + 4-column summary)
+- [x] Add Product line to PREPARED FOR section in PDF
+- [x] Add Case Pick and Layer Pick to VAS section (reference showed all 7 items)
+- [x] Fix transport to show SOJO Bristol lanes at $250.00
+- [x] Remove 4-tier discount system for Spiked Ade, replace with single 5% for 36-month deal
+- [x] Add new proposal detail fields: product description, account overview, pallet stacking, order processing time
+- [x] Add toggle on/off switches to each discount tier in calculator UI
+- [x] Update PDF export to only show enabled tiers
+- [x] Update Spiked Ade DB record to disable Silver and Gold tiers (keep Standard + 36-month only)
+- [x] Fix L&M logo warping in PDF export — maintain correct aspect ratio
+- [x] Reduce bottom space on page 1 of PDF export
+- [ ] Upload final Spiked Ade PDF to S3 and store URL in DB as locked version
+- [ ] Add "(Locked)" label next to Spiked Ade in saved quotes dropdown
+- [ ] Add "Download Locked PDF" button for quotes with locked PDFs
+- [ ] Allow loading locked quotes as unlocked/editable in calculator
+- [ ] Fix JSX closing tag error in PricingCalculator

@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE savedQuotes SET casePickRate = 0.40, layerPickRate = 0.30, palletSupplyFee = 9.00, shrinkWrapFee = 3.00, labelingFee = 0.50, orderProcessingFee = 10.00, cancellationFee = 25.00 WHERE id IN (1, 2, 3, 30001, 30002, 30003, 60001);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute UPDATE savedQuotes SET casePickRate = 0.40, layerPickRate = 0.30, palletSupplyFee = 9.00, shrinkWrapFee = 3.00, labelingFee = 0.50, orderProcessingFee = 10.00, cancellationFee = 25.00 WHERE id IN (1, 2, 3, 30001, 30002, 30003, 60001);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 365
+}

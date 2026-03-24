@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE savedQuotes SET tier1Enabled = 1, tier2Enabled = 1, tier3Enabled = 0, tier4Enabled = 0, tier1Name = 'Standard', tier1Length = 'Month-to-Month', tier1Discount = 0, tier2Name = '36-Month Commitment', tier2Length = '36 months', tier2Discount = 5 WHERE quoteName LIKE '%Spiked Ade%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute UPDATE savedQuotes SET tier1Enabled = 1, tier2Enabled = 1, tier3Enabled = 0, tier4Enabled = 0, tier1Name = 'Standard', tier1Length = 'Month-to-Month', tier1Discount = 0, tier2Name = '36-Month Commitment', tier2Length = '36 months', tier2Discount = 5 WHERE quoteName LIKE '%Spiked Ade%'",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 366
+}

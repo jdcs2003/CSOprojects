@@ -1,0 +1,18 @@
+{
+  "query": "SELECT id, clientName, dealName, stage, serviceType, facility FROM pipelineDeals WHERE clientName LIKE '%Cornerstone%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT id, clientName, dealName, stage, serviceType, facility FROM pipelineDeals WHERE clientName LIKE '%Cornerstone%';",
+  "rows": [
+    {
+      "id": "2",
+      "clientName": "Cornerstone Systems (Wine Group)",
+      "dealName": "MGX Transportation & Cross-Dock Services",
+      "stage": "negotiating",
+      "serviceType": "transportation",
+      "facility": "PA-1151"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tclientName\tdealName\tstage\tserviceType\tfacility\n2\tCornerstone Systems (Wine Group)\tMGX Transportation & Cross-Dock Services\tnegotiating\ttransportation\tPA-1151\n",
+  "stderr": "",
+  "execution_time_ms": 420
+}

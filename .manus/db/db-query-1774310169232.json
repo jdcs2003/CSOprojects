@@ -1,0 +1,19 @@
+{
+  "query": "SELECT casePickRate, layerPickRate, palletSupplyFee, shrinkWrapFee, labelingFee, orderProcessingFee, cancellationFee FROM savedQuotes WHERE id = 120001;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT casePickRate, layerPickRate, palletSupplyFee, shrinkWrapFee, labelingFee, orderProcessingFee, cancellationFee FROM savedQuotes WHERE id = 120001;",
+  "rows": [
+    {
+      "casePickRate": "40",
+      "layerPickRate": "30",
+      "palletSupplyFee": "9",
+      "shrinkWrapFee": "4",
+      "labelingFee": "50",
+      "orderProcessingFee": "10",
+      "cancellationFee": "25"
+    }
+  ],
+  "messages": [],
+  "stdout": "casePickRate\tlayerPickRate\tpalletSupplyFee\tshrinkWrapFee\tlabelingFee\torderProcessingFee\tcancellationFee\n40\t30\t9\t4\t50\t10\t25\n",
+  "stderr": "",
+  "execution_time_ms": 369
+}

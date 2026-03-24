@@ -1,0 +1,1 @@
+ALTER TABLE `savedQuotes` ADD `lockedPdfUrl` text;

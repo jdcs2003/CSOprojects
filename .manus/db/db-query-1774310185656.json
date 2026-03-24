@@ -1,0 +1,98 @@
+{
+  "query": "SELECT id, quoteName, casePickRate, layerPickRate, palletSupplyFee, shrinkWrapFee, labelingFee, orderProcessingFee, cancellationFee FROM savedQuotes WHERE id != 120001;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT id, quoteName, casePickRate, layerPickRate, palletSupplyFee, shrinkWrapFee, labelingFee, orderProcessingFee, cancellationFee FROM savedQuotes WHERE id != 120001;",
+  "rows": [
+    {
+      "id": "1",
+      "quoteName": "Señor Sangria",
+      "casePickRate": "0",
+      "layerPickRate": "0",
+      "palletSupplyFee": "9",
+      "shrinkWrapFee": "3",
+      "labelingFee": "1",
+      "orderProcessingFee": "10",
+      "cancellationFee": "25"
+    },
+    {
+      "id": "2",
+      "quoteName": "Señor Sangria",
+      "casePickRate": "0",
+      "layerPickRate": "0",
+      "palletSupplyFee": "9",
+      "shrinkWrapFee": "3",
+      "labelingFee": "1",
+      "orderProcessingFee": "10",
+      "cancellationFee": "25"
+    },
+    {
+      "id": "3",
+      "quoteName": "Señor Sangria",
+      "casePickRate": "0",
+      "layerPickRate": "0",
+      "palletSupplyFee": "9",
+      "shrinkWrapFee": "3",
+      "labelingFee": "1",
+      "orderProcessingFee": "10",
+      "cancellationFee": "25"
+    },
+    {
+      "id": "30001",
+      "quoteName": "LMS Reserve",
+      "casePickRate": "0",
+      "layerPickRate": "0",
+      "palletSupplyFee": "9",
+      "shrinkWrapFee": "3",
+      "labelingFee": "1",
+      "orderProcessingFee": "10",
+      "cancellationFee": "25"
+    },
+    {
+      "id": "30002",
+      "quoteName": "LMS Reserve",
+      "casePickRate": "0",
+      "layerPickRate": "0",
+      "palletSupplyFee": "9",
+      "shrinkWrapFee": "3",
+      "labelingFee": "1",
+      "orderProcessingFee": "10",
+      "cancellationFee": "25"
+    },
+    {
+      "id": "30003",
+      "quoteName": "LMS Reserve 020226",
+      "casePickRate": "0",
+      "layerPickRate": "0",
+      "palletSupplyFee": "9",
+      "shrinkWrapFee": "3",
+      "labelingFee": "1",
+      "orderProcessingFee": "10",
+      "cancellationFee": "25"
+    },
+    {
+      "id": "60001",
+      "quoteName": "LMS Reserve 020226",
+      "casePickRate": "0",
+      "layerPickRate": "0",
+      "palletSupplyFee": "9",
+      "shrinkWrapFee": "3",
+      "labelingFee": "1",
+      "orderProcessingFee": "10",
+      "cancellationFee": "25"
+    },
+    {
+      "id": "90001",
+      "quoteName": "Cornerstone Systems - Warehouse Services",
+      "casePickRate": "40",
+      "layerPickRate": "30",
+      "palletSupplyFee": "1200",
+      "shrinkWrapFee": "400",
+      "labelingFee": "20",
+      "orderProcessingFee": "0",
+      "cancellationFee": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tquoteName\tcasePickRate\tlayerPickRate\tpalletSupplyFee\tshrinkWrapFee\tlabelingFee\torderProcessingFee\tcancellationFee\n1\tSeñor Sangria\t0\t0\t9\t3\t1\t10\t25\n2\tSeñor Sangria\t0\t0\t9\t3\t1\t10\t25\n3\tSeñor Sangria\t0\t0\t9\t3\t1\t10\t25\n30001\tLMS Reserve\t0\t0\t9\t3\t1\t10\t25\n30002\tLMS Reserve\t0\t0\t9\t3\t1\t10\t25\n30003\tLMS Reserve 020226\t0\t0\t9\t3\t1\t10\t25\n60001\tLMS Reserve 020226\t0\t0\t9\t3\t1\t10\t25\n90001\tCornerstone Systems - Warehouse Services\t40\t30\t1200\t400\t20\t0\t0\n",
+  "stderr": "",
+  "execution_time_ms": 353
+}

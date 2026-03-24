@@ -167,18 +167,22 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const [tier1Name, setTier1Name] = useState<string>("Standard");
   const [tier1Length, setTier1Length] = useState<string>("0-60 days");
   const [tier1Discount, setTier1Discount] = useState<number>(0);
+  const [tier1Enabled, setTier1Enabled] = useState<boolean>(true);
   
   const [tier2Name, setTier2Name] = useState<string>("Bronze");
   const [tier2Length, setTier2Length] = useState<string>("12 months");
   const [tier2Discount, setTier2Discount] = useState<number>(5);
+  const [tier2Enabled, setTier2Enabled] = useState<boolean>(true);
   
   const [tier3Name, setTier3Name] = useState<string>("Silver");
   const [tier3Length, setTier3Length] = useState<string>("36 months");
   const [tier3Discount, setTier3Discount] = useState<number>(10);
+  const [tier3Enabled, setTier3Enabled] = useState<boolean>(true);
   
   const [tier4Name, setTier4Name] = useState<string>("Gold");
   const [tier4Length, setTier4Length] = useState<string>("60+ months");
   const [tier4Discount, setTier4Discount] = useState<number>(15);
+  const [tier4Enabled, setTier4Enabled] = useState<boolean>(true);
   
   const [selectedDiscountTier, setSelectedDiscountTier] = useState<string>("none");
   
@@ -187,6 +191,12 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const [paymentTerms, setPaymentTerms] = useState<string>("Net 30");
   const [minimumCommitment, setMinimumCommitment] = useState<string>("12 months");
   const [customDisclosures, setCustomDisclosures] = useState<string>("");
+  
+  // Proposal Details
+  const [productDescription, setProductDescription] = useState<string>("");
+  const [accountOverview, setAccountOverview] = useState<string>("");
+  const [palletStacking, setPalletStacking] = useState<string>("2 high");
+  const [orderProcessingTime, setOrderProcessingTime] = useState<string>("48 hours");
   
   // Transportation / Freight Lanes
   const [freightLanes, setFreightLanes] = useState<FreightLane[]>([]);
@@ -282,21 +292,29 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       tier1Name,
       tier1Length,
       tier1Discount,
+      tier1Enabled,
       tier2Name,
       tier2Length,
       tier2Discount,
+      tier2Enabled,
       tier3Name,
       tier3Length,
       tier3Discount,
+      tier3Enabled,
       tier4Name,
       tier4Length,
       tier4Discount,
+      tier4Enabled,
       selectedDiscountTier,
       quoteValidDays,
       paymentTerms,
       minimumCommitment,
       customDisclosures,
-      freightLanes: JSON.stringify(freightLanes)
+      freightLanes: JSON.stringify(freightLanes),
+      productDescription,
+      accountOverview,
+      palletStacking,
+      orderProcessingTime,
     };
     
     if (currentQuoteId) {
@@ -361,20 +379,28 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     setTier1Name(quote.tier1Name || "Standard");
     setTier1Length(quote.tier1Length || "0-60 days");
     setTier1Discount(quote.tier1Discount || 0);
+    setTier1Enabled(quote.tier1Enabled !== undefined && quote.tier1Enabled !== null ? Boolean(quote.tier1Enabled) : true);
     setTier2Name(quote.tier2Name || "Bronze");
     setTier2Length(quote.tier2Length || "12 months");
     setTier2Discount(quote.tier2Discount || 5);
+    setTier2Enabled(quote.tier2Enabled !== undefined && quote.tier2Enabled !== null ? Boolean(quote.tier2Enabled) : true);
     setTier3Name(quote.tier3Name || "Silver");
     setTier3Length(quote.tier3Length || "36 months");
     setTier3Discount(quote.tier3Discount || 10);
+    setTier3Enabled(quote.tier3Enabled !== undefined && quote.tier3Enabled !== null ? Boolean(quote.tier3Enabled) : true);
     setTier4Name(quote.tier4Name || "Gold");
     setTier4Length(quote.tier4Length || "60+ months");
     setTier4Discount(quote.tier4Discount || 15);
+    setTier4Enabled(quote.tier4Enabled !== undefined && quote.tier4Enabled !== null ? Boolean(quote.tier4Enabled) : true);
     setSelectedDiscountTier(quote.selectedDiscountTier || "tier1");
     setQuoteValidDays(quote.quoteValidDays || 90);
     setPaymentTerms(quote.paymentTerms || "Net 30");
     setMinimumCommitment(quote.minimumCommitment || "");
     setCustomDisclosures(quote.customDisclosures || "");
+    setProductDescription(quote.productDescription || "");
+    setAccountOverview(quote.accountOverview || "");
+    setPalletStacking(quote.palletStacking || "2 high");
+    setOrderProcessingTime(quote.orderProcessingTime || "48 hours");
     // Load freight lanes
     if (quote.freightLanes) {
       try {
@@ -481,7 +507,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     
     // Logo
     try {
-      doc.addImage(logoPath, "PNG", margin, 10, 45, 18);
+      doc.addImage(logoPath, "PNG", margin, 8, 22, 20);
     } catch (e) {
       console.warn("Logo not loaded");
     }
@@ -490,16 +516,16 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
     doc.setTextColor(...blue);
-    doc.text("WAREHOUSING SERVICES PROPOSAL", 60, 16);
+    doc.text("WAREHOUSING SERVICES PROPOSAL", 38, 16);
     
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(80, 80, 80);
     const preparedForName = clientCompany || clientContact || "Prospective Client";
-    doc.text(`Prepared for ${preparedForName}`, 60, 23);
+    doc.text(`Prepared for ${preparedForName}`, 38, 23);
     
     doc.setFontSize(8.5);
-    doc.text(`${today}  |  Quote Valid for ${quoteValidDays} Days`, 60, 29);
+    doc.text(`${today}  |  Quote Valid for ${quoteValidDays} Days`, 38, 29);
     doc.setTextColor(0, 0, 0);
     
     // Divider line
@@ -530,7 +556,8 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       clientAddress2 || "",
       [clientCity, clientState, clientZip].filter(Boolean).join(", "),
       clientPhone || "",
-      clientEmail || ""
+      clientEmail || "",
+      productDescription ? `Product: ${productDescription}` : "",
     ].filter(Boolean);
     
     leftLines.forEach(line => {
@@ -570,9 +597,39 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     yPos = Math.max(leftY, rightY) + 4;
     
     // ============================================================
+    // ACCOUNT OVERVIEW (if provided)
+    // ============================================================
+    let sectionNum = 1;
+    if (accountOverview) {
+      yPos = sectionBar("ACCOUNT OVERVIEW", yPos);
+      yPos += 2;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8.5);
+      doc.setTextColor(60, 60, 60);
+      const overviewLines = doc.splitTextToSize(accountOverview, contentWidth - 8);
+      overviewLines.forEach((line: string) => {
+        doc.text(line, margin + 4, yPos + 3);
+        yPos += 4;
+      });
+      doc.setTextColor(0, 0, 0);
+      yPos += 3;
+      
+      // 4-column summary table
+      const summaryWidths = [contentWidth * 0.25, contentWidth * 0.25, contentWidth * 0.25, contentWidth * 0.25];
+      yPos = tableHeader(["Min. Pallet Commitment", "Storage Rate", "Handling Rate", "Pallet Stacking"], summaryWidths, yPos);
+      const minPalletText = storageMinimum > 0 ? `${Math.round(storageMinimum / finalStorageRate)} pallets` : `${monthlyPallets} pallets`;
+      yPos = tableRow(
+        [minPalletText, `$${finalStorageRate.toFixed(2)}/mo`, `$${finalHandlingInRate.toFixed(2)} in/$${finalHandlingOutRate.toFixed(2)} out`, palletStacking || "2 high"],
+        summaryWidths, yPos, -1
+      );
+      yPos += 6;
+    }
+    
+    // ============================================================
     // SECTION 1 - STORAGE RATES
     // ============================================================
-    yPos = sectionBar(`1. STORAGE RATES`, yPos);
+    yPos = sectionBar(`${sectionNum}. STORAGE RATES`, yPos);
+    sectionNum++;
     
     const col3Widths = [contentWidth * 0.45, contentWidth * 0.25, contentWidth * 0.30];
     yPos = tableHeader(["Service", "Rate", "Notes"], col3Widths, yPos);
@@ -580,11 +637,12 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     yPos = tableRow(["Pallet Storage", `$${finalStorageRate.toFixed(2)}`, "Per pallet / month"], col3Widths, yPos);
     
     if (storageMinimum > 0) {
+      const minPallets = Math.round(storageMinimum / finalStorageRate);
       yPos += 2;
       doc.setFont("helvetica", "italic");
       doc.setFontSize(7.5);
       doc.setTextColor(100, 100, 100);
-      doc.text(`Monthly storage minimum: $${storageMinimum.toFixed(2)}. Storage billed monthly based on pallet positions occupied.`, margin + 2, yPos + 3);
+      doc.text(`Monthly storage minimum: $${storageMinimum.toLocaleString('en-US', {minimumFractionDigits: 2})}. Storage billed monthly based on pallet positions occupied.`, margin + 2, yPos + 3);
       doc.setTextColor(0, 0, 0);
       yPos += 6;
     } else {
@@ -594,7 +652,8 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     // ============================================================
     // SECTION 2 - HANDLING & LABOR
     // ============================================================
-    yPos = sectionBar("2. HANDLING & LABOR RATES", yPos);
+    yPos = sectionBar(`${sectionNum}. HANDLING & LABOR RATES`, yPos);
+    sectionNum++;
     
     yPos = tableHeader(["Service", "Rate", "Notes"], col3Widths, yPos);
     yPos = tableRow(["Handling In (Receiving)", `$${finalHandlingInRate.toFixed(2)}`, "Per pallet"], col3Widths, yPos);
@@ -611,15 +670,16 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     // ============================================================
     // SECTION 3 - VALUE-ADDED SERVICES
     // ============================================================
-    yPos = sectionBar("3. VALUE-ADDED SERVICES", yPos);
+    yPos = sectionBar(`${sectionNum}. VALUE-ADDED SERVICES`, yPos);
+    sectionNum++;
     
     const col2Widths = [contentWidth * 0.55, contentWidth * 0.45];
     yPos = tableHeader(["Service", "Rate"], col2Widths, yPos);
     
     // Only include toggled-on VAS items in the PDF
     const vasItems: [string, string][] = [];
-    if (vasToggles.casePick && pickType === "case") vasItems.push(["Case Pick", `$${casePickRate.toFixed(2)}/case`]);
-    if (vasToggles.layerPick && pickType === "layer") vasItems.push(["Layer Pick", `$${layerPickRate.toFixed(2)}/case`]);
+    if (vasToggles.casePick) vasItems.push(["Case Pick", `$${casePickRate.toFixed(2)}/case`]);
+    if (vasToggles.layerPick) vasItems.push(["Layer Pick", `$${layerPickRate.toFixed(2)}/case`]);
     if (vasToggles.palletSupply) vasItems.push(["Pallet Supply", `$${palletSupplyFee.toFixed(2)}/pallet`]);
     if (vasToggles.shrinkWrap) vasItems.push(["Shrink Wrap", `$${shrinkWrapFee.toFixed(2)}/pallet`]);
     if (vasToggles.labeling) vasItems.push(["Labeling", `$${labelingFee.toFixed(2)}/label`]);
@@ -640,7 +700,8 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
         yPos = 15;
       }
       
-      yPos = sectionBar("4. TRANSPORTATION SERVICES", yPos);
+      yPos = sectionBar(`${sectionNum}. TRANSPORTATION SERVICES`, yPos);
+      sectionNum++;
       
       const freightWidths = [contentWidth * 0.40, contentWidth * 0.20, contentWidth * 0.20, contentWidth * 0.20];
       
@@ -676,13 +737,13 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     // ============================================================
     // TERMS & CONDITIONS
     // ============================================================
-    const termsSection = freightLanes.length > 0 ? 5 : 4;
     if (yPos > pageHeight - 70) {
       doc.addPage();
       yPos = 15;
     }
     
-    yPos = sectionBar(`${termsSection}. SERVICE COMMITMENT & TERMS`, yPos);
+    yPos = sectionBar(`${sectionNum}. SERVICE COMMITMENT & TERMS`, yPos);
+    sectionNum++;
     
     const termsData = [
       ["Payment Terms", paymentTerms || "Net 30"],
@@ -707,20 +768,20 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     // TIERED PRICING (if any tiers have discounts)
     // ============================================================
     const tiers = [
-      { name: tier1Name, length: tier1Length, discount: tier1Discount },
-      { name: tier2Name, length: tier2Length, discount: tier2Discount },
-      { name: tier3Name, length: tier3Length, discount: tier3Discount },
-      { name: tier4Name, length: tier4Length, discount: tier4Discount },
-    ].filter(t => t.name && t.length);
+      { name: tier1Name, length: tier1Length, discount: tier1Discount, enabled: tier1Enabled },
+      { name: tier2Name, length: tier2Length, discount: tier2Discount, enabled: tier2Enabled },
+      { name: tier3Name, length: tier3Length, discount: tier3Discount, enabled: tier3Enabled },
+      { name: tier4Name, length: tier4Length, discount: tier4Discount, enabled: tier4Enabled },
+    ].filter(t => t.enabled && t.name && t.length);
     
     if (tiers.length > 1) {
-      const tierSection = termsSection + 1;
       if (yPos > pageHeight - 60) {
         doc.addPage();
         yPos = 15;
       }
       
-      yPos = sectionBar(`${tierSection}. CONTRACT TIER PRICING`, yPos);
+      yPos = sectionBar(`${sectionNum}. CONTRACT TIER PRICING`, yPos);
+      sectionNum++;
       
       const tierWidths = [contentWidth * 0.25, contentWidth * 0.25, contentWidth * 0.25, contentWidth * 0.25];
       yPos = tableHeader(["Tier", "Commitment", "Storage Rate", "Discount"], tierWidths, yPos);
@@ -763,13 +824,13 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     // ============================================================
     // AUTHORIZATION & SIGNATURE BLOCKS
     // ============================================================
-    const sigSection = termsSection + 1;
     if (yPos > pageHeight - 65) {
       doc.addPage();
       yPos = 15;
     }
     
-    yPos = sectionBar(`${sigSection}. AUTHORIZATION & ACCEPTANCE`, yPos);
+    yPos = sectionBar(`${sectionNum}. AUTHORIZATION & ACCEPTANCE`, yPos);
+    sectionNum++;
     
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8.5);
@@ -941,16 +1002,35 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="load-quote">Load Saved Quote</Label>
-                      <Select onValueChange={(v) => loadQuote(Number(v))}>
+                      <Select onValueChange={(v) => {
+                        if (v.startsWith('locked-')) {
+                          const quoteId = Number(v.replace('locked-', ''));
+                          const quote = quotesQuery.data?.find((q: any) => q.id === quoteId);
+                          if (quote?.lockedPdfUrl) {
+                            window.open(quote.lockedPdfUrl, '_blank');
+                          }
+                        } else {
+                          loadQuote(Number(v));
+                        }
+                      }}>
                         <SelectTrigger id="load-quote">
                           <SelectValue placeholder="Select a quote..." />
                         </SelectTrigger>
                         <SelectContent>
-                          {quotesQuery.data?.map((quote: any) => (
-                            <SelectItem key={quote.id} value={quote.id.toString()}>
-                              {quote.quoteName} - {new Date(quote.updatedAt).toLocaleDateString()}
-                            </SelectItem>
-                          ))}
+                          {quotesQuery.data?.flatMap((quote: any) => 
+                            quote.lockedPdfUrl ? [
+                              <SelectItem key={`locked-${quote.id}`} value={`locked-${quote.id}`}>
+                                📄 {quote.quoteName} (Locked PDF) - {new Date(quote.updatedAt).toLocaleDateString()}
+                              </SelectItem>,
+                              <SelectItem key={`edit-${quote.id}`} value={quote.id.toString()}>
+                                ✏️ {quote.quoteName} (Edit) - {new Date(quote.updatedAt).toLocaleDateString()}
+                              </SelectItem>
+                            ] : [
+                              <SelectItem key={quote.id} value={quote.id.toString()}>
+                                {quote.quoteName} - {new Date(quote.updatedAt).toLocaleDateString()}
+                              </SelectItem>
+                            ]
+                          )}
                         </SelectContent>
                       </Select>
                     </div>
@@ -1522,6 +1602,61 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
               </CardContent>
             </Card>
             
+            {/* Proposal Details */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Proposal Details</CardTitle>
+                <CardDescription>Account overview and product info for the PDF export</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="product-description">Product Description</Label>
+                    <Input
+                      id="product-description"
+                      type="text"
+                      value={productDescription}
+                      onChange={(e) => setProductDescription(e.target.value)}
+                      placeholder="e.g., 12oz Sleek Can RTD (4.5% ABV)"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="pallet-stacking">Pallet Stacking</Label>
+                    <Input
+                      id="pallet-stacking"
+                      type="text"
+                      value={palletStacking}
+                      onChange={(e) => setPalletStacking(e.target.value)}
+                      placeholder="2 high"
+                    />
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="order-processing-time">Order Processing Time</Label>
+                    <Input
+                      id="order-processing-time"
+                      type="text"
+                      value={orderProcessingTime}
+                      onChange={(e) => setOrderProcessingTime(e.target.value)}
+                      placeholder="48 hours"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="account-overview">Account Overview (for PDF)</Label>
+                  <Textarea
+                    id="account-overview"
+                    value={accountOverview}
+                    onChange={(e) => setAccountOverview(e.target.value)}
+                    placeholder="L&M Distribution & Logistics is pleased to present this warehousing services proposal for..."
+                    rows={4}
+                    className="text-sm"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+            
             {/* Disclosures & Assumptions */}
             <Card>
               <CardHeader>
@@ -1864,7 +1999,12 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                     {/* Tier Configuration */}
                     <div className="space-y-4 mb-4">
                       {/* Tier 1 */}
-                      <div className="grid md:grid-cols-3 gap-4 p-3 border rounded-lg bg-background">
+                      <div className={`p-3 border rounded-lg ${tier1Enabled ? 'bg-background' : 'bg-muted/50 opacity-60'}`}>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm font-medium">Tier 1</span>
+                          <Switch checked={tier1Enabled} onCheckedChange={setTier1Enabled} />
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="tier1-name">Tier 1 Name</Label>
                           <Input
@@ -1895,10 +2035,16 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                             max="100"
                           />
                         </div>
+                        </div>
                       </div>
                       
                       {/* Tier 2 */}
-                      <div className="grid md:grid-cols-3 gap-4 p-3 border rounded-lg bg-background">
+                      <div className={`p-3 border rounded-lg ${tier2Enabled ? 'bg-background' : 'bg-muted/50 opacity-60'}`}>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm font-medium">Tier 2</span>
+                          <Switch checked={tier2Enabled} onCheckedChange={setTier2Enabled} />
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="tier2-name">Tier 2 Name</Label>
                           <Input
@@ -1929,10 +2075,16 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                             max="100"
                           />
                         </div>
+                        </div>
                       </div>
                       
                       {/* Tier 3 */}
-                      <div className="grid md:grid-cols-3 gap-4 p-3 border rounded-lg bg-background">
+                      <div className={`p-3 border rounded-lg ${tier3Enabled ? 'bg-background' : 'bg-muted/50 opacity-60'}`}>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm font-medium">Tier 3</span>
+                          <Switch checked={tier3Enabled} onCheckedChange={setTier3Enabled} />
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="tier3-name">Tier 3 Name</Label>
                           <Input
@@ -1963,10 +2115,16 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                             max="100"
                           />
                         </div>
+                        </div>
                       </div>
                       
                       {/* Tier 4 */}
-                      <div className="grid md:grid-cols-3 gap-4 p-3 border rounded-lg bg-background">
+                      <div className={`p-3 border rounded-lg ${tier4Enabled ? 'bg-background' : 'bg-muted/50 opacity-60'}`}>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm font-medium">Tier 4</span>
+                          <Switch checked={tier4Enabled} onCheckedChange={setTier4Enabled} />
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="tier4-name">Tier 4 Name</Label>
                           <Input
@@ -1997,6 +2155,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                             max="100"
                           />
                         </div>
+                        </div>
                       </div>
                     </div>
                     
@@ -2009,10 +2168,10 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="none">No Discount (0%)</SelectItem>
-                          <SelectItem value="tier1">{tier1Name} - {tier1Length} ({tier1Discount}% off)</SelectItem>
-                          <SelectItem value="tier2">{tier2Name} - {tier2Length} ({tier2Discount}% off)</SelectItem>
-                          <SelectItem value="tier3">{tier3Name} - {tier3Length} ({tier3Discount}% off)</SelectItem>
-                          <SelectItem value="tier4">{tier4Name} - {tier4Length} ({tier4Discount}% off)</SelectItem>
+                          {tier1Enabled && <SelectItem value="tier1">{tier1Name} - {tier1Length} ({tier1Discount}% off)</SelectItem>}
+                          {tier2Enabled && <SelectItem value="tier2">{tier2Name} - {tier2Length} ({tier2Discount}% off)</SelectItem>}
+                          {tier3Enabled && <SelectItem value="tier3">{tier3Name} - {tier3Length} ({tier3Discount}% off)</SelectItem>}
+                          {tier4Enabled && <SelectItem value="tier4">{tier4Name} - {tier4Length} ({tier4Discount}% off)</SelectItem>}
                         </SelectContent>
                       </Select>
                       {selectedDiscountTier !== "none" && (

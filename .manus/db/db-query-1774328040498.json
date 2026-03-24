@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE savedQuotes SET lockedPdfUrl = 'https://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/SpikedAde_Warehousing_ProposalCF_d2a1f167.pdf' WHERE quoteName LIKE '%Spiked Ade%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute UPDATE savedQuotes SET lockedPdfUrl = 'https://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/SpikedAde_Warehousing_ProposalCF_d2a1f167.pdf' WHERE quoteName LIKE '%Spiked Ade%';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 363
+}

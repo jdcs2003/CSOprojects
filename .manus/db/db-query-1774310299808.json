@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE savedQuotes SET productDescription = '12oz Sleek Can RTD (4.5% ABV)', accountOverview = 'L&M Distribution & Logistics is pleased to present this warehousing services proposal for Spiked Ade (SPKED Inc). Our PA-1151 Bristol facility offers 226,000 sq ft of ambient storage with full WMS integration, alcohol licensing coverage, and scalable capacity to support your growth from 500 to 3,500 pallet positions at these rates.', palletStacking = '2-3 high (prefer 2)', orderProcessingTime = '48 hours' WHERE id = 120001;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute UPDATE savedQuotes SET productDescription = '12oz Sleek Can RTD (4.5% ABV)', accountOverview = 'L&M Distribution & Logistics is pleased to present this warehousing services proposal for Spiked Ade (SPKED Inc). Our PA-1151 Bristol facility offers 226,000 sq ft of ambient storage with full WMS integration, alcohol licensing coverage, and scalable capacity to support your growth from 500 to 3,500 pallet positions at these rates.', palletStacking = '2-3 high (prefer 2)', orderProcessingTime = '48 hours' WHERE id = 120001;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 376
+}

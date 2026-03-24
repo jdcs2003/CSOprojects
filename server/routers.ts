@@ -210,15 +210,19 @@ export const appRouter = router({
         tier1Name: z.string().optional(),
         tier1Length: z.string().optional(),
         tier1Discount: z.number().optional(),
+        tier1Enabled: z.boolean().optional(),
         tier2Name: z.string().optional(),
         tier2Length: z.string().optional(),
         tier2Discount: z.number().optional(),
+        tier2Enabled: z.boolean().optional(),
         tier3Name: z.string().optional(),
         tier3Length: z.string().optional(),
         tier3Discount: z.number().optional(),
+        tier3Enabled: z.boolean().optional(),
         tier4Name: z.string().optional(),
         tier4Length: z.string().optional(),
         tier4Discount: z.number().optional(),
+        tier4Enabled: z.boolean().optional(),
         selectedDiscountTier: z.string().optional(),
         storageRateOverride: z.number().optional(),
         handlingInRateOverride: z.number().optional(),
@@ -228,13 +232,24 @@ export const appRouter = router({
         minimumCommitment: z.string().optional(),
         customDisclosures: z.string().optional(),
         freightLanes: z.string().optional(), // JSON string of freight lane objects
+        productDescription: z.string().optional(),
+        accountOverview: z.string().optional(),
+        palletStacking: z.string().optional(),
+        orderProcessingTime: z.string().optional(),
         createdBy: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
         const db = await getDb();
         if (!db) throw new Error("Database not available");
         
-        const result = await db.insert(savedQuotes).values(input);
+        const { tier1Enabled, tier2Enabled, tier3Enabled, tier4Enabled, ...rest } = input;
+        const result = await db.insert(savedQuotes).values({
+          ...rest,
+          tier1Enabled: tier1Enabled !== undefined ? (tier1Enabled ? 1 : 0) : 1,
+          tier2Enabled: tier2Enabled !== undefined ? (tier2Enabled ? 1 : 0) : 1,
+          tier3Enabled: tier3Enabled !== undefined ? (tier3Enabled ? 1 : 0) : 1,
+          tier4Enabled: tier4Enabled !== undefined ? (tier4Enabled ? 1 : 0) : 1,
+        });
         return { success: true, id: Number((result as any).insertId) };
       }),
     
@@ -288,15 +303,19 @@ export const appRouter = router({
         tier1Name: z.string().optional(),
         tier1Length: z.string().optional(),
         tier1Discount: z.number().optional(),
+        tier1Enabled: z.boolean().optional(),
         tier2Name: z.string().optional(),
         tier2Length: z.string().optional(),
         tier2Discount: z.number().optional(),
+        tier2Enabled: z.boolean().optional(),
         tier3Name: z.string().optional(),
         tier3Length: z.string().optional(),
         tier3Discount: z.number().optional(),
+        tier3Enabled: z.boolean().optional(),
         tier4Name: z.string().optional(),
         tier4Length: z.string().optional(),
         tier4Discount: z.number().optional(),
+        tier4Enabled: z.boolean().optional(),
         selectedDiscountTier: z.string().optional(),
         storageRateOverride: z.number().optional(),
         handlingInRateOverride: z.number().optional(),
@@ -306,12 +325,23 @@ export const appRouter = router({
         minimumCommitment: z.string().optional(),
         customDisclosures: z.string().optional(),
         freightLanes: z.string().optional(), // JSON string of freight lane objects
+        productDescription: z.string().optional(),
+        accountOverview: z.string().optional(),
+        palletStacking: z.string().optional(),
+        orderProcessingTime: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
         const db = await getDb();
         if (!db) throw new Error("Database not available");
         
-        const { id, ...updateData } = input;
+        const { id, tier1Enabled, tier2Enabled, tier3Enabled, tier4Enabled, ...updateRest } = input;
+        const updateData = {
+          ...updateRest,
+          ...(tier1Enabled !== undefined && { tier1Enabled: tier1Enabled ? 1 : 0 }),
+          ...(tier2Enabled !== undefined && { tier2Enabled: tier2Enabled ? 1 : 0 }),
+          ...(tier3Enabled !== undefined && { tier3Enabled: tier3Enabled ? 1 : 0 }),
+          ...(tier4Enabled !== undefined && { tier4Enabled: tier4Enabled ? 1 : 0 }),
+        };
         await db.update(savedQuotes).set(updateData).where(eq(savedQuotes.id, id));
         return { success: true };
       }),
