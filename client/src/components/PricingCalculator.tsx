@@ -221,14 +221,73 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   
   // Save quote mutation
   const utils = trpc.useUtils();
+  
+  // Pipeline auto-creation mutation
+  const createPipelineDealMutation = trpc.pipeline.create.useMutation({
+    onSuccess: () => {
+      utils.pipeline.getAll.invalidate();
+    },
+  });
+  
   const saveQuoteMutation = trpc.quotes.create.useMutation({
     onSuccess: (data: any) => {
       setCurrentQuoteId(data.id);
       utils.quotes.getAll.invalidate(); // Refresh the dropdown list
-      alert(`Quote "${quoteName}" saved successfully!`);
+      
+      // Auto-create pipeline deal for new quotes
+      const estMonthlyRevenue = Math.round(totalEstimatedMonthlyBilling * 100); // Convert to cents
+      const estAnnualRevenue = estMonthlyRevenue * 12;
+      
+      // Determine service type based on pick type and orders
+      let serviceType: "warehousing" | "ecommerce" | "mixed" = "warehousing";
+      if (pickType === "case" && monthlyOrders > 0) {
+        serviceType = "ecommerce";
+      } else if (monthlyOrders > 0) {
+        serviceType = "mixed";
+      }
+      
+      createPipelineDealMutation.mutate({
+        clientName: clientCompany || quoteName,
+        clientContact: clientContact || undefined,
+        clientEmail: clientEmail || undefined,
+        clientPhone: clientPhone || undefined,
+        dealName: quoteName,
+        serviceType,
+        facility: selectedFacility || undefined,
+        company: companyFilter,
+        stage: "proposal_sent",
+        estimatedMonthlyRevenue: estMonthlyRevenue > 0 ? estMonthlyRevenue : undefined,
+        estimatedAnnualRevenue: estAnnualRevenue > 0 ? estAnnualRevenue : undefined,
+        estimatedPallets: monthlyPallets > 0 ? monthlyPallets : undefined,
+        proposalDate: new Date(),
+        savedQuoteId: data.id,
+        keyServices: [
+          "Storage",
+          "Handling In/Out",
+          pickType !== "full" ? `${pickType === "case" ? "Case" : "Layer"} Pick` : "",
+          vasToggles.palletSupply ? "Pallet Supply" : "",
+          vasToggles.shrinkWrap ? "Shrink Wrap" : "",
+          vasToggles.labeling ? "Labeling" : "",
+          vasToggles.orderProcessing ? "Order Processing" : "",
+        ].filter(Boolean).join(", "),
+        probability: 50,
+      });
+      
+      alert(`Quote "${quoteName}" saved and added to pipeline!`);
     },
     onError: (error: any) => {
       alert(`Failed to save quote: ${error.message}`);
+    }
+  });
+  
+  // Update quote mutation (for existing quotes)
+  const updateQuoteMutation = trpc.quotes.update.useMutation({
+    onSuccess: () => {
+      utils.quotes.getAll.invalidate();
+      alert(`Quote "${quoteName}" updated successfully!`);
+    },
+    onError: (error: any) => {
+      alert(`Failed to update quote: ${error.message}`);
     }
   });
   
@@ -318,11 +377,10 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     };
     
     if (currentQuoteId) {
-      // Update existing quote
-      // TODO: implement update
-      saveQuoteMutation.mutate(quoteData);
+      // Update existing quote — don't create new pipeline deal
+      updateQuoteMutation.mutate({ id: currentQuoteId, ...quoteData });
     } else {
-      // Save new quote
+      // Save new quote — will also auto-create pipeline deal
       saveQuoteMutation.mutate(quoteData);
     }
   };

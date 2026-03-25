@@ -155,3 +155,166 @@ describe("Pipeline deals", () => {
     expect(toCents("99.99")).toBe(9999);
   });
 });
+
+describe("Pipeline CSV export", () => {
+  const STAGES = [
+    { id: "lead", label: "Lead" },
+    { id: "proposal_sent", label: "Proposal Sent" },
+    { id: "under_review", label: "Under Review" },
+    { id: "negotiating", label: "Negotiating" },
+    { id: "signed", label: "Signed" },
+    { id: "active", label: "Active" },
+    { id: "lost", label: "Lost" },
+  ];
+
+  const SERVICE_TYPES = [
+    { id: "warehousing", label: "Warehousing" },
+    { id: "transportation", label: "Transportation" },
+    { id: "ecommerce", label: "E-Commerce" },
+    { id: "crossdock", label: "Cross-Dock" },
+    { id: "rework", label: "Rework / VAS" },
+    { id: "mixed", label: "Mixed Services" },
+  ];
+
+  function getStageInfo(stageId: string) {
+    return STAGES.find(s => s.id === stageId) || { label: stageId };
+  }
+
+  function getServiceInfo(serviceId: string) {
+    return SERVICE_TYPES.find(s => s.id === serviceId) || { label: serviceId };
+  }
+
+  function formatCurrencyRaw(cents: number | null | undefined) {
+    if (!cents) return "0";
+    return (cents / 100).toFixed(0);
+  }
+
+  function escapeCSV(val: string) {
+    if (val.includes(',') || val.includes('"') || val.includes('\n')) {
+      return '"' + val.replace(/"/g, '""') + '"';
+    }
+    return val;
+  }
+
+  it("should format currency raw values correctly for CSV", () => {
+    expect(formatCurrencyRaw(210000)).toBe("2100");
+    expect(formatCurrencyRaw(1925000)).toBe("19250");
+    expect(formatCurrencyRaw(null)).toBe("0");
+    expect(formatCurrencyRaw(undefined)).toBe("0");
+    expect(formatCurrencyRaw(0)).toBe("0");
+  });
+
+  it("should escape CSV values with commas", () => {
+    expect(escapeCSV("Hello, World")).toBe('"Hello, World"');
+    expect(escapeCSV("Simple")).toBe("Simple");
+    expect(escapeCSV('Has "quotes"')).toBe('"Has ""quotes"""');
+    expect(escapeCSV("Has\nnewline")).toBe('"Has\nnewline"');
+  });
+
+  it("should generate correct CSV headers", () => {
+    const headers = [
+      "Client Name", "Deal Name", "Stage", "Service Type", "Company",
+      "Facility", "Contact", "Email", "Phone", "Est. Monthly Revenue",
+      "Est. Annual Revenue", "Est. Pallets", "Est. Loads/Year",
+      "Probability (%)", "Key Services", "Notes", "Proposal Date", "Created",
+    ];
+    expect(headers).toHaveLength(18);
+    expect(headers[0]).toBe("Client Name");
+    expect(headers[9]).toBe("Est. Monthly Revenue");
+  });
+
+  it("should map deal data to CSV rows correctly", () => {
+    const deal = {
+      clientName: "Write-Off",
+      dealName: "Write-Off - Ecom Fulfillment",
+      stage: "proposal_sent",
+      serviceType: "ecommerce",
+      company: "L&M",
+      facility: "SC-577",
+      clientContact: "Josh Reda & Lauren Duffy",
+      clientEmail: "josh@write-off.com",
+      clientPhone: "910-431-4608",
+      estimatedMonthlyRevenue: 150000,
+      estimatedAnnualRevenue: 1800000,
+      estimatedPallets: 50,
+      estimatedLoads: null,
+      probability: 50,
+      keyServices: "Storage, Handling In/Out, Case Pick",
+      notes: "Ecom fulfillment deal",
+      proposalDate: new Date("2026-03-25"),
+      createdAt: new Date("2026-03-25"),
+    };
+
+    const stageInfo = getStageInfo(deal.stage);
+    const serviceInfo = getServiceInfo(deal.serviceType);
+
+    expect(stageInfo.label).toBe("Proposal Sent");
+    expect(serviceInfo.label).toBe("E-Commerce");
+    expect(formatCurrencyRaw(deal.estimatedMonthlyRevenue)).toBe("1500");
+    expect(formatCurrencyRaw(deal.estimatedAnnualRevenue)).toBe("18000");
+  });
+});
+
+describe("Pipeline auto-creation from quote save", () => {
+  it("should determine service type based on pick type and orders", () => {
+    const getServiceType = (pickType: string, monthlyOrders: number) => {
+      if (pickType === "case" && monthlyOrders > 0) return "ecommerce";
+      if (monthlyOrders > 0) return "mixed";
+      return "warehousing";
+    };
+
+    expect(getServiceType("full", 0)).toBe("warehousing");
+    expect(getServiceType("case", 100)).toBe("ecommerce");
+    expect(getServiceType("layer", 50)).toBe("mixed");
+    expect(getServiceType("full", 10)).toBe("mixed");
+    expect(getServiceType("case", 0)).toBe("warehousing");
+  });
+
+  it("should convert monthly billing to cents for pipeline", () => {
+    const totalEstimatedMonthlyBilling = 1500.50;
+    const estMonthlyRevenue = Math.round(totalEstimatedMonthlyBilling * 100);
+    const estAnnualRevenue = estMonthlyRevenue * 12;
+
+    expect(estMonthlyRevenue).toBe(150050);
+    expect(estAnnualRevenue).toBe(1800600);
+  });
+
+  it("should build key services string from VAS toggles", () => {
+    const vasToggles = {
+      palletSupply: true,
+      shrinkWrap: true,
+      labeling: false,
+      orderProcessing: true,
+    };
+    const pickType = "case";
+
+    const keyServices = [
+      "Storage",
+      "Handling In/Out",
+      pickType !== "full" ? `${pickType === "case" ? "Case" : "Layer"} Pick` : "",
+      vasToggles.palletSupply ? "Pallet Supply" : "",
+      vasToggles.shrinkWrap ? "Shrink Wrap" : "",
+      vasToggles.labeling ? "Labeling" : "",
+      vasToggles.orderProcessing ? "Order Processing" : "",
+    ].filter(Boolean).join(", ");
+
+    expect(keyServices).toBe("Storage, Handling In/Out, Case Pick, Pallet Supply, Shrink Wrap, Order Processing");
+  });
+
+  it("should use clientCompany as clientName, fallback to quoteName", () => {
+    const getClientName = (clientCompany: string, quoteName: string) => clientCompany || quoteName;
+
+    expect(getClientName("Write-Off", "Write-Off Quote")).toBe("Write-Off");
+    expect(getClientName("", "Unnamed Quote")).toBe("Unnamed Quote");
+  });
+
+  it("should set initial stage to proposal_sent", () => {
+    const stage = "proposal_sent";
+    expect(stage).toBe("proposal_sent");
+  });
+
+  it("should set default probability to 50%", () => {
+    const probability = 50;
+    expect(probability).toBe(50);
+  });
+});

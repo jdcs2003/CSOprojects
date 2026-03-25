@@ -269,3 +269,6 @@
 - [x] Update SC-577 to 277,000 sq ft in Write-Off PDF
 - [x] Set Write-Off quote validity to 30 days
 - [x] Separate locked PDF downloads from dropdown into direct clickable links
+- [x] Add Export Pipeline button (Excel/CSV download) on pipeline page
+- [x] Auto-create pipeline deal when saving a new quote from the calculator
+- [x] Add update quote mutation (existing quotes update in place, no duplicate pipeline entry)

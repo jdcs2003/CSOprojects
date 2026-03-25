@@ -31,6 +31,7 @@ import {
   Phone,
   FileText,
   Target,
+  Download,
 } from "lucide-react";
 
 const STAGES = [
@@ -58,6 +59,77 @@ type ServiceTypeId = typeof SERVICE_TYPES[number]["id"];
 function formatCurrency(cents: number | null | undefined) {
   if (!cents) return "$0";
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(cents / 100);
+}
+
+function formatCurrencyRaw(cents: number | null | undefined) {
+  if (!cents) return "0";
+  return (cents / 100).toFixed(0);
+}
+
+function exportPipelineToCSV(deals: any[]) {
+  const headers = [
+    "Client Name",
+    "Deal Name",
+    "Stage",
+    "Service Type",
+    "Company",
+    "Facility",
+    "Contact",
+    "Email",
+    "Phone",
+    "Est. Monthly Revenue",
+    "Est. Annual Revenue",
+    "Est. Pallets",
+    "Est. Loads/Year",
+    "Probability (%)",
+    "Key Services",
+    "Notes",
+    "Proposal Date",
+    "Created",
+  ];
+
+  const escapeCSV = (val: string) => {
+    if (val.includes(',') || val.includes('"') || val.includes('\n')) {
+      return '"' + val.replace(/"/g, '""') + '"';
+    }
+    return val;
+  };
+
+  const rows = deals.map(deal => {
+    const stageInfo = getStageInfo(deal.stage);
+    const serviceInfo = getServiceInfo(deal.serviceType);
+    return [
+      deal.clientName || "",
+      deal.dealName || "",
+      stageInfo.label,
+      serviceInfo.label,
+      deal.company || "",
+      deal.facility || "",
+      deal.clientContact || "",
+      deal.clientEmail || "",
+      deal.clientPhone || "",
+      formatCurrencyRaw(deal.estimatedMonthlyRevenue),
+      formatCurrencyRaw(deal.estimatedAnnualRevenue),
+      deal.estimatedPallets ? String(deal.estimatedPallets) : "",
+      deal.estimatedLoads ? String(deal.estimatedLoads) : "",
+      deal.probability != null ? String(deal.probability) : "",
+      deal.keyServices || "",
+      deal.notes || "",
+      deal.proposalDate ? new Date(deal.proposalDate).toLocaleDateString() : "",
+      deal.createdAt ? new Date(deal.createdAt).toLocaleDateString() : "",
+    ].map(v => escapeCSV(String(v)));
+  });
+
+  const csv = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `LM_Pipeline_${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 
 function formatDate(date: Date | string | null | undefined) {
@@ -488,6 +560,20 @@ export default function Pipeline() {
                 <List className="h-4 w-4 mr-1" /> Table
               </Button>
             </div>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                if (deals.length === 0) {
+                  toast.error("No deals to export");
+                  return;
+                }
+                exportPipelineToCSV(deals);
+                toast.success("Pipeline exported to CSV");
+              }}
+            >
+              <Download className="h-4 w-4 mr-1" /> Export
+            </Button>
             <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) setEditingDeal(null); }}>
               <DialogTrigger asChild>
                 <Button size="sm">
