@@ -1,0 +1,20 @@
+{
+  "query": "SELECT id, quoteName, clientCompany, clientContact, clientEmail, clientPhone, quoteValidDays, lockedPdfUrl FROM savedQuotes WHERE id = 150001;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT id, quoteName, clientCompany, clientContact, clientEmail, clientPhone, quoteValidDays, lockedPdfUrl FROM savedQuotes WHERE id = 150001;",
+  "rows": [
+    {
+      "id": "150001",
+      "quoteName": "Write-Off - Ecom Fulfillment - 3/24/2026",
+      "clientCompany": "WRITE-OFF™",
+      "clientContact": "Josh Reda & Lauren Duffy",
+      "clientEmail": "josh@write-off.com",
+      "clientPhone": "910-431-4608",
+      "quoteValidDays": "30",
+      "lockedPdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/WriteOff_LM_Proposal_v2_845cc268.pdf"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tquoteName\tclientCompany\tclientContact\tclientEmail\tclientPhone\tquoteValidDays\tlockedPdfUrl\n150001\tWrite-Off - Ecom Fulfillment - 3/24/2026\tWRITE-OFF™\tJosh Reda & Lauren Duffy\tjosh@write-off.com\t910-431-4608\t30\thttps://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/WriteOff_LM_Proposal_v2_845cc268.pdf\n",
+  "stderr": "",
+  "execution_time_ms": 380
+}

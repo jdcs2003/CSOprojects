@@ -1,0 +1,20 @@
+{
+  "query": "SELECT id, quoteName, lockedPdfUrl FROM savedQuotes WHERE lockedPdfUrl IS NOT NULL;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT id, quoteName, lockedPdfUrl FROM savedQuotes WHERE lockedPdfUrl IS NOT NULL;",
+  "rows": [
+    {
+      "id": "120001",
+      "quoteName": "Spiked Ade - Warehousing Proposal",
+      "lockedPdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/SpikedAde_Warehousing_ProposalCF_d2a1f167.pdf"
+    },
+    {
+      "id": "150001",
+      "quoteName": "Write-Off - Ecom Fulfillment - 3/24/2026",
+      "lockedPdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/WriteOff_LM_Proposal_v2_845cc268.pdf"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tquoteName\tlockedPdfUrl\n120001\tSpiked Ade - Warehousing Proposal\thttps://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/SpikedAde_Warehousing_ProposalCF_d2a1f167.pdf\n150001\tWrite-Off - Ecom Fulfillment - 3/24/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/WriteOff_LM_Proposal_v2_845cc268.pdf\n",
+  "stderr": "",
+  "execution_time_ms": 357
+}

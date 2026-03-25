@@ -1,0 +1,90 @@
+{
+  "query": "SELECT id, quoteName, lockedPdfUrl, clientCompany, clientContact, clientEmail FROM savedQuotes ORDER BY id DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT id, quoteName, lockedPdfUrl, clientCompany, clientContact, clientEmail FROM savedQuotes ORDER BY id DESC LIMIT 10;",
+  "rows": [
+    {
+      "id": "150001",
+      "quoteName": "Write-Off - Ecom Fulfillment - 3/24/2026",
+      "lockedPdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/WriteOff_LM_Proposal_2fb47264.pdf",
+      "clientCompany": "Write-Off",
+      "clientContact": "Lauren",
+      "clientEmail": ""
+    },
+    {
+      "id": "120001",
+      "quoteName": "Spiked Ade - Warehousing Proposal",
+      "lockedPdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/SpikedAde_Warehousing_ProposalCF_d2a1f167.pdf",
+      "clientCompany": "Spiked Ade (SPKED Inc)",
+      "clientContact": "Brad Moose",
+      "clientEmail": "bmoose@spikedade.com"
+    },
+    {
+      "id": "90001",
+      "quoteName": "Cornerstone Systems - Warehouse Services",
+      "lockedPdfUrl": "NULL",
+      "clientCompany": "Cornerstone Systems Inc.",
+      "clientContact": "Marc Purnell",
+      "clientEmail": "invoices@cornerstone-systems.com"
+    },
+    {
+      "id": "60001",
+      "quoteName": "LMS Reserve 020226",
+      "lockedPdfUrl": "NULL",
+      "clientCompany": "LMS reserve LLC ",
+      "clientContact": "Chris Watson",
+      "clientEmail": "watson@lmsreserve.com"
+    },
+    {
+      "id": "30003",
+      "quoteName": "LMS Reserve 020226",
+      "lockedPdfUrl": "NULL",
+      "clientCompany": "LMS reserve LLC ",
+      "clientContact": "Chris Watson",
+      "clientEmail": "watson@lmsreserve.com"
+    },
+    {
+      "id": "30002",
+      "quoteName": "LMS Reserve",
+      "lockedPdfUrl": "NULL",
+      "clientCompany": "LMS reserve LLC ",
+      "clientContact": "Chris Watson",
+      "clientEmail": "watson@lmsreserve.com"
+    },
+    {
+      "id": "30001",
+      "quoteName": "LMS Reserve",
+      "lockedPdfUrl": "NULL",
+      "clientCompany": "",
+      "clientContact": "",
+      "clientEmail": ""
+    },
+    {
+      "id": "3",
+      "quoteName": "Señor Sangria",
+      "lockedPdfUrl": "NULL",
+      "clientCompany": "Señor Sangria",
+      "clientContact": "Rick Martinez",
+      "clientEmail": "rick@senorsangria.com"
+    },
+    {
+      "id": "2",
+      "quoteName": "Señor Sangria",
+      "lockedPdfUrl": "NULL",
+      "clientCompany": "Señor Sangria",
+      "clientContact": "Rick Martinez",
+      "clientEmail": "rick@senorsangria.com"
+    },
+    {
+      "id": "1",
+      "quoteName": "Señor Sangria",
+      "lockedPdfUrl": "NULL",
+      "clientCompany": "",
+      "clientContact": "",
+      "clientEmail": ""
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tquoteName\tlockedPdfUrl\tclientCompany\tclientContact\tclientEmail\n150001\tWrite-Off - Ecom Fulfillment - 3/24/2026\thttps://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/WriteOff_LM_Proposal_2fb47264.pdf\tWrite-Off\tLauren\t\n120001\tSpiked Ade - Warehousing Proposal\thttps://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/SpikedAde_Warehousing_ProposalCF_d2a1f167.pdf\tSpiked Ade (SPKED Inc)\tBrad Moose\tbmoose@spikedade.com\n90001\tCornerstone Systems - Warehouse Services\tNULL\tCornerstone Systems Inc.\tMarc Purnell\tinvoices@cornerstone-systems.com\n60001\tLMS Reserve 020226\tNULL\tLMS reserve LLC \tChris Watson\twatson@lmsreserve.com\n30003\tLMS Reserve 020226\tNULL\tLMS reserve LLC \tChris Watson\twatson@lmsreserve.com\n30002\tLMS Reserve\tNULL\tLMS reserve LLC \tChris Watson\twatson@lmsreserve.com\n30001\tLMS Reserve\tNULL\t\t\t\n3\tSeñor Sangria\tNULL\tSeñor Sangria\tRick Martinez\trick@senorsangria.com\n2\tSeñor Sangria\tNULL\tSeñor Sangria\tRick Martinez\trick@senorsangria.com\n1\tSeñor Sangria\tNULL\t\t\t\n",
+  "stderr": "",
+  "execution_time_ms": 345
+}

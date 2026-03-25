@@ -257,3 +257,15 @@
 - [x] Generate professional PDF proposal for Write-Off matching L&M format
 - [x] Upload Write-Off PDF to S3 and store as locked version
 - [x] Insert Write-Off quote into database with locked PDF URL
+- [x] Fix locked PDF download button not showing for locked proposals
+- [x] Fix Write-Off quote not pre-populating client info when loaded
+- [x] Make Export/Download PDF button clearly visible and accessible after loading any quote
+- [x] Fix locked PDF selection to actually open the PDF in a new tab (not just select dropdown value)
+- [x] Add $1,222 LTL inbound freight lane (Boardroom to SC-577) to Write-Off proposal
+- [x] Add time study note to Additional Notes section: will review time study to reduce repack costs
+- [x] Regenerate Write-Off locked PDF with brokerage + time study note
+- [x] Upload new Write-Off PDF to S3 and update lockedPdfUrl in database
+- [x] Update Write-Off client info: Josh Reda & Lauren Duffy, Co-Founders, 910-431-4608, josh@write-off.com
+- [x] Update SC-577 to 277,000 sq ft in Write-Off PDF
+- [x] Set Write-Off quote validity to 30 days
+- [x] Separate locked PDF downloads from dropdown into direct clickable links

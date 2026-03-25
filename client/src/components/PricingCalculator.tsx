@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { Calculator as CalcIcon, Building2, DollarSign, Users, FileDown, Package, Layers, Box, Truck } from "lucide-react";
+import { Calculator as CalcIcon, Building2, DollarSign, Users, FileDown, Package, Layers, Box, Truck, ExternalLink } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { trpc } from "@/lib/trpc";
@@ -1003,34 +1003,17 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                     <div className="space-y-2">
                       <Label htmlFor="load-quote">Load Saved Quote</Label>
                       <Select onValueChange={(v) => {
-                        if (v.startsWith('locked-')) {
-                          const quoteId = Number(v.replace('locked-', ''));
-                          const quote = quotesQuery.data?.find((q: any) => q.id === quoteId);
-                          if (quote?.lockedPdfUrl) {
-                            window.open(quote.lockedPdfUrl, '_blank');
-                          }
-                        } else {
-                          loadQuote(Number(v));
-                        }
+                        loadQuote(Number(v));
                       }}>
                         <SelectTrigger id="load-quote">
                           <SelectValue placeholder="Select a quote..." />
                         </SelectTrigger>
                         <SelectContent>
-                          {quotesQuery.data?.flatMap((quote: any) => 
-                            quote.lockedPdfUrl ? [
-                              <SelectItem key={`locked-${quote.id}`} value={`locked-${quote.id}`}>
-                                📄 {quote.quoteName} (Locked PDF) - {new Date(quote.updatedAt).toLocaleDateString()}
-                              </SelectItem>,
-                              <SelectItem key={`edit-${quote.id}`} value={quote.id.toString()}>
-                                ✏️ {quote.quoteName} (Edit) - {new Date(quote.updatedAt).toLocaleDateString()}
-                              </SelectItem>
-                            ] : [
-                              <SelectItem key={quote.id} value={quote.id.toString()}>
-                                {quote.quoteName} - {new Date(quote.updatedAt).toLocaleDateString()}
-                              </SelectItem>
-                            ]
-                          )}
+                          {quotesQuery.data?.map((quote: any) => (
+                            <SelectItem key={quote.id} value={quote.id.toString()}>
+                              {quote.lockedPdfUrl ? "✏️ " : ""}{quote.quoteName} - {new Date(quote.updatedAt).toLocaleDateString()}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -1038,6 +1021,26 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                   <Button onClick={saveQuote} variant="default" size="sm" className="w-full" disabled={saveQuoteMutation.isPending}>
                     {saveQuoteMutation.isPending ? "Saving..." : currentQuoteId ? "Update Quote" : "Save New Quote"}
                   </Button>
+                  
+                  {/* Locked PDF Downloads */}
+                  {quotesQuery.data?.some((q: any) => q.lockedPdfUrl) && (
+                    <div className="mt-3 pt-3 border-t space-y-2">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase">Locked Proposals</p>
+                      {quotesQuery.data?.filter((q: any) => q.lockedPdfUrl).map((quote: any) => (
+                        <a
+                          key={`pdf-${quote.id}`}
+                          href={quote.lockedPdfUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 hover:underline py-1"
+                        >
+                          <FileDown className="h-4 w-4 shrink-0" />
+                          <span>{quote.quoteName}</span>
+                          <ExternalLink className="h-3 w-3 shrink-0 ml-auto" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 
                 {/* New Quote Button */}

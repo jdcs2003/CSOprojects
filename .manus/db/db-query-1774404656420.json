@@ -1,0 +1,26 @@
+{
+  "query": "SELECT id, quoteName, clientCompany, clientContact, clientEmail, lockedPdfUrl FROM savedQuotes WHERE quoteName LIKE '%Write%' OR quoteName LIKE '%Spiked%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT id, quoteName, clientCompany, clientContact, clientEmail, lockedPdfUrl FROM savedQuotes WHERE quoteName LIKE '%Write%' OR quoteName LIKE '%Spiked%';",
+  "rows": [
+    {
+      "id": "120001",
+      "quoteName": "Spiked Ade - Warehousing Proposal",
+      "clientCompany": "Spiked Ade (SPKED Inc)",
+      "clientContact": "Brad Moose",
+      "clientEmail": "bmoose@spikedade.com",
+      "lockedPdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/SpikedAde_Warehousing_ProposalCF_d2a1f167.pdf"
+    },
+    {
+      "id": "150001",
+      "quoteName": "Write-Off - Ecom Fulfillment - 3/24/2026",
+      "clientCompany": "Write-Off",
+      "clientContact": "Lauren",
+      "clientEmail": "",
+      "lockedPdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/WriteOff_LM_Proposal_2fb47264.pdf"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tquoteName\tclientCompany\tclientContact\tclientEmail\tlockedPdfUrl\n120001\tSpiked Ade - Warehousing Proposal\tSpiked Ade (SPKED Inc)\tBrad Moose\tbmoose@spikedade.com\thttps://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/SpikedAde_Warehousing_ProposalCF_d2a1f167.pdf\n150001\tWrite-Off - Ecom Fulfillment - 3/24/2026\tWrite-Off\tLauren\t\thttps://d2xsxph8kpxj0f.cloudfront.net/93927875/jGMAb8b3KCDFhyaTLpjNrM/WriteOff_LM_Proposal_2fb47264.pdf\n",
+  "stderr": "",
+  "execution_time_ms": 348
+}
