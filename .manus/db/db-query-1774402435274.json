@@ -1,0 +1,13 @@
+{
+  "query": "SELECT GROUP_CONCAT(COLUMN_NAME ORDER BY ORDINAL_POSITION SEPARATOR ', ') AS cols FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'savedQuotes' AND ORDINAL_POSITION BETWEEN 21 AND 50",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT GROUP_CONCAT(COLUMN_NAME ORDER BY ORDINAL_POSITION SEPARATOR ', ') AS cols FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'savedQuotes' AND ORDINAL_POSITION BETWEEN 21 AND 50",
+  "rows": [
+    {
+      "cols": "storageMargin, handlingInMargin, handlingOutMargin, pickType, monthlyOrders, casesPerOrder, labelsPerOrder, casePickRate, layerPickRate, palletSupplyFee, shrinkWrapFee, labelingFee, orderProcessingFee, cancellationFee, casePickMargin, palletSupplyMargin, shrinkWrapMargin, labelingMargin, orderProcessingMargin, tier1Name, tier1Length, tier1Discount, tier2Name, tier2Length, tier2Discount, tier3Name, tier3Length, tier3Discount, tier4Name, tier4Length"
+    }
+  ],
+  "messages": [],
+  "stdout": "cols\nstorageMargin, handlingInMargin, handlingOutMargin, pickType, monthlyOrders, casesPerOrder, labelsPerOrder, casePickRate, layerPickRate, palletSupplyFee, shrinkWrapFee, labelingFee, orderProcessingFee, cancellationFee, casePickMargin, palletSupplyMargin, shrinkWrapMargin, labelingMargin, orderProcessingMargin, tier1Name, tier1Length, tier1Discount, tier2Name, tier2Length, tier2Discount, tier3Name, tier3Length, tier3Discount, tier4Name, tier4Length\n",
+  "stderr": "",
+  "execution_time_ms": 356
+}

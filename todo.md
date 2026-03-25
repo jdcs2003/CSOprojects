@@ -248,8 +248,12 @@
 - [x] Update Spiked Ade DB record to disable Silver and Gold tiers (keep Standard + 36-month only)
 - [x] Fix L&M logo warping in PDF export — maintain correct aspect ratio
 - [x] Reduce bottom space on page 1 of PDF export
-- [ ] Upload final Spiked Ade PDF to S3 and store URL in DB as locked version
-- [ ] Add "(Locked)" label next to Spiked Ade in saved quotes dropdown
-- [ ] Add "Download Locked PDF" button for quotes with locked PDFs
-- [ ] Allow loading locked quotes as unlocked/editable in calculator
-- [ ] Fix JSX closing tag error in PricingCalculator
+- [x] Upload final Spiked Ade PDF to S3 and store URL in DB as locked version
+- [x] Add "(Locked)" label next to Spiked Ade in saved quotes dropdown
+- [x] Add "Download Locked PDF" button for quotes with locked PDFs
+- [x] Allow loading locked quotes as unlocked/editable in calculator
+- [x] Fix JSX closing tag error in PricingCalculator (stale Vite cache)
+- [x] Create Write-Off customer saved quote with all pricing from email
+- [x] Generate professional PDF proposal for Write-Off matching L&M format
+- [x] Upload Write-Off PDF to S3 and store as locked version
+- [x] Insert Write-Off quote into database with locked PDF URL
