@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO pipelineDeals (clientName, clientContact, clientEmail, clientPhone, dealName, serviceType, facility, company, stage, estimatedMonthlyRevenue, estimatedAnnualRevenue, estimatedPallets, estimatedLoads, keyServices, notes, probability, createdAt, updatedAt) VALUES ('Kermit Lynch', '', '', '', 'PLCB Consolidation', 'warehousing', 'PA-510', 'L&M', 'initial_contact', '0', '0', '0', '0', 'PLCB consolidation, potential for storage and additional services', 'Initial phone call. Volume TBD. Service: PLCB consolidation with potential for storage expansion.', '25', NOW(), NOW());",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute INSERT INTO pipelineDeals (clientName, clientContact, clientEmail, clientPhone, dealName, serviceType, facility, company, stage, estimatedMonthlyRevenue, estimatedAnnualRevenue, estimatedPallets, estimatedLoads, keyServices, notes, probability, createdAt, updatedAt) VALUES ('Kermit Lynch', '', '', '', 'PLCB Consolidation', 'warehousing', 'PA-510', 'L&M', 'initial_contact', '0', '0', '0', '0', 'PLCB consolidation, potential for storage and additional services', 'Initial phone call. Volume TBD. Service: PLCB consolidation with potential for storage expansion.', '25', NOW(), NOW());",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1265 (01000) at line 1: Data truncated for column 'stage' at row 1"
+  ]
+}

@@ -289,3 +289,6 @@
 - [x] Update account overview to reference Bensalem/PLCB hub
 - [x] Regenerate Write-Off locked PDF v4 with all PA-510 changes
 - [x] Upload new PDF to S3 and update database
+- [x] Add Kermit Lynch as pipeline lead (PLCB consolidation, PA-510)
+- [x] Verify Kermit Lynch appears in pipeline and calculator load quote dropdown
+- [x] Fix Write-Off deal name from 'SC-577 Write Off' to 'PA-510 Write Off'

@@ -1,0 +1,36 @@
+{
+  "query": "SELECT * FROM pipelineDeals LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT * FROM pipelineDeals LIMIT 1;",
+  "rows": [
+    {
+      "id": "1",
+      "clientName": "Third Deck Brewing",
+      "clientContact": "Gabe K. & Matt G.",
+      "clientEmail": "gabe@thirddeckbrewing.com",
+      "clientPhone": "NULL",
+      "dealName": "Warehousing & Distribution Proposal",
+      "serviceType": "warehousing",
+      "facility": "PA-1151",
+      "company": "L&M",
+      "stage": "proposal_sent",
+      "estimatedMonthlyRevenue": "210000",
+      "estimatedAnnualRevenue": "2520000",
+      "estimatedPallets": "50",
+      "estimatedLoads": "NULL",
+      "proposalDate": "2026-02-18 16:51:46",
+      "expectedCloseDate": "NULL",
+      "actualCloseDate": "NULL",
+      "savedQuoteId": "NULL",
+      "keyServices": "Climate-controlled storage, WMS integration, alcohol licensing, local/long-haul freight",
+      "notes": "First-time market launch. Craft brewery targeting PA/NJ/NY. Conservative (20 pallets) and Standard (50 pallets) options proposed. Launch target March 2025.",
+      "probability": "65",
+      "createdBy": "NULL",
+      "createdAt": "2026-02-18 16:51:46",
+      "updatedAt": "2026-02-18 16:51:46"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tclientName\tclientContact\tclientEmail\tclientPhone\tdealName\tserviceType\tfacility\tcompany\tstage\testimatedMonthlyRevenue\testimatedAnnualRevenue\testimatedPallets\testimatedLoads\tproposalDate\texpectedCloseDate\tactualCloseDate\tsavedQuoteId\tkeyServices\tnotes\tprobability\tcreatedBy\tcreatedAt\tupdatedAt\n1\tThird Deck Brewing\tGabe K. & Matt G.\tgabe@thirddeckbrewing.com\tNULL\tWarehousing & Distribution Proposal\twarehousing\tPA-1151\tL&M\tproposal_sent\t210000\t2520000\t50\tNULL\t2026-02-18 16:51:46\tNULL\tNULL\tNULL\tClimate-controlled storage, WMS integration, alcohol licensing, local/long-haul freight\tFirst-time market launch. Craft brewery targeting PA/NJ/NY. Conservative (20 pallets) and Standard (50 pallets) options proposed. Launch target March 2025.\t65\tNULL\t2026-02-18 16:51:46\t2026-02-18 16:51:46\n",
+  "stderr": "",
+  "execution_time_ms": 451
+}

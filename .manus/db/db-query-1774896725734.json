@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE pipelineDeals SET dealName = 'PA-510 Write Off' WHERE clientName LIKE '%rite%off%' OR clientName LIKE '%rite-off%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute UPDATE pipelineDeals SET dealName = 'PA-510 Write Off' WHERE clientName LIKE '%rite%off%' OR clientName LIKE '%rite-off%';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 391
+}
