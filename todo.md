@@ -283,3 +283,9 @@
 - [x] Add E-com / Order Fulfillment section: $3.50 first item + label, $3.00 each additional, $2.00/box
 - [x] Add box spec: 6x 4-pack cartons 14.5" x 9.5" x 6.5" 20 lbs 7 oz
 - [x] Regenerate Write-Off locked PDF v3 with all updates
+- [x] Shift Write-Off from SC-577 to PA-510 (Bensalem, 88,000 sq ft)
+- [x] Fix Storage Rates header from "SC-577 Rock Hill" to "PA-510 Bensalem"
+- [x] Fix Inbound Brokerage from "Boardroom to SC-577" to "Boardroom to PA-510"
+- [x] Update account overview to reference Bensalem/PLCB hub
+- [x] Regenerate Write-Off locked PDF v4 with all PA-510 changes
+- [x] Upload new PDF to S3 and update database
