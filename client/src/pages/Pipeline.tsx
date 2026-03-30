@@ -32,7 +32,9 @@ import {
   FileText,
   Target,
   Download,
+  Calculator,
 } from "lucide-react";
+import { FACILITIES } from "@shared/facilities";
 
 const STAGES = [
   { id: "lead", label: "Lead", color: "bg-slate-100 text-slate-700 border-slate-300" },
@@ -147,7 +149,7 @@ function getServiceInfo(serviceId: string) {
 }
 
 // Deal form for create/edit
-function DealForm({ deal, onSave, onClose }: { deal?: any; onSave: (data: any) => void; onClose: () => void }) {
+function DealForm({ deal, onSave, onClose, onGenerateQuote }: { deal?: any; onSave: (data: any) => void; onClose: () => void; onGenerateQuote?: (deal: any) => void }) {
   const [form, setForm] = useState({
     clientName: deal?.clientName || "",
     clientContact: deal?.clientContact || "",
@@ -241,7 +243,12 @@ function DealForm({ deal, onSave, onClose }: { deal?: any; onSave: (data: any) =
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Facility</Label>
-          <Input value={form.facility} onChange={e => setForm({ ...form, facility: e.target.value })} placeholder="PA-1151" />
+          <Select value={form.facility} onValueChange={v => setForm({ ...form, facility: v })}>
+            <SelectTrigger><SelectValue placeholder="Select facility..." /></SelectTrigger>
+            <SelectContent>
+              {FACILITIES.map(f => <SelectItem key={f.id} value={f.label}>{f.fullName}</SelectItem>)}
+            </SelectContent>
+          </Select>
         </div>
         <div className="space-y-2">
           <Label>Probability (%)</Label>
@@ -285,6 +292,11 @@ function DealForm({ deal, onSave, onClose }: { deal?: any; onSave: (data: any) =
 
       <div className="flex justify-end gap-2 pt-2">
         <Button variant="outline" onClick={onClose}>Cancel</Button>
+        {deal && onGenerateQuote && (
+          <Button variant="secondary" onClick={() => onGenerateQuote(deal)}>
+            <Calculator className="h-4 w-4 mr-1" /> Generate Quote
+          </Button>
+        )}
         <Button onClick={handleSubmit}>{deal ? "Update Deal" : "Create Deal"}</Button>
       </div>
     </div>
@@ -496,6 +508,20 @@ export default function Pipeline() {
     }
   };
 
+  const handleGenerateQuote = (deal: any) => {
+    // Navigate to calculator with deal info as URL params
+    const params = new URLSearchParams();
+    params.set("dealId", String(deal.id));
+    if (deal.clientName) params.set("clientCompany", deal.clientName);
+    if (deal.clientContact) params.set("clientContact", deal.clientContact);
+    if (deal.clientEmail) params.set("clientEmail", deal.clientEmail);
+    if (deal.clientPhone) params.set("clientPhone", deal.clientPhone);
+    if (deal.facility) params.set("facility", deal.facility);
+    if (deal.serviceType) params.set("serviceType", deal.serviceType);
+    if (deal.dealName) params.set("dealName", deal.dealName);
+    setLocation(`/calculator?${params.toString()}`);
+  };
+
   // Group deals by stage for kanban
   const dealsByStage = useMemo(() => {
     const grouped: Record<string, any[]> = {};
@@ -591,6 +617,7 @@ export default function Pipeline() {
                   deal={editingDeal}
                   onSave={handleSave}
                   onClose={() => { setDialogOpen(false); setEditingDeal(null); }}
+                  onGenerateQuote={handleGenerateQuote}
                 />
                 {editingDeal && (
                   <DialogFooter className="sm:justify-start">

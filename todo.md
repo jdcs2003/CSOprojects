@@ -272,3 +272,14 @@
 - [x] Add Export Pipeline button (Excel/CSV download) on pipeline page
 - [x] Auto-create pipeline deal when saving a new quote from the calculator
 - [x] Add update quote mutation (existing quotes update in place, no duplicate pipeline entry)
+- [x] Fix Spiked Ade pipeline deal facility from "PA-1151 Bristol" to "PA-1151"
+- [x] Ensure facility field uses standardized codes from known facility list when saving quotes to pipeline
+- [x] Add facility confirmation/validation on quote save and pipeline auto-creation
+- [x] Bidirectional Pipeline ↔ Calculator: pipeline leads appear as loadable quotes in calculator
+- [x] When adding a lead in pipeline, it creates a stub that shows in calculator's "Load Quote" dropdown
+- [x] When saving a quote in calculator, it updates the linked pipeline deal with revenue/pricing data
+- [x] Fix facility standardization: use known facility codes consistently across pipeline and calculator
+- [x] Reduce Write-Off co-pack/repack rate from $6.87 to $4.00 per finished tray
+- [x] Add E-com / Order Fulfillment section: $3.50 first item + label, $3.00 each additional, $2.00/box
+- [x] Add box spec: 6x 4-pack cartons 14.5" x 9.5" x 6.5" 20 lbs 7 oz
+- [x] Regenerate Write-Off locked PDF v3 with all updates

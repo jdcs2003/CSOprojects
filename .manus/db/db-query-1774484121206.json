@@ -1,0 +1,64 @@
+{
+  "query": "SELECT id, clientName, dealName, facility FROM pipelineDeals;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT id, clientName, dealName, facility FROM pipelineDeals;",
+  "rows": [
+    {
+      "id": "1",
+      "clientName": "Third Deck Brewing",
+      "dealName": "Warehousing & Distribution Proposal",
+      "facility": "PA-1151"
+    },
+    {
+      "id": "2",
+      "clientName": "Cornerstone Systems (Wine Group)",
+      "dealName": "MGX Transportation & Cross-Dock Services",
+      "facility": "PA-1151"
+    },
+    {
+      "id": "3",
+      "clientName": "Señor Sangria",
+      "dealName": "Warehousing & Freight Services",
+      "facility": "PA-1151"
+    },
+    {
+      "id": "30001",
+      "clientName": "Southern Glazer's Wine & Spirits",
+      "dealName": "PA Direct Delivery - 5 Zone Coverage",
+      "facility": "PA-1151"
+    },
+    {
+      "id": "30002",
+      "clientName": "The Wine Group (via SGWS)",
+      "dealName": "Co-Pack Services - Woodbridge & PA 250",
+      "facility": "PA-2009"
+    },
+    {
+      "id": "30003",
+      "clientName": "FBA Cross-Dock",
+      "dealName": "Container Cross-Dock & Straight Ship",
+      "facility": "PA-1151"
+    },
+    {
+      "id": "60001",
+      "clientName": "Banville & Jones (Good Boy Vodka)",
+      "dealName": "Warehousing & PLCB Distribution",
+      "facility": "PA-510"
+    },
+    {
+      "id": "90001",
+      "clientName": "Spiked Ade (SPKED Inc)",
+      "dealName": "Spiked Ade - Warehousing & Distribution",
+      "facility": "PA-1151"
+    },
+    {
+      "id": "120001",
+      "clientName": "Write-off",
+      "dealName": "SC-577 Write Off",
+      "facility": "SC-577"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tclientName\tdealName\tfacility\n1\tThird Deck Brewing\tWarehousing & Distribution Proposal\tPA-1151\n2\tCornerstone Systems (Wine Group)\tMGX Transportation & Cross-Dock Services\tPA-1151\n3\tSeñor Sangria\tWarehousing & Freight Services\tPA-1151\n30001\tSouthern Glazer's Wine & Spirits\tPA Direct Delivery - 5 Zone Coverage\tPA-1151\n30002\tThe Wine Group (via SGWS)\tCo-Pack Services - Woodbridge & PA 250\tPA-2009\n30003\tFBA Cross-Dock\tContainer Cross-Dock & Straight Ship\tPA-1151\n60001\tBanville & Jones (Good Boy Vodka)\tWarehousing & PLCB Distribution\tPA-510\n90001\tSpiked Ade (SPKED Inc)\tSpiked Ade - Warehousing & Distribution\tPA-1151\n120001\tWrite-off\tSC-577 Write Off\tSC-577\n",
+  "stderr": "",
+  "execution_time_ms": 355
+}

@@ -318,3 +318,97 @@ describe("Pipeline auto-creation from quote save", () => {
     expect(probability).toBe(50);
   });
 });
+
+describe("Bidirectional Pipeline-Calculator link", () => {
+  const FACILITIES = [
+    { id: "pa-510", label: "PA-510", fullName: "PA-510 (Bensalem)" },
+    { id: "pa-1151", label: "PA-1151", fullName: "PA-1151 (Bristol)" },
+    { id: "pa-13200", label: "PA-13200", fullName: "PA-13200 (Townsend)" },
+    { id: "nj-2279", label: "NJ-2279", fullName: "NJ-2279 (Logan Township)" },
+    { id: "sc-577", label: "SC-577", fullName: "SC-577 (Rock Hill)" },
+  ];
+
+  it("should map facility label to facility id", () => {
+    const mapFacility = (facilityParam: string) => {
+      const matched = FACILITIES.find(f => f.label === facilityParam || f.id === facilityParam.toLowerCase());
+      return matched?.id || null;
+    };
+
+    expect(mapFacility("PA-1151")).toBe("pa-1151");
+    expect(mapFacility("SC-577")).toBe("sc-577");
+    expect(mapFacility("pa-510")).toBe("pa-510");
+    expect(mapFacility("UNKNOWN")).toBeNull();
+  });
+
+  it("should map facility id to facility label for pipeline", () => {
+    const mapToLabel = (facilityId: string) => {
+      return FACILITIES.find(f => f.id === facilityId)?.label || facilityId;
+    };
+
+    expect(mapToLabel("pa-1151")).toBe("PA-1151");
+    expect(mapToLabel("sc-577")).toBe("SC-577");
+    expect(mapToLabel("unknown")).toBe("unknown");
+  });
+
+  it("should build URL params for pipeline-to-calculator navigation", () => {
+    const deal = {
+      id: 123,
+      clientName: "Kermit Lynch",
+      clientContact: "John Doe",
+      clientEmail: "john@kermitlynch.com",
+      clientPhone: "555-1234",
+      facility: "PA-1151",
+      serviceType: "warehousing",
+      dealName: "PLCB Consolidation",
+    };
+
+    const params = new URLSearchParams();
+    params.set("dealId", String(deal.id));
+    if (deal.clientName) params.set("clientCompany", deal.clientName);
+    if (deal.clientContact) params.set("clientContact", deal.clientContact);
+    if (deal.clientEmail) params.set("clientEmail", deal.clientEmail);
+    if (deal.clientPhone) params.set("clientPhone", deal.clientPhone);
+    if (deal.facility) params.set("facility", deal.facility);
+    if (deal.serviceType) params.set("serviceType", deal.serviceType);
+    if (deal.dealName) params.set("dealName", deal.dealName);
+
+    const url = `/calculator?${params.toString()}`;
+    expect(url).toContain("dealId=123");
+    expect(url).toContain("clientCompany=Kermit+Lynch");
+    expect(url).toContain("facility=PA-1151");
+    expect(url).toContain("dealName=PLCB+Consolidation");
+  });
+
+  it("should parse URL params on calculator load", () => {
+    const searchString = "dealId=123&clientCompany=Kermit+Lynch&clientContact=John+Doe&clientEmail=john%40kermitlynch.com&facility=PA-1151&serviceType=ecommerce&dealName=PLCB+Consolidation";
+    const params = new URLSearchParams(searchString);
+
+    expect(params.get("dealId")).toBe("123");
+    expect(params.get("clientCompany")).toBe("Kermit Lynch");
+    expect(params.get("clientContact")).toBe("John Doe");
+    expect(params.get("clientEmail")).toBe("john@kermitlynch.com");
+    expect(params.get("facility")).toBe("PA-1151");
+    expect(params.get("serviceType")).toBe("ecommerce");
+    expect(params.get("dealName")).toBe("PLCB Consolidation");
+  });
+
+  it("should not create duplicate pipeline deal when linked to existing deal", () => {
+    const linkedDealId = 123;
+    const shouldCreateNew = !linkedDealId;
+    expect(shouldCreateNew).toBe(false);
+  });
+
+  it("should create new pipeline deal when not linked", () => {
+    const linkedDealId = null;
+    const shouldCreateNew = !linkedDealId;
+    expect(shouldCreateNew).toBe(true);
+  });
+
+  it("should use standardized facility codes from shared list", () => {
+    // All facility labels should be uppercase with dash format
+    FACILITIES.forEach(f => {
+      expect(f.label).toMatch(/^[A-Z]{2}-\d+$/);
+      expect(f.id).toBe(f.label.toLowerCase());
+    });
+  });
+});

@@ -1,0 +1,60 @@
+{
+  "query": "SELECT id, quoteName, facilityId FROM savedQuotes;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user jfVduGqim3ALTGy.08e762350d2b --database jGMAb8b3KCDFhyaTLpjNrM --execute SELECT id, quoteName, facilityId FROM savedQuotes;",
+  "rows": [
+    {
+      "id": "1",
+      "quoteName": "Señor Sangria",
+      "facilityId": ""
+    },
+    {
+      "id": "2",
+      "quoteName": "Señor Sangria",
+      "facilityId": "pa-510"
+    },
+    {
+      "id": "3",
+      "quoteName": "Señor Sangria",
+      "facilityId": "pa-510"
+    },
+    {
+      "id": "30001",
+      "quoteName": "LMS Reserve",
+      "facilityId": ""
+    },
+    {
+      "id": "30002",
+      "quoteName": "LMS Reserve",
+      "facilityId": ""
+    },
+    {
+      "id": "30003",
+      "quoteName": "LMS Reserve 020226",
+      "facilityId": "pa-2101"
+    },
+    {
+      "id": "60001",
+      "quoteName": "LMS Reserve 020226",
+      "facilityId": "pa-2101"
+    },
+    {
+      "id": "90001",
+      "quoteName": "Cornerstone Systems - Warehouse Services",
+      "facilityId": "PA-1151"
+    },
+    {
+      "id": "120001",
+      "quoteName": "Spiked Ade - Warehousing Proposal",
+      "facilityId": "pa-1151"
+    },
+    {
+      "id": "150001",
+      "quoteName": "Write-Off - Ecom Fulfillment - 3/24/2026",
+      "facilityId": "SC-577"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tquoteName\tfacilityId\n1\tSeñor Sangria\t\n2\tSeñor Sangria\tpa-510\n3\tSeñor Sangria\tpa-510\n30001\tLMS Reserve\t\n30002\tLMS Reserve\t\n30003\tLMS Reserve 020226\tpa-2101\n60001\tLMS Reserve 020226\tpa-2101\n90001\tCornerstone Systems - Warehouse Services\tPA-1151\n120001\tSpiked Ade - Warehousing Proposal\tpa-1151\n150001\tWrite-Off - Ecom Fulfillment - 3/24/2026\tSC-577\n",
+  "stderr": "",
+  "execution_time_ms": 389
+}

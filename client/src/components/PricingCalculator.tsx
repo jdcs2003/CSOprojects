@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { Calculator as CalcIcon, Building2, DollarSign, Users, FileDown, Package, Layers, Box, Truck, ExternalLink } from "lucide-react";
+import { Calculator as CalcIcon, Building2, DollarSign, Users, FileDown, Package, Layers, Box, Truck, ExternalLink, ArrowLeft } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { trpc } from "@/lib/trpc";
+import { FACILITIES } from "@shared/facilities";
+import { useSearch, useLocation } from "wouter";
 
 interface Facility {
   id: string;
@@ -200,8 +202,49 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   
   // Transportation / Freight Lanes
   const [freightLanes, setFreightLanes] = useState<FreightLane[]>([]);
+  
+  // Pipeline deal link
+  const [linkedDealId, setLinkedDealId] = useState<number | null>(null);
+  const [, setLocation] = useLocation();
 
   const availableFacilities = facilities;
+  
+  // Read URL params to pre-fill from pipeline deal
+  const searchString = useSearch();
+  useEffect(() => {
+    const params = new URLSearchParams(searchString);
+    const dealId = params.get("dealId");
+    if (!dealId) return;
+    
+    setLinkedDealId(Number(dealId));
+    
+    const clientCompanyParam = params.get("clientCompany");
+    const clientContactParam = params.get("clientContact");
+    const clientEmailParam = params.get("clientEmail");
+    const clientPhoneParam = params.get("clientPhone");
+    const facilityParam = params.get("facility");
+    const serviceTypeParam = params.get("serviceType");
+    const dealNameParam = params.get("dealName");
+    
+    if (clientCompanyParam) setClientCompany(clientCompanyParam);
+    if (clientContactParam) setClientContact(clientContactParam);
+    if (clientEmailParam) setClientEmail(clientEmailParam);
+    if (clientPhoneParam) setClientPhone(clientPhoneParam);
+    if (dealNameParam) setQuoteName(dealNameParam);
+    
+    // Map facility label (e.g., "PA-1151") to facility id (e.g., "pa-1151")
+    if (facilityParam) {
+      const matchedFacility = FACILITIES.find(f => f.label === facilityParam || f.id === facilityParam.toLowerCase());
+      if (matchedFacility) {
+        setSelectedFacility(matchedFacility.id);
+      }
+    }
+    
+    // Map service type to pick type
+    if (serviceTypeParam === "ecommerce") {
+      setPickType("case");
+    }
+  }, []); // Run once on mount
   
   // ZIP code auto-lookup using backend tRPC
   const zipLookupQuery = trpc.zipLookup.getLocation.useQuery(
@@ -229,51 +272,79 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     },
   });
   
+  // Pipeline update mutation (for linking quotes to existing deals)
+  const updatePipelineDealMutation = trpc.pipeline.update.useMutation({
+    onSuccess: () => {
+      utils.pipeline.getAll.invalidate();
+    },
+  });
+  
   const saveQuoteMutation = trpc.quotes.create.useMutation({
     onSuccess: (data: any) => {
       setCurrentQuoteId(data.id);
       utils.quotes.getAll.invalidate(); // Refresh the dropdown list
       
-      // Auto-create pipeline deal for new quotes
-      const estMonthlyRevenue = Math.round(totalEstimatedMonthlyBilling * 100); // Convert to cents
-      const estAnnualRevenue = estMonthlyRevenue * 12;
-      
-      // Determine service type based on pick type and orders
-      let serviceType: "warehousing" | "ecommerce" | "mixed" = "warehousing";
-      if (pickType === "case" && monthlyOrders > 0) {
-        serviceType = "ecommerce";
-      } else if (monthlyOrders > 0) {
-        serviceType = "mixed";
+      // Auto-create pipeline deal for new quotes (only if not linked to existing deal)
+      if (!linkedDealId) {
+        const estMonthlyRevenue = Math.round(totalEstimatedMonthlyBilling * 100); // Convert to cents
+        const estAnnualRevenue = estMonthlyRevenue * 12;
+        
+        // Determine service type based on pick type and orders
+        let serviceType: "warehousing" | "ecommerce" | "mixed" = "warehousing";
+        if (pickType === "case" && monthlyOrders > 0) {
+          serviceType = "ecommerce";
+        } else if (monthlyOrders > 0) {
+          serviceType = "mixed";
+        }
+        
+        // Map facility id to label for pipeline
+        const facilityLabel = FACILITIES.find(f => f.id === selectedFacility)?.label || selectedFacility;
+        
+        createPipelineDealMutation.mutate({
+          clientName: clientCompany || quoteName,
+          clientContact: clientContact || undefined,
+          clientEmail: clientEmail || undefined,
+          clientPhone: clientPhone || undefined,
+          dealName: quoteName,
+          serviceType,
+          facility: facilityLabel || undefined,
+          company: companyFilter,
+          stage: "proposal_sent",
+          estimatedMonthlyRevenue: estMonthlyRevenue > 0 ? estMonthlyRevenue : undefined,
+          estimatedAnnualRevenue: estAnnualRevenue > 0 ? estAnnualRevenue : undefined,
+          estimatedPallets: monthlyPallets > 0 ? monthlyPallets : undefined,
+          proposalDate: new Date(),
+          savedQuoteId: data.id,
+          keyServices: [
+            "Storage",
+            "Handling In/Out",
+            pickType !== "full" ? `${pickType === "case" ? "Case" : "Layer"} Pick` : "",
+            vasToggles.palletSupply ? "Pallet Supply" : "",
+            vasToggles.shrinkWrap ? "Shrink Wrap" : "",
+            vasToggles.labeling ? "Labeling" : "",
+            vasToggles.orderProcessing ? "Order Processing" : "",
+          ].filter(Boolean).join(", "),
+          probability: 50,
+        });
+        
+        alert(`Quote "${quoteName}" saved and added to pipeline!`);
+      } else {
+        // Update existing pipeline deal with saved quote reference and revenue
+        const estMonthlyRevenue = Math.round(totalEstimatedMonthlyBilling * 100);
+        const facilityLabel = FACILITIES.find(f => f.id === selectedFacility)?.label || selectedFacility;
+        
+        updatePipelineDealMutation.mutate({
+          id: linkedDealId,
+          stage: "proposal_sent",
+          estimatedMonthlyRevenue: estMonthlyRevenue > 0 ? estMonthlyRevenue : undefined,
+          estimatedAnnualRevenue: estMonthlyRevenue > 0 ? estMonthlyRevenue * 12 : undefined,
+          estimatedPallets: monthlyPallets > 0 ? monthlyPallets : undefined,
+          facility: facilityLabel || undefined,
+          savedQuoteId: data.id,
+        });
+        
+        alert(`Quote "${quoteName}" saved and linked to pipeline deal!`);
       }
-      
-      createPipelineDealMutation.mutate({
-        clientName: clientCompany || quoteName,
-        clientContact: clientContact || undefined,
-        clientEmail: clientEmail || undefined,
-        clientPhone: clientPhone || undefined,
-        dealName: quoteName,
-        serviceType,
-        facility: selectedFacility || undefined,
-        company: companyFilter,
-        stage: "proposal_sent",
-        estimatedMonthlyRevenue: estMonthlyRevenue > 0 ? estMonthlyRevenue : undefined,
-        estimatedAnnualRevenue: estAnnualRevenue > 0 ? estAnnualRevenue : undefined,
-        estimatedPallets: monthlyPallets > 0 ? monthlyPallets : undefined,
-        proposalDate: new Date(),
-        savedQuoteId: data.id,
-        keyServices: [
-          "Storage",
-          "Handling In/Out",
-          pickType !== "full" ? `${pickType === "case" ? "Case" : "Layer"} Pick` : "",
-          vasToggles.palletSupply ? "Pallet Supply" : "",
-          vasToggles.shrinkWrap ? "Shrink Wrap" : "",
-          vasToggles.labeling ? "Labeling" : "",
-          vasToggles.orderProcessing ? "Order Processing" : "",
-        ].filter(Boolean).join(", "),
-        probability: 50,
-      });
-      
-      alert(`Quote "${quoteName}" saved and added to pipeline!`);
     },
     onError: (error: any) => {
       alert(`Failed to save quote: ${error.message}`);
@@ -1022,6 +1093,14 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     <div className="min-h-screen bg-background py-8">
       <div className="container max-w-7xl">
         <div className="mb-8">
+          {linkedDealId && (
+            <div className="mb-4 flex items-center gap-2">
+              <Button variant="ghost" size="sm" onClick={() => setLocation("/pipeline")}>
+                <ArrowLeft className="h-4 w-4 mr-1" /> Back to Pipeline
+              </Button>
+              <span className="text-sm text-muted-foreground">Generating quote for pipeline deal #{linkedDealId}</span>
+            </div>
+          )}
           <div className="flex items-center gap-3 mb-2">
             <CalcIcon className="h-8 w-8 text-primary" />
             <h1 className="text-3xl font-bold">{title}</h1>
