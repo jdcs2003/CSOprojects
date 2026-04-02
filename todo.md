@@ -292,3 +292,11 @@
 - [x] Add Kermit Lynch as pipeline lead (PLCB consolidation, PA-510)
 - [x] Verify Kermit Lynch appears in pipeline and calculator load quote dropdown
 - [x] Fix Write-Off deal name from 'SC-577 Write Off' to 'PA-510 Write Off'
+- [x] Fix Write-Off v5 PDF not showing on the portal (locked PDF link updated to v6)
+- [x] Remove case pick ($0.40) from co-pack section — case pick is for LTL orders 15+ cases only
+- [x] Clarify e-com fulfillment section is for orders below 15 cases (FedEx shipments)
+- [x] $2.00/box fee applies to orders below 15 cases only (FedEx)
+- [x] Regenerate Write-Off PDF v6 with corrected sections
+- [x] Upload v6 PDF to S3 and update lockedPdfUrl in database
+- [x] Update inbound transfer from $1,222 LTL to $150/pallet + fuel
+- [x] Update e-com descriptions: 'Each Additional Box Pick' and 'Per box (charged on every box in order)'
