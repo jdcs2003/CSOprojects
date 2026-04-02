@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { Calculator as CalcIcon, Building2, DollarSign, Users, FileDown, Package, Layers, Box, Truck, ExternalLink, ArrowLeft } from "lucide-react";
+import { Calculator as CalcIcon, Building2, DollarSign, Users, FileDown, Package, Layers, Box, Truck, ExternalLink, ArrowLeft, Receipt } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { trpc } from "@/lib/trpc";
@@ -117,16 +117,20 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
   const [labelingFee, setLabelingFee] = useState<number>(0.50);
   const [orderProcessingFee, setOrderProcessingFee] = useState<number>(10.00);
   const [cancellationFee, setCancellationFee] = useState<number>(25.00);
+  const [palletPickRate, setPalletPickRate] = useState<number>(15.00);
+  const [newAccountSetupFee, setNewAccountSetupFee] = useState<number>(500.00);
   
   // VAS Toggle switches (on/off per service)
   const [vasToggles, setVasToggles] = useState<Record<string, boolean>>({
     casePick: false,
     layerPick: false,
+    palletPick: false,
     palletSupply: true,
     shrinkWrap: true,
     labeling: true,
     orderProcessing: true,
     cancellation: true,
+    newAccountSetup: false,
   });
   
   const toggleVas = (key: string) => {
@@ -397,6 +401,8 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       labelingFee,
       orderProcessingFee,
       cancellationFee,
+      palletPickRate,
+      newAccountSetupFee,
       pickType: pickType as "full" | "layer" | "case",
       casesPerOrder,
       labelsPerOrder,
@@ -445,6 +451,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
       accountOverview,
       palletStacking,
       orderProcessingTime,
+      vasToggles: JSON.stringify(vasToggles),
     };
     
     if (currentQuoteId) {
@@ -483,6 +490,8 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     setLabelingFee(quote.labelingFee);
     setOrderProcessingFee(quote.orderProcessingFee);
     setCancellationFee(quote.cancellationFee);
+    setPalletPickRate(quote.palletPickRate ?? 15.00);
+    setNewAccountSetupFee(quote.newAccountSetupFee ?? 500.00);
     setPickType(quote.pickType);
     setCasesPerOrder(quote.casesPerOrder);
     setLabelsPerOrder(quote.labelsPerOrder);
@@ -530,6 +539,15 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     setAccountOverview(quote.accountOverview || "");
     setPalletStacking(quote.palletStacking || "2 high");
     setOrderProcessingTime(quote.orderProcessingTime || "48 hours");
+    // Load VAS toggles
+    if (quote.vasToggles) {
+      try {
+        const parsed = JSON.parse(quote.vasToggles);
+        setVasToggles(prev => ({ ...prev, ...parsed }));
+      } catch (e) {
+        // keep defaults
+      }
+    }
     // Load freight lanes
     if (quote.freightLanes) {
       try {
@@ -809,11 +827,13 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
     const vasItems: [string, string][] = [];
     if (vasToggles.casePick) vasItems.push(["Case Pick", `$${casePickRate.toFixed(2)}/case`]);
     if (vasToggles.layerPick) vasItems.push(["Layer Pick", `$${layerPickRate.toFixed(2)}/case`]);
+    if (vasToggles.palletPick) vasItems.push(["Pallet Pick", `$${palletPickRate.toFixed(2)}/pallet`]);
     if (vasToggles.palletSupply) vasItems.push(["Pallet Supply", `$${palletSupplyFee.toFixed(2)}/pallet`]);
     if (vasToggles.shrinkWrap) vasItems.push(["Shrink Wrap", `$${shrinkWrapFee.toFixed(2)}/pallet`]);
     if (vasToggles.labeling) vasItems.push(["Labeling", `$${labelingFee.toFixed(2)}/label`]);
     if (vasToggles.orderProcessing) vasItems.push(["Order Processing", `$${orderProcessingFee.toFixed(2)}/order`]);
     if (vasToggles.cancellation) vasItems.push(["Cancellation/Restock", `$${cancellationFee.toFixed(2)}/order`]);
+    if (vasToggles.newAccountSetup) vasItems.push(["New Account Setup Fee", `$${newAccountSetupFee.toFixed(2)} (one-time)`]);
     
     vasItems.forEach(item => {
       yPos = tableRow(item, col2Widths, yPos);
@@ -1581,53 +1601,71 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                   
                   <div className="space-y-3">
                     {/* Case Pick Toggle */}
-                    {pickType === "case" && (
-                      <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.casePick ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
-                        <div className="flex items-center gap-3">
-                          <Switch checked={vasToggles.casePick} onCheckedChange={() => toggleVas('casePick')} />
-                          <div>
-                            <div className="font-medium text-sm">Case Pick</div>
-                            <div className="text-xs text-muted-foreground">Per case picking fee</div>
-                          </div>
-                        </div>
-                        <div className="w-28">
-                          <Input
-                            type="number"
-                            value={casePickRate}
-                            onChange={(e) => setCasePickRate(Number(e.target.value))}
-                            step="0.05"
-                            className="h-8 text-sm text-right"
-                            disabled={!vasToggles.casePick}
-                          />
-                          <div className="text-xs text-muted-foreground text-right mt-0.5">$/case</div>
+                    <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.casePick ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
+                      <div className="flex items-center gap-3">
+                        <Switch checked={vasToggles.casePick} onCheckedChange={() => toggleVas('casePick')} />
+                        <div>
+                          <div className="font-medium text-sm">Case Pick</div>
+                          <div className="text-xs text-muted-foreground">Per case picking fee</div>
                         </div>
                       </div>
-                    )}
-                    
+                      <div className="w-28">
+                        <Input
+                          type="number"
+                          value={casePickRate}
+                          onChange={(e) => setCasePickRate(Number(e.target.value))}
+                          step="0.05"
+                          className="h-8 text-sm text-right"
+                          disabled={!vasToggles.casePick}
+                        />
+                        <div className="text-xs text-muted-foreground text-right mt-0.5">$/case</div>
+                      </div>
+                    </div>
+
                     {/* Layer Pick Toggle */}
-                    {pickType === "layer" && (
-                      <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.layerPick ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
-                        <div className="flex items-center gap-3">
-                          <Switch checked={vasToggles.layerPick} onCheckedChange={() => toggleVas('layerPick')} />
-                          <div>
-                            <div className="font-medium text-sm">Layer Pick</div>
-                            <div className="text-xs text-muted-foreground">Per case layer picking fee</div>
-                          </div>
-                        </div>
-                        <div className="w-28">
-                          <Input
-                            type="number"
-                            value={layerPickRate}
-                            onChange={(e) => setLayerPickRate(Number(e.target.value))}
-                            step="0.05"
-                            className="h-8 text-sm text-right"
-                            disabled={!vasToggles.layerPick}
-                          />
-                          <div className="text-xs text-muted-foreground text-right mt-0.5">$/case</div>
+                    <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.layerPick ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
+                      <div className="flex items-center gap-3">
+                        <Switch checked={vasToggles.layerPick} onCheckedChange={() => toggleVas('layerPick')} />
+                        <div>
+                          <div className="font-medium text-sm">Layer Pick</div>
+                          <div className="text-xs text-muted-foreground">Per case layer picking fee</div>
                         </div>
                       </div>
-                    )}
-                    
+                      <div className="w-28">
+                        <Input
+                          type="number"
+                          value={layerPickRate}
+                          onChange={(e) => setLayerPickRate(Number(e.target.value))}
+                          step="0.05"
+                          className="h-8 text-sm text-right"
+                          disabled={!vasToggles.layerPick}
+                        />
+                        <div className="text-xs text-muted-foreground text-right mt-0.5">$/case</div>
+                      </div>
+                    </div>
+
+                    {/* Pallet Pick Toggle */}
+                    <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.palletPick ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
+                      <div className="flex items-center gap-3">
+                        <Switch checked={vasToggles.palletPick} onCheckedChange={() => toggleVas('palletPick')} />
+                        <div>
+                          <div className="font-medium text-sm">Pallet Pick</div>
+                          <div className="text-xs text-muted-foreground">Per pallet picking / selection fee</div>
+                        </div>
+                      </div>
+                      <div className="w-28">
+                        <Input
+                          type="number"
+                          value={palletPickRate}
+                          onChange={(e) => setPalletPickRate(Number(e.target.value))}
+                          step="0.50"
+                          className="h-8 text-sm text-right"
+                          disabled={!vasToggles.palletPick}
+                        />
+                        <div className="text-xs text-muted-foreground text-right mt-0.5">$/pallet</div>
+                      </div>
+                    </div>
+
                     {/* Pallet Supply Toggle */}
                     <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.palletSupply ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
                       <div className="flex items-center gap-3">
@@ -1649,7 +1687,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                         <div className="text-xs text-muted-foreground text-right mt-0.5">$/pallet</div>
                       </div>
                     </div>
-                    
+
                     {/* Shrink Wrap Toggle */}
                     <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.shrinkWrap ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
                       <div className="flex items-center gap-3">
@@ -1671,7 +1709,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                         <div className="text-xs text-muted-foreground text-right mt-0.5">$/pallet</div>
                       </div>
                     </div>
-                    
+
                     {/* Labeling Toggle */}
                     <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.labeling ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
                       <div className="flex items-center gap-3">
@@ -1693,7 +1731,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                         <div className="text-xs text-muted-foreground text-right mt-0.5">$/label</div>
                       </div>
                     </div>
-                    
+
                     {/* Order Processing Toggle */}
                     <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.orderProcessing ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
                       <div className="flex items-center gap-3">
@@ -1715,7 +1753,7 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                         <div className="text-xs text-muted-foreground text-right mt-0.5">$/order</div>
                       </div>
                     </div>
-                    
+
                     {/* Cancellation/Restock Toggle */}
                     <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.cancellation ? 'bg-green-50 dark:bg-green-950 border-green-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
                       <div className="flex items-center gap-3">
@@ -1735,6 +1773,28 @@ export default function PricingCalculator({ companyFilter, title, logoPath, comp
                           disabled={!vasToggles.cancellation}
                         />
                         <div className="text-xs text-muted-foreground text-right mt-0.5">$/order</div>
+                      </div>
+                    </div>
+
+                    {/* New Account Setup Fee Toggle */}
+                    <div className={`flex items-center justify-between p-3 rounded-lg border ${vasToggles.newAccountSetup ? 'bg-blue-50 dark:bg-blue-950 border-blue-200' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 opacity-60'}`}>
+                      <div className="flex items-center gap-3">
+                        <Switch checked={vasToggles.newAccountSetup} onCheckedChange={() => toggleVas('newAccountSetup')} />
+                        <div>
+                          <div className="font-medium text-sm flex items-center gap-1.5"><Receipt className="h-3.5 w-3.5" /> New Account Setup Fee</div>
+                          <div className="text-xs text-muted-foreground">One-time onboarding / account setup fee</div>
+                        </div>
+                      </div>
+                      <div className="w-28">
+                        <Input
+                          type="number"
+                          value={newAccountSetupFee}
+                          onChange={(e) => setNewAccountSetupFee(Number(e.target.value))}
+                          step="50"
+                          className="h-8 text-sm text-right"
+                          disabled={!vasToggles.newAccountSetup}
+                        />
+                        <div className="text-xs text-muted-foreground text-right mt-0.5">$ one-time</div>
                       </div>
                     </div>
                   </div>

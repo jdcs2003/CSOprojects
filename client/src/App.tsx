@@ -6,12 +6,15 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { EmailAccessProvider } from "./contexts/EmailAccessContext";
 import AccessGate from "./components/AccessGate";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import HoldingPage from "./pages/HoldingPage";
 import Calculator from "@/pages/Calculator";
 import CapacityTracking from "./pages/CapacityTracking";
 import InternalHome from "./pages/InternalHome";
 import Pipeline from "./pages/Pipeline";
+import Tutorial from "./pages/Tutorial";
+import UserManagement from "./pages/UserManagement";
 
 function Router() {
   return (
@@ -19,6 +22,9 @@ function Router() {
       {/* Public routes */}
       <Route path={"/"} component={Home} />
       <Route path={"/access-pending"} component={HoldingPage} />
+      
+      {/* Tutorial route - requires auth but not tutorial completion */}
+      <Route path={"/tutorial"} component={Tutorial} />
       
       {/* Protected routes - require email whitelist approval */}
       <Route path={"/internal"}>
@@ -32,6 +38,13 @@ function Router() {
       </Route>
       <Route path="/pipeline">
         <AccessGate><Pipeline /></AccessGate>
+      </Route>
+      
+      {/* Admin-only routes */}
+      <Route path="/admin/users">
+        <ProtectedRoute requiredPermission="userManagement">
+          <UserManagement />
+        </ProtectedRoute>
       </Route>
       
       <Route path={"/404"} component={NotFound} />

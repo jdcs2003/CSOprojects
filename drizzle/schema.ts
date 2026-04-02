@@ -16,14 +16,63 @@ export const users = mysqlTable("users", {
   name: text("name"),
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  role: mysqlEnum("role", ["user", "admin", "super_admin", "client"]).default("user").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
+  tutorialCompleted: int("tutorialCompleted").default(0).notNull(),
 });
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
+
+/**
+ * Per-user granular permissions for admin sections.
+ * Adapted for pricing dashboard features.
+ */
+export const userPermissions = mysqlTable("user_permissions", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("user_id").notNull().unique(), // references users.id
+  // Admin section permissions (1 = has access, 0 = no access)
+  pricing: int("pricing").default(0).notNull(),               // Pricing Calculator & Quotes
+  pipeline: int("pipeline").default(0).notNull(),              // Sales Pipeline Management
+  capacity: int("capacity").default(0).notNull(),              // Capacity Tracking
+  proposals: int("proposals").default(0).notNull(),            // Locked Proposals (view)
+  userManagement: int("user_management").default(0).notNull(), // User Management
+  integrations: int("integrations").default(0).notNull(),      // Integrations
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+export type UserPermission = typeof userPermissions.$inferSelect;
+export type InsertUserPermission = typeof userPermissions.$inferInsert;
+
+// Permission keys for iteration
+export const PERMISSION_KEYS = [
+  "pricing",
+  "pipeline",
+  "capacity",
+  "proposals",
+  "userManagement",
+  "integrations",
+] as const;
+
+export type PermissionKey = typeof PERMISSION_KEYS[number];
+
+/**
+ * Pre-authorized emails for automatic role assignment.
+ * Super admins can add emails before users log in.
+ */
+export const authorizedEmails = mysqlTable("authorized_emails", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  role: mysqlEnum("role", ["user", "admin", "super_admin", "client"]).default("user").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdBy: varchar("created_by", { length: 320 }).notNull(),
+});
+
+export type AuthorizedEmail = typeof authorizedEmails.$inferSelect;
+export type InsertAuthorizedEmail = typeof authorizedEmails.$inferInsert;
 
 /**
  * Facility capacity tracking table
@@ -96,6 +145,8 @@ export const savedQuotes = mysqlTable("savedQuotes", {
   labelingFee: double("labelingFee").notNull(),
   orderProcessingFee: double("orderProcessingFee").notNull(),
   cancellationFee: double("cancellationFee").notNull(),
+  palletPickRate: double("palletPickRate"),
+  newAccountSetupFee: double("newAccountSetupFee"),
   casePickMargin: int("casePickMargin").notNull(),
   palletSupplyMargin: int("palletSupplyMargin").notNull(),
   shrinkWrapMargin: int("shrinkWrapMargin").notNull(),
@@ -135,6 +186,9 @@ export const savedQuotes = mysqlTable("savedQuotes", {
   accountOverview: text("accountOverview"),
   palletStacking: varchar("palletStacking", { length: 50 }),
   orderProcessingTime: varchar("orderProcessingTime", { length: 50 }),
+  
+  // VAS Toggles (JSON)
+  vasToggles: text("vasToggles"),
   
   // Locked PDF
   lockedPdfUrl: text("lockedPdfUrl"),

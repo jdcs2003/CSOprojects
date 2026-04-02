@@ -300,3 +300,18 @@
 - [x] Upload v6 PDF to S3 and update lockedPdfUrl in database
 - [x] Update inbound transfer from $1,222 LTL to $150/pallet + fuel
 - [x] Update e-com descriptions: 'Each Additional Box Pick' and 'Per box (charged on every box in order)'
+- [x] Add $500 new account setup fee to calculator and PDF export
+- [x] Unify all accessorials (Case Pick, Layer Pick, Pallet Pick, Pallet Supply, Shrink Wrap, Labeling, Order Processing, Cancellation) as toggles in ALL options
+- [x] Remove the three dividers that separate accessorials into groups in calculator
+- [x] Update PDF export to include new account setup fee
+- [ ] Regenerate BBB locked PDF with all updates
+- [x] Port tutorial system from main L&M platform (5-step interactive tutorial with quiz)
+- [x] Port access level / role-based permissions system (admin, user management, finance admin)
+- [x] Port ProtectedRoute with tutorial gate
+- [x] Port AdminLayout with sidebar navigation (using existing InternalHome layout)
+- [x] Port UserManagement page for assigning roles/permissions
+- [x] Keep j.stenson@summitskiesinc.com as owner with tutorial bypass
+- [x] Add @lmwarehousing.com to auto-approved domains
+- [x] Add tutorialCompleted column to users table
+- [x] Add permissions columns to users/schema (user_permissions table)
+- [ ] Port Integrations page (HubSpot + QuickBooks) (placeholder for future)

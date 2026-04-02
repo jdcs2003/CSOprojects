@@ -1,12 +1,15 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calculator, Building2, ArrowRight, TrendingUp, LogOut } from "lucide-react";
+import { Calculator, Building2, ArrowRight, TrendingUp, LogOut, Users, Shield } from "lucide-react";
 import { useLocation } from "wouter";
 import { useEmailAccess } from "@/contexts/EmailAccessContext";
+import { trpc } from "@/lib/trpc";
 
 export default function InternalHome() {
   const [, setLocation] = useLocation();
   const { email, clearAccess } = useEmailAccess();
+  const { data: adminAccess } = trpc.admin.checkAdminAccess.useQuery(undefined, { retry: false });
+  const showUserManagement = adminAccess?.hasAccess && (adminAccess?.permissions as any)?.userManagement;
 
   const handleSignOut = () => {
     clearAccess();
@@ -120,6 +123,41 @@ export default function InternalHome() {
             </Card>
 
             {/* Capacity Tracking Card */}
+            {/* User Management Card (admin only) */}
+            {showUserManagement && (
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer border-l-4 border-l-amber-500" onClick={() => setLocation("/admin/users")}>
+                <CardHeader>
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-12 w-12 rounded-lg bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                      <Users className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <CardTitle>User Management</CardTitle>
+                      <CardDescription>Roles & permissions</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Manage user roles, permissions, and pre-authorized emails for the CSO Pricing Dashboard.
+                  </p>
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold">Features:</p>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li>• Role assignment (Admin, Client, User)</li>
+                      <li>• Granular permission control</li>
+                      <li>• Pre-authorized email management</li>
+                      <li>• Access audit & review</li>
+                    </ul>
+                  </div>
+                  <Button className="w-full" onClick={() => setLocation("/admin/users")}>
+                    Manage Users
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
             <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setLocation("/capacity")}>
               <CardHeader>
                 <div className="flex items-center gap-3 mb-2">

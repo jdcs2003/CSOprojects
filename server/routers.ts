@@ -1,10 +1,12 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
+import { publicProcedure, protectedProcedure, adminProcedure, router } from "./_core/trpc";
+import { adminRouter } from "./adminRouter";
 import { z } from "zod";
 import { getDb } from "./db";
-import { facilityCapacity, savedQuotes, pipelineDeals } from "../drizzle/schema";
+import { AUTO_APPROVED_DOMAINS } from "@shared/permissions";
+import { facilityCapacity, savedQuotes, pipelineDeals, authorizedEmails } from "../drizzle/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { makeRequest, GeocodingResult } from "./_core/map";
 
@@ -17,6 +19,7 @@ const WHITELISTED_EMAILS = [
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
+  admin: adminRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
@@ -28,16 +31,33 @@ export const appRouter = router({
     }),
   }),
 
-  // Email whitelist access control
+  // Email whitelist access control (checks hardcoded list + DB authorized emails + auto-approved domains)
   access: router({
     checkEmail: publicProcedure
       .input(z.object({ email: z.string().email() }))
-      .mutation(({ input }) => {
+      .mutation(async ({ input }) => {
         const normalizedEmail = input.email.toLowerCase().trim();
-        const isApproved = WHITELISTED_EMAILS.some(
+        
+        // 1. Check hardcoded whitelist
+        const isWhitelisted = WHITELISTED_EMAILS.some(
           (e) => e.toLowerCase() === normalizedEmail
         );
-        return { approved: isApproved, email: normalizedEmail };
+        if (isWhitelisted) return { approved: true, email: normalizedEmail };
+        
+        // 2. Check auto-approved domains
+        const domain = normalizedEmail.split('@')[1];
+        if (domain && AUTO_APPROVED_DOMAINS.includes(domain)) {
+          return { approved: true, email: normalizedEmail };
+        }
+        
+        // 3. Check DB authorized emails
+        const db = await getDb();
+        if (db) {
+          const [authorized] = await db.select().from(authorizedEmails).where(eq(authorizedEmails.email, normalizedEmail)).limit(1);
+          if (authorized) return { approved: true, email: normalizedEmail };
+        }
+        
+        return { approved: false, email: normalizedEmail };
       }),
   }),
 
@@ -201,6 +221,8 @@ export const appRouter = router({
         labelingFee: z.number(),
         orderProcessingFee: z.number(),
         cancellationFee: z.number(),
+        palletPickRate: z.number().optional(),
+        newAccountSetupFee: z.number().optional(),
         cancellationMargin: z.number(),
         casePickMargin: z.number(),
         palletSupplyMargin: z.number(),
@@ -236,6 +258,7 @@ export const appRouter = router({
         accountOverview: z.string().optional(),
         palletStacking: z.string().optional(),
         orderProcessingTime: z.string().optional(),
+        vasToggles: z.string().optional(), // JSON string of VAS toggle states
         createdBy: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
@@ -294,6 +317,8 @@ export const appRouter = router({
         labelingFee: z.number(),
         orderProcessingFee: z.number(),
         cancellationFee: z.number(),
+        palletPickRate: z.number().optional(),
+        newAccountSetupFee: z.number().optional(),
         cancellationMargin: z.number(),
         casePickMargin: z.number(),
         palletSupplyMargin: z.number(),
@@ -329,6 +354,7 @@ export const appRouter = router({
         accountOverview: z.string().optional(),
         palletStacking: z.string().optional(),
         orderProcessingTime: z.string().optional(),
+        vasToggles: z.string().optional(), // JSON string of VAS toggle states
       }))
       .mutation(async ({ input }) => {
         const db = await getDb();
