@@ -337,3 +337,4 @@
 - [x] Remove EmailAccessProvider from App.tsx routing
 - [x] Add Contract Generator and Integrations cards to InternalHome (permission-gated)
 - [x] Update InternalHome to use OAuth logout instead of email clearAccess
+- [x] Fix invite user form: upsert instead of insert to handle already-seeded users without duplicate key error

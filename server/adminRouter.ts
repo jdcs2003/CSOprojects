@@ -293,12 +293,28 @@ export const adminRouter = router({
         }
       }
       
-      await db.insert(authorizedEmails).values({
-        email: input.email,
-        role: input.role,
-        createdBy: ctx.user.email || "admin",
-        preAssignedPermissions: preAssignedPerms ? JSON.stringify(preAssignedPerms) : null,
-      });
+      // Check if email already exists — update instead of failing on duplicate
+      const [existing] = await db.select().from(authorizedEmails)
+        .where(eq(authorizedEmails.email, input.email.toLowerCase()))
+        .limit(1);
+      
+      if (existing) {
+        // Update existing record with new role and permissions
+        await db.update(authorizedEmails)
+          .set({
+            role: input.role,
+            preAssignedPermissions: preAssignedPerms ? JSON.stringify(preAssignedPerms) : null,
+            createdBy: ctx.user.email || "admin",
+          })
+          .where(eq(authorizedEmails.id, existing.id));
+      } else {
+        await db.insert(authorizedEmails).values({
+          email: input.email.toLowerCase(),
+          role: input.role,
+          createdBy: ctx.user.email || "admin",
+          preAssignedPermissions: preAssignedPerms ? JSON.stringify(preAssignedPerms) : null,
+        });
+      }
 
       return { 
         success: true, 
