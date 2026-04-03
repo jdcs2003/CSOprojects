@@ -314,4 +314,18 @@
 - [x] Add @lmwarehousing.com to auto-approved domains
 - [x] Add tutorialCompleted column to users table
 - [x] Add permissions columns to users/schema (user_permissions table)
-- [ ] Port Integrations page (HubSpot + QuickBooks) (placeholder for future)
+- [x] Port Integrations page (HubSpot + QuickBooks) (placeholder for future)
+- [x] Pre-authorize Tsantos@lmwarehousing.com as admin with full permissions
+- [x] Pre-authorize Egusz@lmwarehousing.com as finance_admin (read-only proposals, pipeline view, export, QuickBooks)
+- [x] Pre-authorize Mlee@lmwarehousing.com as onboarding_manager (read-only proposals, pipeline manage, export)
+- [x] Add Finance Admin and Onboarding Manager permission profiles
+- [x] Build invite user flow on UserManagement page with welcome email generation
+- [x] Send welcome emails to all team members via Gmail MCP (user will send manually after review)
+- [x] Ensure tutorial gates new users on first login
+- [x] Ensure non-provisioned @lmwarehousing.com users land on holding page (not auto-admin)
+- [x] OAuth flow: auto-approved domain users without authorized_emails entry get "user" role (holding)
+- [x] Holding page shows appropriate message for pending L&M users
+- [x] Update Mlee onboarding_manager profile to include capacity tracking permission
+- [x] Port contract generator from other task (contractGenerator.ts, contractConfig.ts, GenerateContract.tsx)
+- [x] Add Alazarek@lmwarehousing.com as admin with full permissions (already seeded)
+- [ ] Push all changes to GitHub

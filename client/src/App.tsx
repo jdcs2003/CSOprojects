@@ -15,6 +15,19 @@ import InternalHome from "./pages/InternalHome";
 import Pipeline from "./pages/Pipeline";
 import Tutorial from "./pages/Tutorial";
 import UserManagement from "./pages/UserManagement";
+import { lazy, Suspense } from "react";
+
+// Lazy load admin pages
+const GenerateContract = lazy(() => import("./pages/admin/GenerateContract"));
+const Integrations = lazy(() => import("./pages/Integrations"));
+
+function AdminPageLoader() {
+  return (
+    <div className="flex items-center justify-center min-h-[400px]">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    </div>
+  );
+}
 
 function Router() {
   return (
@@ -40,10 +53,42 @@ function Router() {
         <AccessGate><Pipeline /></AccessGate>
       </Route>
       
-      {/* Admin-only routes */}
+      {/* Admin routes with ProtectedRoute */}
+      <Route path="/admin">
+        <AccessGate><InternalHome /></AccessGate>
+      </Route>
+      <Route path="/admin/calculator">
+        <ProtectedRoute requiredPermission="pricing">
+          <Calculator />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/pipeline">
+        <ProtectedRoute requiredPermission="pipeline">
+          <Pipeline />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/capacity">
+        <ProtectedRoute requiredPermission="capacity">
+          <CapacityTracking />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/proposals/generate-contract">
+        <ProtectedRoute requiredPermission="proposals">
+          <Suspense fallback={<AdminPageLoader />}>
+            <GenerateContract />
+          </Suspense>
+        </ProtectedRoute>
+      </Route>
       <Route path="/admin/users">
         <ProtectedRoute requiredPermission="userManagement">
           <UserManagement />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/integrations">
+        <ProtectedRoute requiredPermission="integrations">
+          <Suspense fallback={<AdminPageLoader />}>
+            <Integrations />
+          </Suspense>
         </ProtectedRoute>
       </Route>
       

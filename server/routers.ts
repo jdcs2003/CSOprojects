@@ -3,6 +3,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, adminProcedure, router } from "./_core/trpc";
 import { adminRouter } from "./adminRouter";
+import { proposalsRouter } from "./proposalsRouter";
 import { z } from "zod";
 import { getDb } from "./db";
 import { AUTO_APPROVED_DOMAINS } from "@shared/permissions";
@@ -20,6 +21,7 @@ export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
   admin: adminRouter,
+  proposals: proposalsRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
@@ -44,7 +46,8 @@ export const appRouter = router({
         );
         if (isWhitelisted) return { approved: true, email: normalizedEmail };
         
-        // 2. Check auto-approved domains
+        // 2. Check auto-approved domains (let them through email gate, but they still
+        //    need to be provisioned by admin for full access via ProtectedRoute)
         const domain = normalizedEmail.split('@')[1];
         if (domain && AUTO_APPROVED_DOMAINS.includes(domain)) {
           return { approved: true, email: normalizedEmail };

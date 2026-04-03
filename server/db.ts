@@ -85,6 +85,14 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     await db.insert(users).values(values).onDuplicateKeyUpdate({
       set: updateSet,
     });
+
+    // Apply pre-assigned permissions for new users from authorized_emails
+    if (isNewUser) {
+      const email = user.email || values.email;
+      if (email) {
+        await applyPreAssignedPermissions(email as string);
+      }
+    }
   } catch (error) {
     console.error("[Database] Failed to upsert user:", error);
     throw error;
@@ -92,10 +100,55 @@ export async function upsertUser(user: InsertUser): Promise<void> {
 }
 
 /**
+ * Apply pre-assigned permissions from the authorized_emails table to a newly registered user.
+ * This runs after the user record is created, looking up their email in authorized_emails
+ * and applying any stored permission profile.
+ */
+async function applyPreAssignedPermissions(email: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+
+  try {
+    // Find the authorized email entry
+    const [authEntry] = await db.select().from(authorizedEmails)
+      .where(eq(authorizedEmails.email, email.toLowerCase())).limit(1);
+    
+    if (!authEntry?.preAssignedPermissions) return;
+
+    // Parse the pre-assigned permissions JSON
+    let perms: Record<string, boolean>;
+    try {
+      perms = JSON.parse(authEntry.preAssignedPermissions);
+    } catch {
+      return;
+    }
+
+    // Find the user by email
+    const [user] = await db.select().from(users)
+      .where(eq(users.email, email)).limit(1);
+    
+    if (!user) return;
+
+    // Apply the permissions
+    const permValues: Partial<PermissionMap> = {};
+    for (const key of PERMISSION_KEYS) {
+      if (key in perms) {
+        permValues[key as PermissionKey] = perms[key];
+      }
+    }
+
+    await setUserPermissions(user.id, permValues);
+    console.log(`[Auth] Applied pre-assigned permissions for ${email}`);
+  } catch (error) {
+    console.error(`[Auth] Failed to apply pre-assigned permissions for ${email}:`, error);
+  }
+}
+
+/**
  * Determine the role for a new user based on:
  * 1. Owner email → super_admin
- * 2. Pre-authorized email → assigned role
- * 3. Auto-approved domain → admin
+ * 2. Pre-authorized email → assigned role from DB
+ * 3. Auto-approved domain → user (holding area, admin must provision)
  * 4. Otherwise → user (pending review)
  */
 async function determineRoleForNewUser(email: string | null, openId: string): Promise<"user" | "admin" | "super_admin" | "client"> {
@@ -115,10 +168,11 @@ async function determineRoleForNewUser(email: string | null, openId: string): Pr
     }
   }
 
-  // Check auto-approved domains
+  // Auto-approved domains: users can register but land in holding ("user" role)
+  // until an admin provisions them. Only pre-authorized emails get admin automatically.
   const domain = email.split('@')[1]?.toLowerCase();
   if (domain && AUTO_APPROVED_DOMAINS.includes(domain)) {
-    return 'admin';
+    return 'user'; // Holding area — admin must provision them
   }
 
   return 'user';

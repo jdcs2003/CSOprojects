@@ -68,7 +68,7 @@ export default function ProtectedRoute({ children, requiredPermission }: Protect
           <h2 className="text-2xl font-bold">Access Pending</h2>
           <p className="text-muted-foreground">
             Your account is registered but you don't have admin access yet. 
-            Please contact <a href="mailto:support@peachwarehouse.com" className="text-primary hover:underline font-medium">support@peachwarehouse.com</a> to check the status of your request.
+            Please contact your administrator or email <a href="mailto:j.stenson@summitskiesinc.com" className="text-primary hover:underline font-medium">j.stenson@summitskiesinc.com</a> to request access.
           </p>
           <p className="text-sm text-muted-foreground">
             Logged in as: {user?.email || user?.name}

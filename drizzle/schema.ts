@@ -67,12 +67,32 @@ export const authorizedEmails = mysqlTable("authorized_emails", {
   id: int("id").autoincrement().primaryKey(),
   email: varchar("email", { length: 320 }).notNull().unique(),
   role: mysqlEnum("role", ["user", "admin", "super_admin", "client"]).default("user").notNull(),
+  preAssignedPermissions: text("pre_assigned_permissions"), // JSON string of permission profile
   createdAt: timestamp("created_at").defaultNow().notNull(),
   createdBy: varchar("created_by", { length: 320 }).notNull(),
 });
 
 export type AuthorizedEmail = typeof authorizedEmails.$inferSelect;
 export type InsertAuthorizedEmail = typeof authorizedEmails.$inferInsert;
+
+/**
+ * Integrations table for HubSpot, QuickBooks, etc.
+ * Stores connection config and status.
+ */
+export const integrations = mysqlTable("integrations", {
+  id: int("id").autoincrement().primaryKey(),
+  type: varchar("type", { length: 50 }).notNull(), // hubspot, quickbooks
+  name: varchar("name", { length: 255 }).notNull(),
+  config: text("config"), // JSON config
+  status: varchar("status", { length: 20 }).notNull().default("pending"), // pending, active, error
+  installedBy: varchar("installed_by", { length: 255 }),
+  lastSynced: timestamp("last_synced"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Integration = typeof integrations.$inferSelect;
+export type InsertIntegration = typeof integrations.$inferInsert;
 
 /**
  * Facility capacity tracking table

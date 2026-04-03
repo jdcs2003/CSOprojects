@@ -161,18 +161,16 @@ describe("Role Determination for New Users", () => {
     expect(role).toBe(expectedRole);
   });
 
-  it("auto-approved domain user should get admin role", () => {
+  it("auto-approved domain user (non-provisioned) should get user role (holding area)", () => {
     const email = "newperson@lmwarehousing.com";
+    // Non-provisioned auto-approved domain users go to holding area as 'user'
+    // Only pre-authorized emails get their assigned role
     let role = "user";
     if (email === OWNER_EMAIL) {
       role = "super_admin";
-    } else {
-      const domain = email.split('@')[1]?.toLowerCase();
-      if (domain && AUTO_APPROVED_DOMAINS.includes(domain)) {
-        role = "admin";
-      }
     }
-    expect(role).toBe("admin");
+    // Auto-approved domain users stay as 'user' until admin provisions them
+    expect(role).toBe("user");
   });
 
   it("unknown domain user should get user role", () => {
