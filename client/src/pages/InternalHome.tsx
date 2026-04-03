@@ -1,19 +1,21 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calculator, Building2, ArrowRight, TrendingUp, LogOut, Users, Shield } from "lucide-react";
+import { Calculator, Building2, ArrowRight, TrendingUp, LogOut, Users, FileText, Plug } from "lucide-react";
 import { useLocation } from "wouter";
-import { useEmailAccess } from "@/contexts/EmailAccessContext";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 
 export default function InternalHome() {
   const [, setLocation] = useLocation();
-  const { email, clearAccess } = useEmailAccess();
+  const { user, logout } = useAuth();
   const { data: adminAccess } = trpc.admin.checkAdminAccess.useQuery(undefined, { retry: false });
   const showUserManagement = adminAccess?.hasAccess && (adminAccess?.permissions as any)?.userManagement;
+  const showProposals = adminAccess?.hasAccess && (adminAccess?.permissions as any)?.proposals;
+  const showIntegrations = adminAccess?.hasAccess && (adminAccess?.permissions as any)?.integrations;
 
-  const handleSignOut = () => {
-    clearAccess();
-    setLocation("/");
+  const handleSignOut = async () => {
+    await logout();
+    window.location.href = "/";
   };
 
   return (
@@ -28,8 +30,8 @@ export default function InternalHome() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            {email && (
-              <span className="text-xs text-muted-foreground hidden sm:block">{email}</span>
+            {user && (
+              <span className="text-xs text-muted-foreground hidden sm:block">{user.email || user.name}</span>
             )}
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
               <LogOut className="h-4 w-4 mr-1" />
@@ -122,7 +124,6 @@ export default function InternalHome() {
               </CardContent>
             </Card>
 
-            {/* Capacity Tracking Card */}
             {/* User Management Card (admin only) */}
             {showUserManagement && (
               <Card className="hover:shadow-lg transition-shadow cursor-pointer border-l-4 border-l-amber-500" onClick={() => setLocation("/admin/users")}>
@@ -158,6 +159,59 @@ export default function InternalHome() {
               </Card>
             )}
 
+            {/* Contract Generator Card (admin with proposals) */}
+            {showProposals && (
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer border-l-4 border-l-indigo-500" onClick={() => setLocation("/admin/proposals/generate-contract")}>
+                <CardHeader>
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-12 w-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                      <FileText className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <CardTitle>Contract Generator</CardTitle>
+                      <CardDescription>Generate DOCX contracts</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Generate professional warehousing contracts from saved quotes with customizable terms and conditions.
+                  </p>
+                  <Button className="w-full" onClick={() => setLocation("/admin/proposals/generate-contract")}>
+                    Generate Contract
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Integrations Card (admin with integrations) */}
+            {showIntegrations && (
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer border-l-4 border-l-teal-500" onClick={() => setLocation("/admin/integrations")}>
+                <CardHeader>
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-12 w-12 rounded-lg bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 flex items-center justify-center">
+                      <Plug className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <CardTitle>Integrations</CardTitle>
+                      <CardDescription>HubSpot & QuickBooks</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Connect your CRM and accounting tools for seamless data sync and pipeline management.
+                  </p>
+                  <Button className="w-full" onClick={() => setLocation("/admin/integrations")}>
+                    Manage Integrations
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Capacity Tracking Card */}
             <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setLocation("/capacity")}>
               <CardHeader>
                 <div className="flex items-center gap-3 mb-2">
@@ -226,7 +280,7 @@ export default function InternalHome() {
                 <CardTitle className="text-sm font-medium text-muted-foreground">Tools Available</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold">3</p>
+                <p className="text-2xl font-bold">{3 + (showUserManagement ? 1 : 0) + (showProposals ? 1 : 0) + (showIntegrations ? 1 : 0)}</p>
               </CardContent>
             </Card>
           </div>

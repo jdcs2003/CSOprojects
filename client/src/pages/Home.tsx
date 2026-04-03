@@ -1,68 +1,36 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useEmailAccess } from "@/contexts/EmailAccessContext";
-import { trpc } from "@/lib/trpc";
-import { Building2, LogIn, Loader2, BarChart3, Calculator, TrendingUp, Mail } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
+import { Building2, LogIn, Loader2, BarChart3, Calculator, TrendingUp } from "lucide-react";
+import { useEffect } from "react";
 import { useLocation } from "wouter";
-import { toast } from "sonner";
 
 export default function Home() {
-  const { status, setAccess } = useEmailAccess();
+  const { user, loading, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
-  const [email, setEmail] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const checkEmailMutation = trpc.access.checkEmail.useMutation();
-
-  // If already approved, redirect to internal home
+  // If already authenticated, redirect to internal home
   useEffect(() => {
-    if (status === "approved") {
+    if (isAuthenticated && user) {
       navigate("/internal");
-    } else if (status === "pending") {
-      navigate("/access-pending");
     }
-  }, [status, navigate]);
+  }, [isAuthenticated, user, navigate]);
 
-  if (status === "approved" || status === "pending") {
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
     return null;
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!email.trim()) {
-      toast.error("Please enter your email address.");
-      return;
-    }
-
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
-      toast.error("Please enter a valid email address.");
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const result = await checkEmailMutation.mutateAsync({ email: email.trim() });
-      
-      if (result.approved) {
-        setAccess(result.email, true);
-        toast.success("Access granted! Redirecting...");
-        // Navigate will happen via the useEffect above
-      } else {
-        setAccess(result.email, false);
-        // Navigate to holding page will happen via the useEffect above
-      }
-    } catch (error) {
-      console.error("Email check failed:", error);
-      toast.error("Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handleLogin = () => {
+    window.location.href = getLoginUrl();
   };
 
   return (
@@ -111,46 +79,17 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Email Login Form */}
-              <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium">
-                    Enter your email to access
-                  </Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="you@company.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="pl-10"
-                      disabled={isSubmitting}
-                      autoFocus
-                    />
-                  </div>
-                </div>
-
+              {/* OAuth Sign In Button */}
+              <div className="pt-4">
                 <Button 
-                  type="submit"
                   size="lg" 
                   className="w-full font-semibold"
-                  disabled={isSubmitting}
+                  onClick={handleLogin}
                 >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Checking access...
-                    </>
-                  ) : (
-                    <>
-                      <LogIn className="mr-2 h-5 w-5" />
-                      Continue
-                    </>
-                  )}
+                  <LogIn className="mr-2 h-5 w-5" />
+                  Sign In with L&M Account
                 </Button>
-              </form>
+              </div>
 
               {/* Footer Info */}
               <p className="text-center text-xs text-muted-foreground pt-2">

@@ -1,23 +1,22 @@
-import { useEmailAccess } from "@/contexts/EmailAccessContext";
-import { useLocation } from "wouter";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
 import { useEffect, ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 
 /**
- * Wraps protected content and redirects to login if not approved.
- * Also checks for Manus OAuth auth as a fallback (for the owner).
+ * Wraps protected content and redirects to OAuth login if not authenticated.
+ * For routes that require basic authentication but not admin-level access.
  */
 export default function AccessGate({ children }: { children: ReactNode }) {
-  const { status } = useEmailAccess();
-  const [, navigate] = useLocation();
+  const { isAuthenticated, loading } = useAuth();
 
   useEffect(() => {
-    if (status === "none" || status === "pending") {
-      navigate("/");
+    if (!loading && !isAuthenticated) {
+      window.location.href = getLoginUrl();
     }
-  }, [status, navigate]);
+  }, [loading, isAuthenticated]);
 
-  if (status === "checking") {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -25,7 +24,7 @@ export default function AccessGate({ children }: { children: ReactNode }) {
     );
   }
 
-  if (status !== "approved") {
+  if (!isAuthenticated) {
     return null;
   }
 

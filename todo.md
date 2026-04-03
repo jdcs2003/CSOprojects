@@ -329,3 +329,11 @@
 - [x] Port contract generator from other task (contractGenerator.ts, contractConfig.ts, GenerateContract.tsx)
 - [x] Add Alazarek@lmwarehousing.com as admin with full permissions (already seeded)
 - [x] Push all changes to GitHub
+- [x] Add User Management link/card to InternalHome dashboard page
+- [x] Remove email entry field from login page (use OAuth only)
+- [x] Fix duplicate useState vite error in UserManagement.tsx (stale Vite cache)
+- [x] Migrate AccessGate from email-based to OAuth-based authentication
+- [x] Update HoldingPage to use OAuth auth instead of email context
+- [x] Remove EmailAccessProvider from App.tsx routing
+- [x] Add Contract Generator and Integrations cards to InternalHome (permission-gated)
+- [x] Update InternalHome to use OAuth logout instead of email clearAccess

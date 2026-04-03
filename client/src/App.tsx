@@ -4,7 +4,6 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { EmailAccessProvider } from "./contexts/EmailAccessContext";
 import AccessGate from "./components/AccessGate";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
@@ -39,7 +38,7 @@ function Router() {
       {/* Tutorial route - requires auth but not tutorial completion */}
       <Route path={"/tutorial"} component={Tutorial} />
       
-      {/* Protected routes - require email whitelist approval */}
+      {/* Protected routes - require OAuth authentication */}
       <Route path={"/internal"}>
         <AccessGate><InternalHome /></AccessGate>
       </Route>
@@ -111,12 +110,10 @@ function App() {
         defaultTheme="light"
         // switchable
       >
-        <EmailAccessProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-          </TooltipProvider>
-        </EmailAccessProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

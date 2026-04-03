@@ -1,10 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useEmailAccess } from "@/contexts/EmailAccessContext";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { Clock, Mail, ArrowLeft } from "lucide-react";
 
 export default function HoldingPage() {
-  const { email, clearAccess } = useEmailAccess();
+  const { user, logout } = useAuth();
+
+  const handleSignOut = async () => {
+    await logout();
+    window.location.href = "/";
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col">
@@ -30,7 +35,7 @@ export default function HoldingPage() {
             <CardContent className="space-y-6">
               <div className="text-center space-y-3">
                 <p className="text-muted-foreground">
-                  Thank you for your interest. Your access request for <span className="font-semibold text-foreground">{email}</span> is being reviewed.
+                  Thank you for your interest. Your access request for <span className="font-semibold text-foreground">{user?.email || user?.name}</span> is being reviewed.
                 </p>
                 <p className="text-muted-foreground">
                   Please contact us if you don't hear back within 24 hours:
@@ -50,10 +55,10 @@ export default function HoldingPage() {
                 <Button
                   variant="outline"
                   className="w-full"
-                  onClick={clearAccess}
+                  onClick={handleSignOut}
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
-                  Try a Different Email
+                  Sign Out & Try Different Account
                 </Button>
               </div>
             </CardContent>
