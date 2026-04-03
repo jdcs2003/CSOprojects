@@ -328,4 +328,4 @@
 - [x] Update Mlee onboarding_manager profile to include capacity tracking permission
 - [x] Port contract generator from other task (contractGenerator.ts, contractConfig.ts, GenerateContract.tsx)
 - [x] Add Alazarek@lmwarehousing.com as admin with full permissions (already seeded)
-- [ ] Push all changes to GitHub
+- [x] Push all changes to GitHub
