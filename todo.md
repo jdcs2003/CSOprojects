@@ -338,3 +338,9 @@
 - [x] Add Contract Generator and Integrations cards to InternalHome (permission-gated)
 - [x] Update InternalHome to use OAuth logout instead of email clearAccess
 - [x] Fix invite user form: upsert instead of insert to handle already-seeded users without duplicate key error
+- [x] Analyze Turks Head Wines inventory spreadsheet (28 SKUs, 3,320 cases, 151 kegs)
+- [x] Calculate PA-510 storage rates at 35% margin ($64.49/pallet, $1.15/case)
+- [x] Save Turks Head Wines quote to database (Quote ID: 240002)
+- [x] Add Turks Head Wines pipeline deal (warehousing, PA-510, ~$3,823/mo)
+- [x] Add delivery rates: Philly $8/case, Allentown $10, Pittsburgh $12, Erie $15, West Chester $300/pallet
+- [x] Add inbound lane: A. Duie Pyle (West Chester/Exton) transfer by 4/15
