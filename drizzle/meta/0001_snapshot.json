@@ -1,11 +1,11 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "d753fcf2-c41d-4172-8014-bb17934c6c40",
-  "prevId": "fd681d51-f594-4b1f-814c-40847ab6a111",
+  "id": "b7249fbc-9cf3-4f06-89c6-9a8722928d59",
+  "prevId": "507cc513-b3f0-46a0-b283-acdef299db9b",
   "tables": {
-    "facilityCapacity": {
-      "name": "facilityCapacity",
+    "proposals": {
+      "name": "proposals",
       "columns": {
         "id": {
           "name": "id",
@@ -14,51 +14,158 @@
           "notNull": true,
           "autoincrement": true
         },
-        "facilityCode": {
-          "name": "facilityCode",
+        "publicId": {
+          "name": "publicId",
+          "type": "varchar(40)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "proposalName": {
+          "name": "proposalName",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "clientName": {
+          "name": "clientName",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "proposalTitle": {
+          "name": "proposalTitle",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "proposalSubtitle": {
+          "name": "proposalSubtitle",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "preparedBy": {
+          "name": "preparedBy",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "issueDate": {
+          "name": "issueDate",
           "type": "varchar(20)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "facilityName": {
-          "name": "facilityName",
-          "type": "varchar(100)",
+        "effectiveDate": {
+          "name": "effectiveDate",
+          "type": "varchar(20)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "month": {
-          "name": "month",
-          "type": "varchar(7)",
+        "expirationDate": {
+          "name": "expirationDate",
+          "type": "varchar(20)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "totalSquareFeet": {
-          "name": "totalSquareFeet",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "availableSquareFeet": {
-          "name": "availableSquareFeet",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "notes": {
-          "name": "notes",
+        "introText": {
+          "name": "introText",
           "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "verificationNote": {
+          "name": "verificationNote",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "brandingNote": {
+          "name": "brandingNote",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "publicSummary": {
+          "name": "publicSummary",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "serviceLanes": {
+          "name": "serviceLanes",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "sections": {
+          "name": "sections",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "logoMode": {
+          "name": "logoMode",
+          "type": "enum('wordmark','monogram')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'wordmark'"
+        },
+        "accentColor": {
+          "name": "accentColor",
+          "type": "varchar(24)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "accentSoftColor": {
+          "name": "accentSoftColor",
+          "type": "varchar(24)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "enum('draft','published')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'draft'"
+        },
+        "publicSlug": {
+          "name": "publicSlug",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "createdByUserId": {
+          "name": "createdByUserId",
+          "type": "int",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "updatedBy": {
-          "name": "updatedBy",
-          "type": "varchar(100)",
+        "publishedAt": {
+          "name": "publishedAt",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -84,14 +191,27 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "facilityCapacity_id": {
-          "name": "facilityCapacity_id",
+        "proposals_id": {
+          "name": "proposals_id",
           "columns": [
             "id"
           ]
         }
       },
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "proposals_publicId_unique": {
+          "name": "proposals_publicId_unique",
+          "columns": [
+            "publicId"
+          ]
+        },
+        "proposals_publicSlug_unique": {
+          "name": "proposals_publicSlug_unique",
+          "columns": [
+            "publicSlug"
+          ]
+        }
+      },
       "checkConstraint": {}
     },
     "users": {

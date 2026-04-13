@@ -1,346 +1,41 @@
-# Third Deck Proposal TODO
+# Project TODO
 
-- [x] Build hidden calculator page at /calculator route
-- [x] Create Facility Manager component with pre-loaded facility data
-- [x] Create Deal Calculator component with labor and volume inputs
-- [x] Add FTE calculation logic
-- [x] Add cost and billing price calculation logic
-- [ ] Update Third Deck proposal with ambient storage pricing
-- [ ] Test calculator functionality
-- [ ] Save final checkpoint
-- [x] Debug calculator page not loading on deployed site
-- [x] Fix any import or component errors
-- [x] Test calculator on live URL
-- [x] Update storage rate from $35/month to $12.50/month (ambient)
-- [x] Update Quote Option 1 calculations
-- [x] Update Quote Option 2 calculations
-- [x] Update proposal page pricing display
-- [ ] Save checkpoint with ambient pricing
-- [x] Update facility location from Bensalem Metro to PA-1151
-- [x] Update all location references in proposal text
-- [ ] Save checkpoint with PA-1151 location update
-
-- [x] Create capacity tracking input page for team
-- [x] Add database schema for facility capacity tracking
-- [x] Build UI for monthly square footage input
-- [x] Add upcoming availability forecasting
-- [x] Test capacity tracking functionality
-- [x] Save checkpoint with capacity tracking feature
-- [x] Create internal tools home page with calculator and capacity links
-- [x] Fix facility square footage (Bristol 233k, Metro 85k+)
-- [x] Remove PA-13200 and SC-2690 facilities
-- [x] Add Google Sheets export functionality to capacity tracking
-- [x] Test all changes
-- [x] Save checkpoint with home page and export features
-- [x] Replace Third Deck proposal page with expiration message
-- [x] Keep internal tools (calculator, capacity) fully functional
-- [x] Test expiration page
-- [x] Save checkpoint with expired proposal page
-- [x] Update PA-510 to Bensalem 85,602 sq ft (was Bristol 233k)
-- [x] Update PA-1151 to Bristol 226,000 sq ft (was Metro 85,718)
-- [x] Add PA-13200 Townsend 65,856 sq ft
-- [x] Update NJ-2279 to Logan Township 84,000 sq ft (was 45k)
-- [x] Update SC-577 to Rock Hill 275,963 sq ft (was 60k)
-- [x] Update internal home page with correct facility count and total SF
-- [x] Test all facility data changes
-- [ ] Save checkpoint with corrected facility data
-- [x] Remove company names from capacity export CSV
-- [x] Add company filter (L&M vs Peach) to capacity tracking
-- [x] Update facility data to include company assignment
-- [x] Add Metabase Analytics tab to capacity tracking page
-- [ ] Test export with company filter
-- [ ] Save checkpoint with export improvements and Metabase integration
-- [x] Restructure calculator to separate storage minimum and handling charges
-- [x] Add monthly storage minimum calculation (recurring)
-- [x] Add handling in rate (activity-based per pallet)
-- [x] Add handling out rate (activity-based per pallet)
-- [x] Show estimated monthly handling based on turns
-- [x] Display total estimated monthly (storage + handling)
-- [x] Test calculator with PA-1151 quote
-- [x] Save checkpoint with updated calculator structure
-- [ ] Add passcode protection for Peach facilities (future enhancement)
-- [x] Add PA-2101 Peach facility (85,716 sq ft, $11.50/sq ft/year, climate control)
-- [x] Add SC-144 Peach facility (150,000 sq ft, $5.00/sq ft/year)
-- [x] Implement Peach passcode protection (Peach2026!)
-- [x] Add stack height input to calculator
-- [x] Calculate effective sq ft per pallet based on stacking
-- [x] Add independent margin controls (storage, handling in, handling out)
-- [x] Add market rate reference guides ($6-8 in, $6-10 out)
-- [x] Implement PDF quote export functionality
-- [x] Test all new features
-- [x] Save checkpoint with complete feature set
-- [x] Create separate /peachcalculator page with passcode entry
-- [x] Copy all calculator functionality to Peach calculator
-- [x] Show only Peach facilities (PA-2101, SC-144) on Peach calculator
-- [ ] Remove Peach facilities from main calculator
-- [ ] Remove Peach facilities from facility manager tab
-- [ ] Remove passcode dialog from main calculator
-- [ ] Add route for /peachcalculator in App.tsx
-- [ ] Test both calculators independently
-- [ ] Save checkpoint with separated Peach calculator
-- [x] Create shared PricingCalculator component with facility filter prop
-- [ ] Extract all calculator logic to shared component
-- [x] Update Calculator.tsx to use shared component with L&M filter
-- [x] Update PeachCalculator.tsx to use shared component with Peach filter
-- [x] Add /peachcalculator route to App.tsx
-- [x] Test that changes apply to both calculators
-- [x] Save checkpoint with linked calculators
-- [x] Enhance PDF export with professional formatting (tables, colors, logo, better layout)
-- [x] Remove all market rate references from calculator UI
-- [x] Remove market range from PDF export
-- [x] Replace L&M logo with correct version (LM_pfp.png)
-- [x] Fix logo aspect ratio in PDF to prevent warping
-- [x] Add background shading to PDF for white logo visibility
-- [x] Test logo appearance in PDF export
-- [x] Save checkpoint with fixes
-- [x] Add case pick fee input ($0.40 per case default)
-- [x] Add layer pick fee input ($0.30 per case default)
-- [x] Add pallet supply fee input ($9.00 default)
-- [x] Add shrink wrap fee input ($3.00 default)
-- [x] Add labeling fee input ($0.50 per label default)
-- [x] Add order processing fee input ($10.00 default)
-- [x] Add order cancellation/restock fee input ($25.00 default)
-- [x] Add pick type selector (Full Pallet / Layer Pick / Case Pick)
-- [x] Add margin controls for each value-added service
-- [x] Calculate value-added services costs based on order volume
-- [x] Add "Value-Added Services" section to PDF quote
-- [x] Test all new calculations
-- [x] Add manual rate override fields for all services
-- [x] Recalculate actual margin when rates are overridden
-- [x] Display actual margin % and cost breakdown after override
-- [x] Apply overridden rates to PDF export
-- [ ] Save checkpoint with value-added services and rate overrides
-- [x] Change VAS section in PDF to show rate card format (service name and rate only)
-- [x] Remove volume/quantity columns from VAS PDF export
-- [x] Show VAS as simple price list for both L&M and Peach
-- [x] Add disclosures/assumptions text input section to calculator
-- [x] Include disclosures in PDF export below monthly summary
-- [x] Apply to both L&M and Peach calculators
-- [x] Add "Prepared For" client name input field
-- [x] Display "PREPARED FOR: [Name]" in PDF header below company name
-- [x] Expand client information section with full contact fields
-- [x] Add company name, contact name, address, city/state/zip, phone, email inputs
-- [x] Display client contact info in PDF header or info box
-- [x] Apply to both L&M and Peach calculators
-- [x] Remove "e.g." from placeholders, use simple descriptions
-- [x] Add ZIP code validation and auto-lookup using Google geocoding
-- [x] Auto-populate city and state when ZIP code is entered
-- [x] Add contract length discount tier configuration inputs
-- [x] Create 4 discount tiers with length (days/months) and percentage inputs
-- [x] Add tier name inputs (Standard, Bronze, Silver, Gold)
-- [x] Add dropdown to select which discount tier applies to quote
-- [x] Automatically reduce storage, handling in, and handling out rates by selected discount %
-- [x] Display contract length discount table in PDF export
-- [x] Show discounted rates in quote calculations
-- [x] Apply to both L&M and Peach calculators
-- [x] Fix ZIP code lookup to use backend tRPC endpoint instead of direct API call
-- [ ] Create database schema for saved quotes
-- [ ] Add save quote button to calculator
-- [ ] Store all calculator inputs (client info, facility, rates, margins, discounts, VAS settings)
-- [ ] Add load quote dropdown to retrieve previous quotes
-- [ ] Display quote list with client name, date, and facility
-- [ ] Auto-populate all fields when loading a saved quote
-- [ ] Add update/overwrite functionality for existing quotes
-- [ ] Apply to both L&M and Peach calculators
-- [x] Remove green discount message from PDF export
-- [x] Style all PDF section headers consistently (dark blue #1e3e63 for L&M, light orange for Peach)
-- [x] Apply header styling to all tables (Contract Discounts, Storage, Handling, VAS, Summary)
-- [x] Fix Terms & Assumptions section overlapping with Monthly Summary table
-- [x] Change total row color from red to match header colors (blue for L&M, orange for Peach)
-- [x] Add proper spacing between summary table and terms section
-- [x] Fix JSX closing tag errors in save/load UI section
-- [x] Add monthly storage minimum input field
-- [x] Add state variable for storage minimum amount
-- [x] Use adjustable storage minimum in calculations instead of hardcoded value
-- [ ] Save storage minimum to database with quotes
-- [ ] Load storage minimum when loading saved quotes
-- [ ] Fix Value-Added Services header from orange to blue for L&M
-- [ ] Fix Total Estimated Monthly row from red to blue for L&M
-- [ ] Fix Terms & Assumptions Component/Amount header from dark gray to blue for L&M
-- [ ] Fix text overlap in Terms & Assumptions (disclosures overlapping with table)
-- [ ] Ensure all PDF headers use consistent company colors throughout
-- [ ] Fix missing contract discount table in PDF export
-- [ ] Ensure contract discount table renders when discount tier is selected
-- [ ] Check if condition is preventing discount table from showing
-- [x] Change Monthly Investment Summary to show assumptions instead of dollar amounts
-- [x] Storage Minimum: Show dollar amount (keep as is)
-- [x] Est. Handling In: Show "XX pallets" instead of dollar amount
-- [x] Est. Handling Out: Show "XX pallets" instead of dollar amount
-- [x] Value-Added Services: Show "As needed" instead of dollar amount
-- [x] Total Estimated Monthly: Keep dollar amount
-[x] Fix save/load dropdown not showing after saving quote
-- [x] Ensure saved quotes list populates in dropdown
-- [x] Add monthlyStorageMinimum field to database schema
-- [x] Add monthlyStorageMinimum to save/load quote functions
-- [x] Remove contract discount table from PDF export (internal use only)
-- [ ] Test PDF export to verify discount table removed
-- [ ] Test quote save and load end-to-end
-
-- [x] Add transportation/freight section to calculator UI
-- [x] Add freightLanes field to database schema
-- [x] Add freight lanes to save/load quote functions
-- [x] Add freight section to PDF export
-- [x] Include outbound rates: Union NJ ($700), Freehold NJ ($615), Bronx NY ($975)
-- [x] Include inbound rate: Washingtonville NY pickup ($1,050)
-- [ ] Update Señor Sangria saved quote with freight data via UI
-- [ ] Create standalone Cornerstone transportation proposal PDF
-- [ ] Add Transportation Quote mode to pricing calculator (separate from warehouse mode)
-
-- [x] Create pipeline deals database table (schema)
-- [x] Add pipeline backend procedures (CRUD)
-- [x] Build pipeline dashboard page with kanban/table view
-- [x] Pre-populate pipeline with Third Deck Brewing deal
-- [x] Pre-populate pipeline with Cornerstone Systems (Wine Group) deal
-- [x] Pre-populate pipeline with Señor Sangria deal
-- [x] Add pipeline link to internal home page
-- [x] Add /pipeline route to App.tsx
-- [x] Test pipeline dashboard
-- [x] Save checkpoint with pipeline feature
-- [x] Pre-populate pipeline with Southern Glazer's Wine & Spirits deal (~$588K/yr, 1,254 cases/week, 5 zones PA)
-- [x] Review Wine Group co-pack Excel file and proposal site for deal details
-- [x] Add Wine Group Co-Packing as new pipeline deal (~$100K)
-- [x] Update Cornerstone deal notes to reflect high profitability
-- [ ] Save checkpoint with updated pipeline
-- [x] Update Southern Glazer's pipeline value to $1.6M with zone breakdown details
-- [x] Add FBA Cross-Dock deal to pipeline (150 containers/mo, $400K/yr, Bristol PA)
-- [x] Change default landing page from "Quote Has Expired" to login page
-- [x] Generate Good Boy Vodka (Banville) warehousing PDF proposal
-- [x] Add Good Boy Vodka / Banville deal to pipeline
-- [x] Build email whitelist access control (no Manus OAuth)
-- [x] Pre-approve j.stenson@summitskiesinc.com and amoore@lmwarehousing.com
-- [x] Add holding page for unapproved users with sales@lmwarehousing.com contact
-- [x] Remove ALL Peach branding references — L&M only throughout
-- [x] Audit entire project for Peach/peach references
-- [x] Rework calculator PDF export to match GBV proposal style (blue header bars, two-column layout, clean tables, signature blocks)
-- [x] Test PDF export with Spiked Ade data
-- [x] Generate Spiked Ade proposal PDF (PA-1151, $16 storage, $10 handling, $4 shrink wrap)
-- [x] Update PA-1151 facility cost basis to $5.00 + $2.00 NNN = $7.00/sq ft/year (already correct)
-- [x] Add VAS toggle on/off switches for each line item in calculator
-- [x] Make VAS rates editable per quote in calculator
-- [x] Fix PDF export to only show toggled-on VAS items (no case lines when no case volume)
-- [x] Add Spiked Ade deal to pipeline
-- [x] Update Spiked Ade proposal: 30-day quote validity, 500 pallet minimum, 48-hour processing
-- [x] Add SOJO transfer lane ($250+FSC) to Spiked Ade proposal
-- [x] Fix facility climate types: only PA-2101, PA-13200, PA-510 are climate-controlled; all others (PA-1151, SC-577, etc.) are Ambient
-- [x] Remove all Third Deck references from the app (login page, site title, etc.)
-- [x] Ensure calculator PDF export matches the GBV/Spiked Ade proposal format
-- [x] Regenerate Spiked Ade proposal with Ambient designation for PA-1151 (PA-1151 already marked Ambient)
-- [x] Fix browser tab title still showing "Third Deck Brewing" — change to L&M branding (user fixed from Settings)
-- [x] Add Spiked Ade as a pre-loaded saved quote in the calculator dropdown
-- [x] Verify amoore@lmwarehousing.com is in the email whitelist
-- [x] Fix Spiked Ade minimum commitment to 500 pallets (not 2000)
-- [x] Show capacity up to 3,500 pallets for Spiked Ade at these rates
-- [x] Fix PA-1151 showing as Climate-controlled in PDF — should be Ambient
-- [x] Ensure PDF export matches the exact Spiked Ade proposal format
-- [x] Update pipeline: close Southern Glazers direct delivery deal (stage → signed/active)
-- [x] Update pipeline: close PLCB deal with Cornerstone (stage → signed/active)
-- [x] Make PDF export match Spiked Ade reference exactly: Account Overview section, min pallet commitment, capacity, product info
-- [x] VAS toggles control what appears in PDF export
-- [x] Fix labeling rate display: stored as cents (50) but showing as $0.50 (fixed DB schema to double)
-- [x] Add Account Overview section to PDF (blue bar + paragraph + 4-column summary)
-- [x] Add Product line to PREPARED FOR section in PDF
-- [x] Add Case Pick and Layer Pick to VAS section (reference showed all 7 items)
-- [x] Fix transport to show SOJO Bristol lanes at $250.00
-- [x] Remove 4-tier discount system for Spiked Ade, replace with single 5% for 36-month deal
-- [x] Add new proposal detail fields: product description, account overview, pallet stacking, order processing time
-- [x] Add toggle on/off switches to each discount tier in calculator UI
-- [x] Update PDF export to only show enabled tiers
-- [x] Update Spiked Ade DB record to disable Silver and Gold tiers (keep Standard + 36-month only)
-- [x] Fix L&M logo warping in PDF export — maintain correct aspect ratio
-- [x] Reduce bottom space on page 1 of PDF export
-- [x] Upload final Spiked Ade PDF to S3 and store URL in DB as locked version
-- [x] Add "(Locked)" label next to Spiked Ade in saved quotes dropdown
-- [x] Add "Download Locked PDF" button for quotes with locked PDFs
-- [x] Allow loading locked quotes as unlocked/editable in calculator
-- [x] Fix JSX closing tag error in PricingCalculator (stale Vite cache)
-- [x] Create Write-Off customer saved quote with all pricing from email
-- [x] Generate professional PDF proposal for Write-Off matching L&M format
-- [x] Upload Write-Off PDF to S3 and store as locked version
-- [x] Insert Write-Off quote into database with locked PDF URL
-- [x] Fix locked PDF download button not showing for locked proposals
-- [x] Fix Write-Off quote not pre-populating client info when loaded
-- [x] Make Export/Download PDF button clearly visible and accessible after loading any quote
-- [x] Fix locked PDF selection to actually open the PDF in a new tab (not just select dropdown value)
-- [x] Add $1,222 LTL inbound freight lane (Boardroom to SC-577) to Write-Off proposal
-- [x] Add time study note to Additional Notes section: will review time study to reduce repack costs
-- [x] Regenerate Write-Off locked PDF with brokerage + time study note
-- [x] Upload new Write-Off PDF to S3 and update lockedPdfUrl in database
-- [x] Update Write-Off client info: Josh Reda & Lauren Duffy, Co-Founders, 910-431-4608, josh@write-off.com
-- [x] Update SC-577 to 277,000 sq ft in Write-Off PDF
-- [x] Set Write-Off quote validity to 30 days
-- [x] Separate locked PDF downloads from dropdown into direct clickable links
-- [x] Add Export Pipeline button (Excel/CSV download) on pipeline page
-- [x] Auto-create pipeline deal when saving a new quote from the calculator
-- [x] Add update quote mutation (existing quotes update in place, no duplicate pipeline entry)
-- [x] Fix Spiked Ade pipeline deal facility from "PA-1151 Bristol" to "PA-1151"
-- [x] Ensure facility field uses standardized codes from known facility list when saving quotes to pipeline
-- [x] Add facility confirmation/validation on quote save and pipeline auto-creation
-- [x] Bidirectional Pipeline ↔ Calculator: pipeline leads appear as loadable quotes in calculator
-- [x] When adding a lead in pipeline, it creates a stub that shows in calculator's "Load Quote" dropdown
-- [x] When saving a quote in calculator, it updates the linked pipeline deal with revenue/pricing data
-- [x] Fix facility standardization: use known facility codes consistently across pipeline and calculator
-- [x] Reduce Write-Off co-pack/repack rate from $6.87 to $4.00 per finished tray
-- [x] Add E-com / Order Fulfillment section: $3.50 first item + label, $3.00 each additional, $2.00/box
-- [x] Add box spec: 6x 4-pack cartons 14.5" x 9.5" x 6.5" 20 lbs 7 oz
-- [x] Regenerate Write-Off locked PDF v3 with all updates
-- [x] Shift Write-Off from SC-577 to PA-510 (Bensalem, 88,000 sq ft)
-- [x] Fix Storage Rates header from "SC-577 Rock Hill" to "PA-510 Bensalem"
-- [x] Fix Inbound Brokerage from "Boardroom to SC-577" to "Boardroom to PA-510"
-- [x] Update account overview to reference Bensalem/PLCB hub
-- [x] Regenerate Write-Off locked PDF v4 with all PA-510 changes
-- [x] Upload new PDF to S3 and update database
-- [x] Add Kermit Lynch as pipeline lead (PLCB consolidation, PA-510)
-- [x] Verify Kermit Lynch appears in pipeline and calculator load quote dropdown
-- [x] Fix Write-Off deal name from 'SC-577 Write Off' to 'PA-510 Write Off'
-- [x] Fix Write-Off v5 PDF not showing on the portal (locked PDF link updated to v6)
-- [x] Remove case pick ($0.40) from co-pack section — case pick is for LTL orders 15+ cases only
-- [x] Clarify e-com fulfillment section is for orders below 15 cases (FedEx shipments)
-- [x] $2.00/box fee applies to orders below 15 cases only (FedEx)
-- [x] Regenerate Write-Off PDF v6 with corrected sections
-- [x] Upload v6 PDF to S3 and update lockedPdfUrl in database
-- [x] Update inbound transfer from $1,222 LTL to $150/pallet + fuel
-- [x] Update e-com descriptions: 'Each Additional Box Pick' and 'Per box (charged on every box in order)'
-- [x] Add $500 new account setup fee to calculator and PDF export
-- [x] Unify all accessorials (Case Pick, Layer Pick, Pallet Pick, Pallet Supply, Shrink Wrap, Labeling, Order Processing, Cancellation) as toggles in ALL options
-- [x] Remove the three dividers that separate accessorials into groups in calculator
-- [x] Update PDF export to include new account setup fee
-- [ ] Regenerate BBB locked PDF with all updates
-- [x] Port tutorial system from main L&M platform (5-step interactive tutorial with quiz)
-- [x] Port access level / role-based permissions system (admin, user management, finance admin)
-- [x] Port ProtectedRoute with tutorial gate
-- [x] Port AdminLayout with sidebar navigation (using existing InternalHome layout)
-- [x] Port UserManagement page for assigning roles/permissions
-- [x] Keep j.stenson@summitskiesinc.com as owner with tutorial bypass
-- [x] Add @lmwarehousing.com to auto-approved domains
-- [x] Add tutorialCompleted column to users table
-- [x] Add permissions columns to users/schema (user_permissions table)
-- [x] Port Integrations page (HubSpot + QuickBooks) (placeholder for future)
-- [x] Pre-authorize Tsantos@lmwarehousing.com as admin with full permissions
-- [x] Pre-authorize Egusz@lmwarehousing.com as finance_admin (read-only proposals, pipeline view, export, QuickBooks)
-- [x] Pre-authorize Mlee@lmwarehousing.com as onboarding_manager (read-only proposals, pipeline manage, export)
-- [x] Add Finance Admin and Onboarding Manager permission profiles
-- [x] Build invite user flow on UserManagement page with welcome email generation
-- [x] Send welcome emails to all team members via Gmail MCP (user will send manually after review)
-- [x] Ensure tutorial gates new users on first login
-- [x] Ensure non-provisioned @lmwarehousing.com users land on holding page (not auto-admin)
-- [x] OAuth flow: auto-approved domain users without authorized_emails entry get "user" role (holding)
-- [x] Holding page shows appropriate message for pending L&M users
-- [x] Update Mlee onboarding_manager profile to include capacity tracking permission
-- [x] Port contract generator from other task (contractGenerator.ts, contractConfig.ts, GenerateContract.tsx)
-- [x] Add Alazarek@lmwarehousing.com as admin with full permissions (already seeded)
-- [x] Push all changes to GitHub
-- [x] Add User Management link/card to InternalHome dashboard page
-- [x] Remove email entry field from login page (use OAuth only)
-- [x] Fix duplicate useState vite error in UserManagement.tsx (stale Vite cache)
-- [x] Migrate AccessGate from email-based to OAuth-based authentication
-- [x] Update HoldingPage to use OAuth auth instead of email context
-- [x] Remove EmailAccessProvider from App.tsx routing
-- [x] Add Contract Generator and Integrations cards to InternalHome (permission-gated)
-- [x] Update InternalHome to use OAuth logout instead of email clearAccess
-- [x] Fix invite user form: upsert instead of insert to handle already-seeded users without duplicate key error
-- [x] Analyze Turks Head Wines inventory spreadsheet (28 SKUs, 3,320 cases, 151 kegs)
-- [x] Calculate PA-510 storage rates at 35% margin ($64.49/pallet, $1.15/case)
-- [x] Save Turks Head Wines quote to database (Quote ID: 240002)
-- [x] Add Turks Head Wines pipeline deal (warehousing, PA-510, ~$3,823/mo)
-- [x] Add delivery rates: Philly $8/case, Allentown $10, Pittsburgh $12, Erie $15, West Chester $300/pallet
-- [x] Add inbound lane: A. Duie Pyle (West Chester/Exton) transfer by 4/15
+- [x] Review the existing L&M Logistics site structure, routes, and reusable components so the new proposal system integrates without rebuilding current pages.
+- [x] Define the proposal data model for client details, contract dates, service lanes, verified current rates, and renewal pricing tiers for 2027-2030.
+- [x] Add database tables and migrations for proposals, proposal rate lines, publish state, branding fields, and shareable public slugs.
+- [x] Build a login-protected internal admin dashboard for creating, editing, saving, publishing, unpublishing, and duplicating client proposals.
+- [x] Add admin controls for copying the public proposal link and managing branded proposal metadata.
+- [x] Build a public no-login proposal display page with elegant L&M Logistics branding and formatted pricing tables.
+- [x] Implement verified current-rate and renewal-rate presentation grouped by lane and service type.
+- [x] Add a branded PDF download action that exports a proposal matching the polished on-screen layout.
+- [x] Apply L&M Logistics logo treatments and brand colors consistently across admin and client-facing pages.
+- [x] Add automated tests covering proposal data shaping, publishing behavior, and public-page access.
+- [x] Validate the final implementation against the existing site structure, the Liquid Death proof direction, and the CSO Pricing Projects context.
+- [x] Keep the approved proposal export structure but replace the weak logo treatment with a cleaner L&M Logistics presentation treatment based on the user’s proof feedback.
+- [x] Source the proposal logo treatment directly from the CSO Pricing Projects shared logo files rather than from the proof PDF or embedded PDF artwork.
+- [x] Source the proposal logo treatment directly from the CSO Pricing Projects shared logo files shown in the project file set, not from the proof PDF.
+- [x] Source the proposal logo treatment directly from the CSO Pricing Projects shared logo files shown in the project file set, not from the proof PDF.
+- [x] Organize the repository structure and project history so future tasks clearly see this work belongs to CSO Dashboard L&M, not Peach Warehouse.
+- [x] Back up the current L&M proposal-system work into the CSO-only repository structure for future dashboard tasks.
+- [x] Keep the proposal system nested under the existing pricing dashboard within this CSO L&M project rather than separating it into a standalone app.
+- [x] Fix the homepage proposals query failure on the L&M CSO dashboard when reading from the proposals table.
+- [x] Define the main integration task for merging the proposal tool into the other pricing dashboard layout without splitting it into a separate app.
+- [x] Remove or replace the public proposal wording that still says "proof" so the live L&M proposal page uses final client-facing language.
+- [x] Verify whether the current publish flow changes any remaining draft/proof wording on the live proposal page.
+- [x] Confirm whether the latest L&M proposal work has been pushed to the selected GitHub repository for integration with the main pricing dashboard layout.
+- [x] Prepare the concrete integration path for folding the proposal tool into the other pricing dashboard page/layout in this same project.
+- [x] Identify and confirm the exact subdirectory path inside jdcs2003/CSOprojects where the integrated L&M pricing dashboard proposal work will be pushed.
+- [x] Fix the proposal editor bug where publishing or unpublishing changes wording and prevents clean client-facing edits from being preserved.
+- [x] Preserve the approved proposal formatting, layout, and visual presentation while validating the publish fix and pushing the integrated CSO dashboard code to GitHub.
+- [x] Save a fresh checkpoint so Jim can test the repaired publish and unpublish wording workflow without losing the approved proposal formatting.
+- [x] Prepare a concise handoff for Alex covering how to log in, where to test the repaired publish workflow, and what to verify tomorrow.
+- [x] Remove outdated BOL fee and any other rolled-into-order-processing lines from the client-facing proposal content before checkpointing and pushing.
+- [x] Push the corrected L&M proposal-system updates after checkpoint creation and validation.
+- [x] Record the exact GitHub repository location, branch, and commit details for Alex so he can start the integration build immediately after the push.
+- [x] Create and report the fresh checkpoint location so Jim can access the repaired L&M proposal-system test state immediately.
+- [x] Push the final cleaned Liquid Death proposal snapshot and updated Alex handoff into the CSOprojects branch so the integration reference stays current.
+- [x] Push the refreshed Alex branch update now so the integration snapshot stays current in GitHub.
+- [x] Fix the broken proposal PDF download flow and verify exports open correctly from the admin and public proposal experience.
+- [ ] Push the completed PDF download fix and wording cleanup to the actual CSOprojects GitHub repository after verification.
+- [x] Remove the sentence about shared Google Sheet and renewal model sourcing plus any client-facing explanation of why the proposal formatting was chosen.
+- [x] Tighten the public proposal print layout so it fits cleanly within human-friendly printable page margins without clipping or awkward page breaks.

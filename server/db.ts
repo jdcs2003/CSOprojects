@@ -1,14 +1,38 @@
-import { eq } from "drizzle-orm";
+import { and, desc, eq, ne } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, userPermissions, authorizedEmails, PERMISSION_KEYS } from "../drizzle/schema";
-import type { PermissionKey } from "../drizzle/schema";
-import { ENV } from './_core/env';
-import { OWNER_EMAIL, ALL_PERMISSIONS, NO_PERMISSIONS, AUTO_APPROVED_DOMAINS, hasRoleAtLeast } from "@shared/permissions";
-import type { PermissionMap } from "@shared/permissions";
+import { nanoid } from "nanoid";
+import { InsertProposal, InsertUser, Proposal, proposals, users } from "../drizzle/schema";
+import { liquidDeathProposalSeed, ProposalSeedSection } from "../shared/proposalSeed";
+import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
-// Lazily create the drizzle instance so local tooling can run without a DB.
+export type ProposalRecord = Proposal & {
+  sections: ProposalSeedSection[];
+  serviceLanes: string[];
+};
+
+export type ProposalMutationInput = {
+  id: number;
+  proposalName: string;
+  clientName: string;
+  proposalTitle: string;
+  proposalSubtitle: string;
+  preparedBy: string;
+  issueDate: string;
+  effectiveDate: string;
+  expirationDate: string;
+  introText: string;
+  verificationNote: string;
+  brandingNote: string;
+  publicSummary: string;
+  logoMode: "wordmark" | "monogram";
+  accentColor: string;
+  accentSoftColor: string;
+  publicSlug: string;
+  sections: ProposalSeedSection[];
+};
+
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
@@ -19,6 +43,51 @@ export async function getDb() {
     }
   }
   return _db;
+}
+
+function collectServiceLanes(sections: ProposalSeedSection[]) {
+  const lanes = new Set<string>();
+
+  sections.forEach(section => {
+    if (section.laneLabel) {
+      lanes.add(section.laneLabel);
+    }
+
+    section.lines.forEach(line => {
+      if (line.laneLabel) {
+        lanes.add(line.laneLabel);
+      }
+    });
+  });
+
+  return Array.from(lanes);
+}
+
+function createSeedProposal(userId?: number): InsertProposal {
+  return {
+    publicId: nanoid(16),
+    proposalName: liquidDeathProposalSeed.proposalName,
+    clientName: liquidDeathProposalSeed.clientName,
+    proposalTitle: liquidDeathProposalSeed.proposalTitle,
+    proposalSubtitle: liquidDeathProposalSeed.proposalSubtitle,
+    preparedBy: liquidDeathProposalSeed.preparedBy,
+    issueDate: liquidDeathProposalSeed.issueDate,
+    effectiveDate: liquidDeathProposalSeed.effectiveDate,
+    expirationDate: liquidDeathProposalSeed.expirationDate,
+    introText: liquidDeathProposalSeed.introText,
+    verificationNote: liquidDeathProposalSeed.verificationNote,
+    brandingNote: liquidDeathProposalSeed.brandingNote,
+    publicSummary: liquidDeathProposalSeed.publicSummary,
+    serviceLanes: collectServiceLanes(liquidDeathProposalSeed.sections),
+    sections: liquidDeathProposalSeed.sections,
+    logoMode: liquidDeathProposalSeed.logoMode,
+    accentColor: liquidDeathProposalSeed.accentColor,
+    accentSoftColor: liquidDeathProposalSeed.accentSoftColor,
+    status: liquidDeathProposalSeed.status,
+    publicSlug: liquidDeathProposalSeed.slug,
+    createdByUserId: userId,
+    publishedAt: liquidDeathProposalSeed.status === "published" ? new Date() : null,
+  };
 }
 
 export async function upsertUser(user: InsertUser): Promise<void> {
@@ -33,10 +102,6 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   }
 
   try {
-    // Check if user already exists
-    const existingUsers = await db.select().from(users).where(eq(users.openId, user.openId)).limit(1);
-    const isNewUser = existingUsers.length === 0;
-
     const values: InsertUser = {
       openId: user.openId,
     };
@@ -60,18 +125,12 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       updateSet.lastSignedIn = user.lastSignedIn;
     }
 
-    // Role assignment logic for new users
-    if (isNewUser) {
-      const email = user.email || values.email;
-      const assignedRole = await determineRoleForNewUser(email as string | null, user.openId);
-      values.role = assignedRole;
-      updateSet.role = assignedRole;
-    } else if (user.role !== undefined) {
+    if (user.role !== undefined) {
       values.role = user.role;
       updateSet.role = user.role;
     } else if (user.openId === ENV.ownerOpenId) {
-      values.role = 'super_admin';
-      updateSet.role = 'super_admin';
+      values.role = "admin";
+      updateSet.role = "admin";
     }
 
     if (!values.lastSignedIn) {
@@ -85,97 +144,10 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     await db.insert(users).values(values).onDuplicateKeyUpdate({
       set: updateSet,
     });
-
-    // Apply pre-assigned permissions for new users from authorized_emails
-    if (isNewUser) {
-      const email = user.email || values.email;
-      if (email) {
-        await applyPreAssignedPermissions(email as string);
-      }
-    }
   } catch (error) {
     console.error("[Database] Failed to upsert user:", error);
     throw error;
   }
-}
-
-/**
- * Apply pre-assigned permissions from the authorized_emails table to a newly registered user.
- * This runs after the user record is created, looking up their email in authorized_emails
- * and applying any stored permission profile.
- */
-async function applyPreAssignedPermissions(email: string): Promise<void> {
-  const db = await getDb();
-  if (!db) return;
-
-  try {
-    // Find the authorized email entry
-    const [authEntry] = await db.select().from(authorizedEmails)
-      .where(eq(authorizedEmails.email, email.toLowerCase())).limit(1);
-    
-    if (!authEntry?.preAssignedPermissions) return;
-
-    // Parse the pre-assigned permissions JSON
-    let perms: Record<string, boolean>;
-    try {
-      perms = JSON.parse(authEntry.preAssignedPermissions);
-    } catch {
-      return;
-    }
-
-    // Find the user by email
-    const [user] = await db.select().from(users)
-      .where(eq(users.email, email)).limit(1);
-    
-    if (!user) return;
-
-    // Apply the permissions
-    const permValues: Partial<PermissionMap> = {};
-    for (const key of PERMISSION_KEYS) {
-      if (key in perms) {
-        permValues[key as PermissionKey] = perms[key];
-      }
-    }
-
-    await setUserPermissions(user.id, permValues);
-    console.log(`[Auth] Applied pre-assigned permissions for ${email}`);
-  } catch (error) {
-    console.error(`[Auth] Failed to apply pre-assigned permissions for ${email}:`, error);
-  }
-}
-
-/**
- * Determine the role for a new user based on:
- * 1. Owner email → super_admin
- * 2. Pre-authorized email → assigned role from DB
- * 3. Auto-approved domain → user (holding area, admin must provision)
- * 4. Otherwise → user (pending review)
- */
-async function determineRoleForNewUser(email: string | null, openId: string): Promise<"user" | "admin" | "super_admin" | "client"> {
-  // Owner always gets super_admin
-  if (email === OWNER_EMAIL || openId === ENV.ownerOpenId) {
-    return 'super_admin';
-  }
-
-  if (!email) return 'user';
-
-  // Check pre-authorized emails
-  const db = await getDb();
-  if (db) {
-    const [authorized] = await db.select().from(authorizedEmails).where(eq(authorizedEmails.email, email)).limit(1);
-    if (authorized) {
-      return authorized.role;
-    }
-  }
-
-  // Auto-approved domains: users can register but land in holding ("user" role)
-  // until an admin provisions them. Only pre-authorized emails get admin automatically.
-  const domain = email.split('@')[1]?.toLowerCase();
-  if (domain && AUTO_APPROVED_DOMAINS.includes(domain)) {
-    return 'user'; // Holding area — admin must provision them
-  }
-
-  return 'user';
 }
 
 export async function getUserByOpenId(openId: string) {
@@ -186,59 +158,175 @@ export async function getUserByOpenId(openId: string) {
   }
 
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
-
   return result.length > 0 ? result[0] : undefined;
 }
 
-/**
- * Get permissions for a user based on their role and email.
- * Owner and super_admins always get full access.
- * Regular admins get their configured permissions.
- * Users/clients get no admin permissions.
- */
-export async function getUserPermissions(userId: number, role: string, email: string | null): Promise<PermissionMap> {
-  // Owner and super_admins always get full access
-  if (email === OWNER_EMAIL || role === 'super_admin') {
-    return ALL_PERMISSIONS;
-  }
-
-  // Regular users and clients get no admin permissions
-  if (!hasRoleAtLeast(role, 'admin')) {
-    return NO_PERMISSIONS;
-  }
-
-  // Admins get their configured permissions
+export async function ensureSeedProposal(userId?: number) {
   const db = await getDb();
-  if (!db) return NO_PERMISSIONS;
+  if (!db) return;
 
-  const [perms] = await db.select().from(userPermissions).where(eq(userPermissions.userId, userId)).limit(1);
-  if (!perms) return NO_PERMISSIONS;
+  const existing = await db.select().from(proposals).limit(1);
+  if (existing.length > 0) return;
 
-  const result: PermissionMap = { ...NO_PERMISSIONS };
-  for (const key of PERMISSION_KEYS) {
-    result[key] = (perms as any)[key] === 1;
-  }
-  return result;
+  await db.insert(proposals).values(createSeedProposal(userId));
 }
 
-/**
- * Set permissions for a user (upsert).
- */
-export async function setUserPermissions(userId: number, permissions: Partial<PermissionMap>): Promise<void> {
+export async function listProposals() {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
-
-  const dbValues: Record<string, number> = {};
-  for (const key of PERMISSION_KEYS) {
-    if (key in permissions) {
-      dbValues[key] = permissions[key as PermissionKey] ? 1 : 0;
-    }
+  if (!db) {
+    return [] as ProposalRecord[];
   }
 
-  const existing = await db.select().from(userPermissions).where(eq(userPermissions.userId, userId)).limit(1);
-  if (existing.length > 0) {
-    await db.update(userPermissions).set(dbValues).where(eq(userPermissions.userId, userId));
-  } else {
-    await db.insert(userPermissions).values({ userId, ...dbValues } as any);
+  await ensureSeedProposal();
+  const rows = await db.select().from(proposals).orderBy(desc(proposals.updatedAt));
+  return rows as ProposalRecord[];
+}
+
+export async function getProposalById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+
+  await ensureSeedProposal();
+  const rows = await db.select().from(proposals).where(eq(proposals.id, id)).limit(1);
+  return rows[0] as ProposalRecord | undefined;
+}
+
+export async function getProposalBySlug(publicSlug: string, includeDraft = false) {
+  const db = await getDb();
+  if (!db) return undefined;
+
+  await ensureSeedProposal();
+  const filters = includeDraft
+    ? eq(proposals.publicSlug, publicSlug)
+    : and(eq(proposals.publicSlug, publicSlug), eq(proposals.status, "published"));
+
+  const rows = await db.select().from(proposals).where(filters).limit(1);
+  return rows[0] as ProposalRecord | undefined;
+}
+
+export async function createProposal(userId?: number) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
   }
+
+  const cloneName = `New Proposal ${new Date().toISOString().slice(0, 10)}`;
+  const publicSlug = `proposal-${nanoid(8).toLowerCase()}`;
+  const values = createSeedProposal(userId);
+
+  values.publicId = nanoid(16);
+  values.proposalName = cloneName;
+  values.clientName = "New Client";
+  values.proposalTitle = "Client Renewal Proposal";
+  values.proposalSubtitle = "Presentation Layout and Rate Card";
+  values.status = "draft";
+  values.publicSlug = publicSlug;
+  values.publishedAt = null;
+  values.createdByUserId = userId;
+
+  await db.insert(proposals).values(values);
+  const rows = await db.select().from(proposals).where(eq(proposals.publicSlug, publicSlug)).limit(1);
+  return rows[0] as ProposalRecord;
+}
+
+export async function duplicateProposal(id: number, userId?: number) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const existing = await getProposalById(id);
+  if (!existing) {
+    throw new Error("Proposal not found");
+  }
+
+  const publicSlug = `${existing.publicSlug}-${nanoid(4).toLowerCase()}`;
+
+  await db.insert(proposals).values({
+    publicId: nanoid(16),
+    proposalName: `${existing.proposalName} Copy`,
+    clientName: existing.clientName,
+    proposalTitle: existing.proposalTitle,
+    proposalSubtitle: existing.proposalSubtitle,
+    preparedBy: existing.preparedBy,
+    issueDate: existing.issueDate,
+    effectiveDate: existing.effectiveDate,
+    expirationDate: existing.expirationDate,
+    introText: existing.introText,
+    verificationNote: existing.verificationNote,
+    brandingNote: existing.brandingNote,
+    publicSummary: existing.publicSummary,
+    serviceLanes: existing.serviceLanes,
+    sections: existing.sections,
+    logoMode: existing.logoMode,
+    accentColor: existing.accentColor,
+    accentSoftColor: existing.accentSoftColor,
+    status: "draft",
+    publicSlug,
+    createdByUserId: userId,
+    publishedAt: null,
+  });
+
+  const rows = await db.select().from(proposals).where(eq(proposals.publicSlug, publicSlug)).limit(1);
+  return rows[0] as ProposalRecord;
+}
+
+export async function updateProposal(input: ProposalMutationInput) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const existingSlug = await db
+    .select({ id: proposals.id })
+    .from(proposals)
+    .where(and(eq(proposals.publicSlug, input.publicSlug), ne(proposals.id, input.id)))
+    .limit(1);
+
+  if (existingSlug.length > 0) {
+    throw new Error("Public slug already in use");
+  }
+
+  await db
+    .update(proposals)
+    .set({
+      proposalName: input.proposalName,
+      clientName: input.clientName,
+      proposalTitle: input.proposalTitle,
+      proposalSubtitle: input.proposalSubtitle,
+      preparedBy: input.preparedBy,
+      issueDate: input.issueDate,
+      effectiveDate: input.effectiveDate,
+      expirationDate: input.expirationDate,
+      introText: input.introText,
+      verificationNote: input.verificationNote,
+      brandingNote: input.brandingNote,
+      publicSummary: input.publicSummary,
+      logoMode: input.logoMode,
+      accentColor: input.accentColor,
+      accentSoftColor: input.accentSoftColor,
+      publicSlug: input.publicSlug,
+      sections: input.sections,
+      serviceLanes: collectServiceLanes(input.sections),
+    })
+    .where(eq(proposals.id, input.id));
+
+  return getProposalById(input.id);
+}
+
+export async function setProposalPublishState(id: number, nextStatus: "draft" | "published") {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  await db
+    .update(proposals)
+    .set({
+      status: nextStatus,
+      publishedAt: nextStatus === "published" ? new Date() : null,
+    })
+    .where(eq(proposals.id, id));
+
+  return getProposalById(id);
 }
