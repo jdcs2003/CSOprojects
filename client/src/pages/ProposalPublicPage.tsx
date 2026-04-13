@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { buildProposalPdfOptions, prepareProposalElementForPdf } from "@/lib/proposalPdf";
+import { downloadProposalPdf } from "@/lib/proposalPdf";
 import { trpc } from "@/lib/trpc";
 import { Download, ExternalLink, Link2, ShieldCheck } from "lucide-react";
 import { useMemo, useState } from "react";
-import generatePDF from "react-to-pdf";
 import { useLocation, useRoute } from "wouter";
 import type { ProposalSeedSection } from "../../../shared/proposalSeed";
 
@@ -84,23 +83,31 @@ export default function ProposalPublicPage() {
   }
 
   async function handleDownloadPdf() {
-    const filenameBase = proposal?.clientName?.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-") || slug || "proposal";
-    const exportRoot = document.getElementById("proposal-export-root");
-
-    if (!(exportRoot instanceof HTMLElement)) {
+    if (!proposal) {
       return;
     }
 
-    let restoreExportStyles = () => {};
+    const filenameBase = proposal.clientName.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-") || slug || "proposal";
 
     try {
       setIsExportingPdf(true);
       await new Promise<void>(resolve => window.requestAnimationFrame(() => resolve()));
-      restoreExportStyles = prepareProposalElementForPdf(exportRoot);
-      await new Promise<void>(resolve => window.requestAnimationFrame(() => resolve()));
-      await generatePDF(() => exportRoot, buildProposalPdfOptions(`${filenameBase}-proposal.pdf`));
+      await downloadProposalPdf(`${filenameBase}-proposal.pdf`, {
+        clientName: proposal.clientName,
+        proposalTitle: proposal.proposalTitle,
+        proposalSubtitle: proposal.proposalSubtitle,
+        preparedBy: proposal.preparedBy,
+        issueDate: proposal.issueDate,
+        effectiveDate: proposal.effectiveDate,
+        expirationDate: proposal.expirationDate,
+        introText: proposal.introText,
+        verificationNote: proposal.verificationNote,
+        publicSummary: proposal.publicSummary,
+        accentColor: proposal.accentColor,
+        serviceLanes: proposal.serviceLanes,
+        sections: proposal.sections,
+      });
     } finally {
-      restoreExportStyles();
       setIsExportingPdf(false);
     }
   }

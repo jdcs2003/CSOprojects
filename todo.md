@@ -39,3 +39,5 @@
 - [ ] Push the completed PDF download fix and wording cleanup to the actual CSOprojects GitHub repository after verification.
 - [x] Remove the sentence about shared Google Sheet and renewal model sourcing plus any client-facing explanation of why the proposal formatting was chosen.
 - [x] Tighten the public proposal print layout so it fits cleanly within human-friendly printable page margins without clipping or awkward page breaks.
+- [x] Fix the public proposal PDF download so users can successfully download the proposal PDF from the live site.
+- [x] Compare the current public proposal PDF download with the already-working implementation and switch to the proven approach so the live download works reliably.
