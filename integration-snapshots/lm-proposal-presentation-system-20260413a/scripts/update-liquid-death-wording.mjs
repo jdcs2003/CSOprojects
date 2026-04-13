@@ -23,13 +23,15 @@ function normalizeSections(rawSections) {
         ? 'These are the proposal-facing lines shown in the branded presentation and mirrored on the public page.'
         : section.note,
     lines: Array.isArray(section.lines)
-      ? section.lines.map(line => ({
-          ...line,
-          sourceLabel:
-            line.sourceLabel === 'Verified current rates and proof direction'
-              ? 'Verified current rates and approved presentation direction'
-              : line.sourceLabel,
-        }))
+      ? section.lines
+          .filter(line => line.serviceName !== 'Outside Carrier BOL')
+          .map(line => ({
+            ...line,
+            sourceLabel:
+              line.sourceLabel === 'Verified current rates and proof direction'
+                ? 'Verified current rates and approved presentation direction'
+                : line.sourceLabel,
+          }))
       : [],
   }));
 }

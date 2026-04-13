@@ -22,13 +22,15 @@
 - [ ] Define the main integration task for merging the proposal tool into the other pricing dashboard layout without splitting it into a separate app.
 - [x] Remove or replace the public proposal wording that still says "proof" so the live L&M proposal page uses final client-facing language.
 - [x] Verify whether the current publish flow changes any remaining draft/proof wording on the live proposal page.
-- [ ] Confirm whether the latest L&M proposal work has been pushed to the selected GitHub repository for integration with the main pricing dashboard layout.
+- [x] Confirm whether the latest L&M proposal work has been pushed to the selected GitHub repository for integration with the main pricing dashboard layout.
 - [ ] Prepare the concrete integration path for folding the proposal tool into the other pricing dashboard page/layout in this same project.
-- [ ] Identify and confirm the exact subdirectory path inside jdcs2003/CSOprojects where the integrated L&M pricing dashboard proposal work will be pushed.
+- [x] Identify and confirm the exact subdirectory path inside jdcs2003/CSOprojects where the integrated L&M pricing dashboard proposal work will be pushed.
 - [x] Fix the proposal editor bug where publishing or unpublishing changes wording and prevents clean client-facing edits from being preserved.
 - [x] Preserve the approved proposal formatting, layout, and visual presentation while validating the publish fix and pushing the integrated CSO dashboard code to GitHub.
-- [ ] Save a fresh checkpoint so Jim can test the repaired publish and unpublish wording workflow without losing the approved proposal formatting.
+- [x] Save a fresh checkpoint so Jim can test the repaired publish and unpublish wording workflow without losing the approved proposal formatting.
 - [ ] Prepare a concise handoff for Alex covering how to log in, where to test the repaired publish workflow, and what to verify tomorrow.
 - [ ] Remove outdated BOL fee and any other rolled-into-order-processing lines from the client-facing proposal content before checkpointing and pushing.
-- [ ] Push the corrected L&M proposal-system updates after checkpoint creation and validation.
-- [ ] Record the exact GitHub repository location, branch, and commit details for Alex so he can start the integration build immediately after the push.
+- [x] Push the corrected L&M proposal-system updates after checkpoint creation and validation.
+- [x] Record the exact GitHub repository location, branch, and commit details for Alex so he can start the integration build immediately after the push.
+- [x] Create and report the fresh checkpoint location so Jim can access the repaired L&M proposal-system test state immediately.
+- [ ] Push the final cleaned Liquid Death proposal snapshot and updated Alex handoff into the CSOprojects branch so the integration reference stays current.
