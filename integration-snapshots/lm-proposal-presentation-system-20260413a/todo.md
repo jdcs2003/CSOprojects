@@ -1,0 +1,34 @@
+# Project TODO
+
+- [x] Review the existing L&M Logistics site structure, routes, and reusable components so the new proposal system integrates without rebuilding current pages.
+- [x] Define the proposal data model for client details, contract dates, service lanes, verified current rates, and renewal pricing tiers for 2027-2030.
+- [x] Add database tables and migrations for proposals, proposal rate lines, publish state, branding fields, and shareable public slugs.
+- [x] Build a login-protected internal admin dashboard for creating, editing, saving, publishing, unpublishing, and duplicating client proposals.
+- [x] Add admin controls for copying the public proposal link and managing branded proposal metadata.
+- [x] Build a public no-login proposal display page with elegant L&M Logistics branding and formatted pricing tables.
+- [x] Implement verified current-rate and renewal-rate presentation grouped by lane and service type.
+- [x] Add a branded PDF download action that exports a proposal matching the polished on-screen layout.
+- [x] Apply L&M Logistics logo treatments and brand colors consistently across admin and client-facing pages.
+- [x] Add automated tests covering proposal data shaping, publishing behavior, and public-page access.
+- [x] Validate the final implementation against the existing site structure, the Liquid Death proof direction, and the CSO Pricing Projects context.
+- [x] Keep the approved proposal export structure but replace the weak logo treatment with a cleaner L&M Logistics presentation treatment based on the user’s proof feedback.
+- [x] Source the proposal logo treatment directly from the CSO Pricing Projects shared logo files rather than from the proof PDF or embedded PDF artwork.
+- [x] Source the proposal logo treatment directly from the CSO Pricing Projects shared logo files shown in the project file set, not from the proof PDF.
+- [x] Source the proposal logo treatment directly from the CSO Pricing Projects shared logo files shown in the project file set, not from the proof PDF.
+- [x] Organize the repository structure and project history so future tasks clearly see this work belongs to CSO Dashboard L&M, not Peach Warehouse.
+- [x] Back up the current L&M proposal-system work into the CSO-only repository structure for future dashboard tasks.
+- [x] Keep the proposal system nested under the existing pricing dashboard within this CSO L&M project rather than separating it into a standalone app.
+- [x] Fix the homepage proposals query failure on the L&M CSO dashboard when reading from the proposals table.
+- [ ] Define the main integration task for merging the proposal tool into the other pricing dashboard layout without splitting it into a separate app.
+- [x] Remove or replace the public proposal wording that still says "proof" so the live L&M proposal page uses final client-facing language.
+- [x] Verify whether the current publish flow changes any remaining draft/proof wording on the live proposal page.
+- [ ] Confirm whether the latest L&M proposal work has been pushed to the selected GitHub repository for integration with the main pricing dashboard layout.
+- [ ] Prepare the concrete integration path for folding the proposal tool into the other pricing dashboard page/layout in this same project.
+- [ ] Identify and confirm the exact subdirectory path inside jdcs2003/CSOprojects where the integrated L&M pricing dashboard proposal work will be pushed.
+- [x] Fix the proposal editor bug where publishing or unpublishing changes wording and prevents clean client-facing edits from being preserved.
+- [x] Preserve the approved proposal formatting, layout, and visual presentation while validating the publish fix and pushing the integrated CSO dashboard code to GitHub.
+- [ ] Save a fresh checkpoint so Jim can test the repaired publish and unpublish wording workflow without losing the approved proposal formatting.
+- [ ] Prepare a concise handoff for Alex covering how to log in, where to test the repaired publish workflow, and what to verify tomorrow.
+- [ ] Remove outdated BOL fee and any other rolled-into-order-processing lines from the client-facing proposal content before checkpointing and pushing.
+- [ ] Push the corrected L&M proposal-system updates after checkpoint creation and validation.
+- [ ] Record the exact GitHub repository location, branch, and commit details for Alex so he can start the integration build immediately after the push.

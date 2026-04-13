@@ -1,0 +1,8 @@
+Reviewed L&M logo assets from the CSO Pricing Projects shared files.
+
+1. `L&M Logo new copy.pdf` contains the clearest high-resolution master treatment, showing the L&M cube mark with the extended "Distribution and Logistics" wordmark.
+2. `L and M-01.jpg` is readable but uses the "Warehousing Inc" treatment, which should not be the primary brand for this proposal workflow.
+3. For the proposal system, the preferred visual direction is to use the clean L&M cube mark from the higher-quality logo source and pair it with L&M Logistics-oriented interface text rather than the Warehousing Inc treatment.
+
+4. `1 (1).png` contains a strong usable dark-background lockup with the L&M cube mark and the wording "Distribution and Logistics" plus the tagline "We Connect You." This asset is visually stronger for proposal presentation use than the Warehousing Inc variant.
+5. For the public proposal page, the preferred implementation direction is to use the `1 (1).png` shared CSO project asset as the displayed brand mark, because it aligns with the logistics/distribution treatment and avoids the Warehousing Inc wording.
